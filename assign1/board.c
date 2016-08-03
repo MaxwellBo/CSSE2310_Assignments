@@ -44,12 +44,28 @@ void free_board(Board *self) {
 }
 
 void print_board(Board *self) {
+
+    printf("/");
+    for (int i = 0; i < self->width; i++) {
+        printf("-");
+    }
+    printf("\\\n"); // esacped \ and a newline
+
     for (int i = 0; i < self->height; i++) {
+        printf("|");
+
         for (int j = 0; j < self->width; j++) {
             printf("%c", self->board[i][j]->contents);
         }
-        printf("\n");
+
+        printf("|\n");
     }
+
+    printf("\\");
+    for (int i = 0; i < self->width; i++) {
+        printf("-");
+    }
+    printf("/\n");
 }
 
 Node *get_node(Board *self, int x, int y) {
