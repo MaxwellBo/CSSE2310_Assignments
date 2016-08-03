@@ -26,3 +26,37 @@ Node *new_Node(char contents) {
 void free_node(Node *self) {
     free(self);
 }
+
+bool has_liberties(Node *self) {
+    Node *neighbours[] = { above, below, to_left, to_right };
+
+    if (self->seen) {
+        // If a node has been seen before, it didn't have any liberties
+        // and thus, does not have liberties
+        self->seen = false;
+        return false;
+    } else {
+        self->seen = true;
+    }
+
+    for (int i = 0; i < 4; i++) {
+        // Walls aren't liberties
+        if (neighbours[i] == NULL) {
+            continue;
+        }
+
+        if (neighbours[i]->contents == '.') {
+            self->seen = false;
+            return true;
+        }
+
+        if (neighbours[i]->contents == self->contents
+                && has_liberties(neighbours[i])) {
+            self->seen = false;
+            return true;
+        }
+    }
+
+    self->seen = false;
+    return false;
+}

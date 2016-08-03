@@ -101,4 +101,14 @@ void set_node(Board *self, int x, int y, char pebble) {
         to_right->left = staged;
     }
 
+    Node *neighbours[] = { above, below, to_left, to_right };
+    
+    for (int i = 0; i < 4; i++) {
+        if neighbours[i] != None
+            && neighbours[i]->contents != "."
+            && neighbours[i]->contents != pebble
+            && !has_liberties(neighbours[i]) {
+                printf("%s\n", "VICTORY CONDITION");
+            }
+    }
 }
