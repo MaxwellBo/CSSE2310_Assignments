@@ -30,6 +30,22 @@ Board *new_Board(int height, int width) {
     return self;
 }
 
+void free_board(Board *self) {
+    for (int i = 0; i < self->height; i++) {
+        for (int j = 0; j < self->width; j++) {
+            free_node(self->board[i][j]);
+        }
+    }
+
+    for (int i = 0; i < self->height; ++i) {
+        free(self->board[i]);
+    }
+
+    free(self->board);
+
+    free(self);
+}
+
 void print_board(Board *self) {
     for (int i = 0; i < self->height; i++) {
         for (int j = 0; j < self->width; j++) {
@@ -44,7 +60,7 @@ Node *get_node(Board *self, int x, int y) {
         return NULL;
     }
 
-    if (!(0 <= x && x < self->height)) {
+    if (!(0 <= y && y < self->height)) {
         return NULL;
     }
 

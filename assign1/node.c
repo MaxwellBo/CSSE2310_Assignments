@@ -23,6 +23,6 @@ Node *new_Node(char contents) {
     return self;
 }
 
-void free_Node(Node *self) {
+void free_node(Node *self) {
     free(self);
 }

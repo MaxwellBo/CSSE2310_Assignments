@@ -9,13 +9,15 @@ void debug(void) {
 
     Board *b1 = new_Board(5, 5);
     set_node(b1, 1, 1, 'X');
-    /* set_node(b1, 0, 0, 'O'); */
+    set_node(b1, 0, 0, 'O');
     /* set_node(b1, 1, 0, 'X'); */
     /* set_node(b1, 0, 1, 'O'); */
     /*  */
     /* set_node(b1, 0, 2, 'X'); */
 
     print_board(b1);
+
+    free_board(b1);
 }
 
 int main(int argc, char **argv) {
