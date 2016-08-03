@@ -40,6 +40,49 @@ void print_board(Board *self) {
 }
 
 Node *get_node(Board *self, int x, int y) {
+    if (!(0 <= x && x < self->width)) {
+        return NULL;
+    }
+
+    if (!(0 <= x && x < self->height)) {
+        return NULL;
+    }
+
     return self->board[y][x];
 }
 
+void set_node(Board *self, int x, int y, char pebble) {
+    // TODO: OOB
+    // TODO: if occupied
+
+    Node *staged = get_node(self, x, y);
+    staged->contents = pebble;
+
+    Node *above = get_node(self, x, y - 1);
+    Node *below = get_node(self, x, y + 1);
+    Node *to_left = get_node(self, x - 1, y);
+    Node *to_right = get_node(self, x + 1, y);
+
+    // Here we're just binding the nodes bidirectionally to any
+    // neighbouring nodes
+    if (above) { // AKA: Not a non-existent space
+        staged->up = above;
+        above->down = staged;
+    } 
+
+    if (below) {
+        staged->down = below;
+        below->up = staged;
+    }
+
+    if (to_left) {
+        staged->left = to_left;
+        to_left->right = staged;
+    }
+
+    if (to_right) {
+        staged->right = to_right;
+        to_right->left = staged;
+    }
+
+}
