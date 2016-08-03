@@ -2,8 +2,16 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include "node.c"
+
 void debug(void) {
     printf("%s\n", "DEBUG ROUTINE");
+
+
+    Node *n1 = new_Node('q');
+    printf("%c\n", n1->contents);
+    free_Node(n1);
+
 }
 
 int main(int argc, char **argv) {
