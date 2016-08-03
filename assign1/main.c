@@ -29,24 +29,28 @@ int main(int argc, char **argv) {
 		return 2;
 	}
 
-	// atoi returns 0 if conversion fails
-	if (4 <= atoi(argv[3]) && atoi(argv[3]) <= 100) {
-		printf("%s\n", "Assigning height");
-	}
-	else {
-		fprintf(stderr, "%s\n", "Invalid board dimension");
-		return 3;
-	}
+	// Board dimensions invalid checked first
+	if (argc == 5) {
+		// atoi returns 0 if conversion fails
+		if (4 <= atoi(argv[3]) && atoi(argv[3]) <= 100) {
+			printf("%s\n", "Assigning height");
+		} else {
+			fprintf(stderr, "%s\n", "Invalid board dimension");
+			return 3;
+		}
 
-	if (4 <= atoi(argv[3]) && atoi(argv[3]) <= 100) {
-		printf("%s\n", "Assigning width");
-	}
-	else {
-		fprintf(stderr, "%s\n", "Invalid board dimension");
-		return 3;
-	}
+		if (4 <= atoi(argv[3]) && atoi(argv[3]) <= 100) {
+			printf("%s\n", "Assigning width");
+		} else {
+			fprintf(stderr, "%s\n", "Invalid board dimension");
+			return 3;
+		}
+	} else {
+		printf("%s\n", "LOADING FILE")	;
+		// TODO: Implement file reading behaviour
+	} 
 
-	printf("%s\n", "GAME STARTS PLAYING");
+		printf("%s\n", "GAME STARTS PLAYING");
 
 	return 0;
 }
