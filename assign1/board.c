@@ -15,13 +15,12 @@ Board *new_Board(int height, int width) {
 
     self->height = height;
     self->width = width;
+
     self->board = malloc(sizeof(Node **) * height);
 
-    for (int i = 0; i < height; ++i) {
-        self->board[i] = malloc(sizeof(Node *) * width);
-    }
-
     for (int i = 0; i < height; i++) {
+        self->board[i] = malloc(sizeof(Node *) * width);
+
         for (int j = 0; j < width; j++) {
             self->board[i][j] = new_Node('.');
         }
@@ -35,9 +34,7 @@ void free_board(Board *self) {
         for (int j = 0; j < self->width; j++) {
             free_node(self->board[i][j]);
         }
-    }
 
-    for (int i = 0; i < self->height; ++i) {
         free(self->board[i]);
     }
 
