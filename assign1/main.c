@@ -17,7 +17,7 @@ void debug(void) {
 
     set_node(b1, 0, 2, 'X');
 
-    print_board(b1);
+    print_board(b1); // side effects
 
     free_board(b1);
 }
