@@ -6,7 +6,7 @@
 typedef struct Board {
     int height;
     int width;
-    Node ***board;
+    Node ***board; // TODO: Figure out why I can't declare an array of arrays
 } Board;
 
 Board *new_Board(int height, int width) {
