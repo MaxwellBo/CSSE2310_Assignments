@@ -13,6 +13,8 @@ void debug(void) {
     set_node(b1, 1, 0, 'X');
     set_node(b1, 0, 1, 'O');
 
+    print_board(b1);
+
     set_node(b1, 0, 2, 'X');
 
     print_board(b1);

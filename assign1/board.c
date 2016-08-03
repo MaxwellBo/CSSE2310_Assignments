@@ -102,12 +102,14 @@ void set_node(Board *self, int x, int y, char pebble) {
     }
 
     Node *neighbours[] = { above, below, to_left, to_right };
+
     
+    // Check if any enemy strings now have no liberties
     for (int i = 0; i < 4; i++) {
-        if neighbours[i] != None
-            && neighbours[i]->contents != "."
+        if (neighbours[i] != NULL
+            && neighbours[i]->contents != '.'
             && neighbours[i]->contents != pebble
-            && !has_liberties(neighbours[i]) {
+            && !has_liberties(neighbours[i])) {
                 printf("%s\n", "VICTORY CONDITION");
             }
     }

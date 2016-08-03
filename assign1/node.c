@@ -28,7 +28,7 @@ void free_node(Node *self) {
 }
 
 bool has_liberties(Node *self) {
-    Node *neighbours[] = { above, below, to_left, to_right };
+    Node *neighbours[] = { self->up, self->down, self->left, self->right };
 
     if (self->seen) {
         // If a node has been seen before, it didn't have any liberties
@@ -45,18 +45,21 @@ bool has_liberties(Node *self) {
             continue;
         }
 
+        // Empty spaces are liberties
         if (neighbours[i]->contents == '.') {
             self->seen = false;
             return true;
         }
 
+        // This string has liberties if any pebbles in the string have
+        // liberties
         if (neighbours[i]->contents == self->contents
-                && has_liberties(neighbours[i])) {
+            && has_liberties(neighbours[i])) {
             self->seen = false;
             return true;
         }
     }
-
+    
     self->seen = false;
     return false;
 }
