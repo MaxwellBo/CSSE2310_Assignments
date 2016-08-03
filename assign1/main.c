@@ -1,17 +1,14 @@
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <stdlib.h>
 
-#include "node.c"
+#include "board.c"
 
 void debug(void) {
     printf("%s\n", "DEBUG ROUTINE");
 
-
-    Node *n1 = new_Node('q');
-    printf("%c\n", n1->contents);
-    free_Node(n1);
-
+    Board *b1 = new_Board(5, 5);
+    print_board(b1);
 }
 
 int main(int argc, char **argv) {
