@@ -1,7 +1,18 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#include "node.h"
+typedef struct Node {
+    char contents;
+    bool seen;
+    struct Node *up;
+    struct Node *down;
+    struct Node *left;
+    struct Node *right;
+} Node;
+
+Node *new_Node(char contents);
+void free_node(Node *self);
+bool has_liberties(Node *self);
 
 Node *new_Node(char contents) {
     Node *self = malloc(sizeof(Node));

@@ -2,10 +2,11 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "main.h"
+#include "board.c"
+#include "state.c"
 
-#include "board.h"
-#include "state.h"
+void debug(void);
+void start_game(State *state, Board *board);
 
 void debug(void) {
     printf("%s\n", "DEBUG ROUTINE");
