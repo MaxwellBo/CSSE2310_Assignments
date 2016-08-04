@@ -26,6 +26,10 @@ void debug(void) {
     free_board(b1);
 }
 
+void start_game(State *state, Board *board) {
+    print_board(board);
+}
+
 int main(int argc, char **argv) {
 
     char p1type;
@@ -72,14 +76,14 @@ int main(int argc, char **argv) {
     if (argc == 5) {
         // atoi returns 0 if conversion fails
         if (4 <= atoi(argv[3]) && atoi(argv[3]) <= 100) {
-            printf("%s\n", "Assigning height");
+            height = atoi(argv[3]);
         } else {
             fprintf(stderr, "%s\n", "Invalid board dimension");
             return 3;
         }
 
-        if (4 <= atoi(argv[3]) && atoi(argv[3]) <= 100) {
-            printf("%s\n", "Assigning width");
+        if (4 <= atoi(argv[4]) && atoi(argv[4]) <= 100) {
+            width = atoi(argv[4]);
         } else {
             fprintf(stderr, "%s\n", "Invalid board dimension");
             return 3;
@@ -99,9 +103,6 @@ int main(int argc, char **argv) {
     return 0;
 }
 
-void start_game(State *state, Board *board) {
-    print_board(board);
-}
 
 // 0 for "O", 1 for "X"
 /* void computer_move(int *x, int *y, int pebble_type, int move_count) { */
