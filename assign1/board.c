@@ -2,8 +2,7 @@
 #include <stdio.h>
 
 #include "board.h"
-
-#include "node.c"
+#include "node.h"
 
 typedef struct Board {
     int height;

@@ -4,8 +4,8 @@
 
 #include "main.h"
 
-#include "board.c"
-#include "state.c"
+#include "board.h"
+#include "state.h"
 
 void debug(void) {
     printf("%s\n", "DEBUG ROUTINE");
