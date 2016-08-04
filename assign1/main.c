@@ -26,9 +26,64 @@ void debug(void) {
     free_board(b1);
 }
 
+void generate_move(State *state, Board *board, int pebble_type, int move_count) {
+    // 0th for "0", 1th for "X"
+    int I_r[] = { 1, 2 };
+    int I_c[] = { 4, 10 };
+    int F[] = { 29, 17 };
+    int G_w = board->width;
+    int G_h = board->height;
+    int M = move_count; // Moves generated
+
+    int r = I_r[pebble_type];
+    int c = I_c[pebble_type];
+    int B = r * G_w + c;
+
+    int x = 0;
+    int y = 0;
+
+    if (M == 0) {
+        x = r % G_h;
+        y = c % G_w;
+        printf("%d\n", x);
+        printf("%d\n", y);
+    } else if (M % 5 == 0) {
+        int N = (B + (M/5) * F[pebble_type]) % 1000003;
+        r = N / G_w;
+        c = N % G_w;
+    } else if (M % 5 == 1) {
+        r += 1;
+        c += 1;
+    } else if (M % 5 == 2) {
+        r += 2;
+        c += 1;
+    } else if (M % 5 == 3) {
+        r += 1;
+        c += 0;
+    } else if (M % 5 == 4) {
+        r += 0;
+        c += 1;
+    }
+    
+    x = r % G_h;
+    y = c % G_w;
+
+    if (pebble_type == 0) {
+        printf("%d\n", x);
+        printf("%d\n", y);
+    }
+    
+}
+
 void start_game(State *state, Board *board) {
     print_board(board);
+
+    int x = 0;
+    int y = 0;
+    generate_move(state, board, 0, 0); // side effects on x and y
+    printf("%d %d\n", x, y);
 }
+
 
 int main(int argc, char **argv) {
 
@@ -104,10 +159,3 @@ int main(int argc, char **argv) {
 }
 
 
-// 0 for "O", 1 for "X"
-/* void computer_move(int *x, int *y, int pebble_type, int move_count) { */
-/*     // 0th for "0", 1th for "X" */
-/*     int I_r[] = { 1, 2 }; */
-/*     int I_c[] = { 4, 10 }; */
-/*     int F[] = { 29, 17 }; */
-/* } */
