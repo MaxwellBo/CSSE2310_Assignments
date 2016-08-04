@@ -2,7 +2,10 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "main.h"
+
 #include "board.c"
+#include "state.c"
 
 void debug(void) {
     printf("%s\n", "DEBUG ROUTINE");
@@ -24,6 +27,11 @@ void debug(void) {
 
 int main(int argc, char **argv) {
 
+    char p1type;
+    char p2type;
+    int height = 4;
+    int width = 4;
+
 
     // TODO: REMOVE BEFORE HANDING IN
     if (argc == 1) {
@@ -37,11 +45,12 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-
     if (strcmp(argv[1], "c") == 0) {
         printf("%s\n", "Computer 1");
+        p1type = 'c';
     } else if (strcmp(argv[1], "h") == 0) {
         printf("%s\n", "Human 1");
+        p1type = 'h';
     } else {
         fprintf(stderr, "%s\n", "Invalid player type");
         return 2;
@@ -49,8 +58,10 @@ int main(int argc, char **argv) {
 
     if (strcmp(argv[2], "c") == 0) {
         printf("%s\n", "Computer 2");
+        p2type = 'c';
     } else if (strcmp(argv[2], "h") == 0) {
         printf("%s\n", "Human 2");
+        p2type = 'h';
     } else {
         fprintf(stderr, "%s\n", "Invalid player type");
         return 2;
@@ -73,11 +84,28 @@ int main(int argc, char **argv) {
             return 3;
         }
     } else {
-        printf("%s\n", "LOADING FILE")  ;
-        // TODO: Implement file reading behaviour
+        printf("%s\n", "LOADING FILE");
+        State *state = load_state(argv[3]);
+        Board *board = load_board(argv[3]);
+
+        start_game(state, board);
     } 
-
-        printf("%s\n", "GAME STARTS PLAYING");
-
+    
+    State *state = new_State();
+    Board *board = new_Board(height, width);  
+    start_game(state, board);
+         
     return 0;
 }
+
+void start_game(State *state, Board *board) {
+    print_board(board);
+}
+
+// 0 for "O", 1 for "X"
+/* void computer_move(int *x, int *y, int pebble_type, int move_count) { */
+/*     // 0th for "0", 1th for "X" */
+/*     int I_r[] = { 1, 2 }; */
+/*     int I_c[] = { 4, 10 }; */
+/*     int F[] = { 29, 17 }; */
+/* } */

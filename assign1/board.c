@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "board.h"
+
 #include "node.c"
 
 typedef struct Board {
@@ -25,6 +27,14 @@ Board *new_Board(int height, int width) {
             self->board[i][j] = new_Node('.');
         }
     }
+
+    return self;
+}
+
+Board *load_Board(char *filename) {
+    Board *self = malloc(sizeof(Board));
+
+    // TODO: Fill in stub
 
     return self;
 }

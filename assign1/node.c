@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+#include "node.h"
 typedef struct Node {
     char contents;
     bool seen; 
