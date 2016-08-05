@@ -67,11 +67,50 @@ void generate_move(State *state, Board *board, int pebble_type, int move_count) 
     printf("%d %d\n", x, y);
 }
 
-void start_game(State *state, Board *board) {
-    print_board(board);
+void prompt_player(Board *board, char pebble) {
+    while (1) {
+        printf("Player %c> ", pebble);
 
-    generate_move(state, board, 0, 0); // side effects on x and y
-    generate_move(state, board, 0, 1); // side effects on x and y
+        int row = -1;
+        int col = -1;
+        int assigned = scanf("%d %d", &row, &col);
+        // TODO: Make it reprompt on partial string
+
+        if (assigned != 2) {
+            continue; // Reprompt
+        }
+        
+        int status = set_node(board, row, col, pebble);
+       
+        if (status == 0) {
+            // Success
+            break;
+        } else if (status == 1) {
+            // OOB
+            continue;
+        } else {
+            // Victory condition
+            print_board(board);
+            printf("Player %c wins\n", pebble);
+            exit(0);
+        }
+    }
+}
+
+
+void start_game(State *state, Board *board) {
+
+    while(1) {
+
+        // Will exit program on victory condition
+        print_board(board);
+        prompt_player(board, '0');
+        print_board(board);
+        prompt_player(board, 'X');
+    }
+
+    /* generate_move(state, board, 0, 0); // side effects on x and y */
+    /* generate_move(state, board, 0, 1); // side effects on x and y */
 }
 
 

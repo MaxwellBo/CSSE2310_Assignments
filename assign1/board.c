@@ -14,7 +14,7 @@ Board *load_Board(char *filename);
 void free_board(Board *self);
 void print_board(Board *self);
 Node *get_node(Board *self, int x, int y);
-void set_node(Board *self, int x, int y, char pebble);
+int set_node(Board *self, int x, int y, char pebble);
 
 Board *new_Board(int height, int width) {
 
@@ -95,11 +95,19 @@ Node *get_node(Board *self, int x, int y) {
     return self->board[y][x];
 }
 
-void set_node(Board *self, int x, int y, char pebble) {
-    // TODO: OOB
-    // TODO: if occupied
-
+int set_node(Board *self, int x, int y, char pebble) {
     Node *staged = get_node(self, x, y);
+    
+    if (staged == NULL) {
+        // Can't set node OOB
+        return 1;
+    }
+
+    if (staged->contents != '.') {
+        // Pebble not empty
+        return 1;
+    }
+
     staged->contents = pebble;
 
     Node *above = get_node(self, x, y - 1);
@@ -138,7 +146,9 @@ void set_node(Board *self, int x, int y, char pebble) {
             && neighbours[i]->contents != '.'
             && neighbours[i]->contents != pebble
             && !has_liberties(neighbours[i])) {
-                printf("%s\n", "VICTORY CONDITION");
+                return 2;
             }
     }
+
+    return 0;
 }
