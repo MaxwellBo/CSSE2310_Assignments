@@ -33,55 +33,45 @@ void generate_move(State *state, Board *board, int pebble_type, int move_count) 
     int F[] = { 29, 17 };
     int G_w = board->width;
     int G_h = board->height;
-    int M = move_count; // Moves generated
+    int M = move_count;
 
+    int B = I_r[pebble_type] * G_w + I_c[pebble_type];
     int r = I_r[pebble_type];
     int c = I_c[pebble_type];
-    int B = r * G_w + c;
 
-    int x = 0;
-    int y = 0;
-
-    if (M == 0) {
-        // pass
-    } else if (M % 5 == 0) {
-        int N = (B + (M/5) * F[pebble_type]) % 1000003;
-        r = N / G_w;
-        c = N % G_w;
-    } else if (M % 5 == 1) {
-        r += 1;
-        c += 1;
-    } else if (M % 5 == 2) {
-        r += 2;
-        c += 1;
-    } else if (M % 5 == 3) {
-        r += 1;
-        c += 0;
-    } else if (M % 5 == 4) {
-        r += 0;
-        c += 1;
+    for (int i = 0; i <= M; i++) {
+        if (i == 0) {
+            // pass
+        } else if (i % 5 == 0) {
+            int N = (B + M/5 * F[pebble_type]) % 1000003;
+            r = N / G_w;
+            c = N % G_w;
+        } else if (i % 5 == 1) {
+            r += 1;
+            c += 1;
+        } else if (i % 5 == 2) {
+            r += 2;
+            c += 1;
+        } else if (i % 5 == 3) {
+            r += 1;
+            c += 0;
+        } else if (i % 5 == 4) {
+            r += 0;
+            c += 1;
+        }
     }
-    
-    x = r % G_h;
-    y = c % G_w;
 
-    if (pebble_type == 0) {
-        printf("%d %d\n", x, y);
-    }
+    int x = r % G_h;
+    int y = c % G_w;
     
+    printf("%d %d\n", x, y);
 }
 
 void start_game(State *state, Board *board) {
     print_board(board);
+
     generate_move(state, board, 0, 0); // side effects on x and y
     generate_move(state, board, 0, 1); // side effects on x and y
-    generate_move(state, board, 0, 2); // side effects on x and y
-    generate_move(state, board, 0, 3); // side effects on x and y
-    generate_move(state, board, 0, 4); // side effects on x and y
-    generate_move(state, board, 0, 5); // side effects on x and y
-    generate_move(state, board, 0, 6); // side effects on x and y
-    generate_move(state, board, 0, 7); // side effects on x and y
-    generate_move(state, board, 0, 8); // side effects on x and y
 }
 
 
