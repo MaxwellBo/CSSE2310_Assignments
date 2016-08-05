@@ -139,7 +139,6 @@ int set_node(Board *self, int x, int y, char pebble) {
 
     Node *neighbours[] = { above, below, to_left, to_right };
 
-    
     // Check if any enemy strings now have no liberties
     for (int i = 0; i < 4; i++) {
         if (neighbours[i] != NULL

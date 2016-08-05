@@ -6,7 +6,10 @@
 #include "state.c"
 
 void debug(void);
-void start_game(State *state, Board *board);
+void start_game(State *state, Board *board, char p1type, char p2type);
+void generate_move(int move_count, int width, int height, int pebble);
+void prompt_computer(Board *board, State *state, char pebble);
+void prompt_player(Board *board, State *state, char pebble);
 
 void debug(void) {
     printf("%s\n", "DEBUG ROUTINE");
@@ -26,24 +29,24 @@ void debug(void) {
     free_board(b1);
 }
 
-void generate_move(State *state, Board *board, int pebble_type, int move_count) {
+void generate_move(int move_count, int width, int height, int pebble) {
     // 0th for "0", 1th for "X"
     int I_r[] = { 1, 2 };
     int I_c[] = { 4, 10 };
     int F[] = { 29, 17 };
-    int G_w = board->width;
-    int G_h = board->height;
+    int G_w = width;
+    int G_h = height;
     int M = move_count;
 
-    int B = I_r[pebble_type] * G_w + I_c[pebble_type];
-    int r = I_r[pebble_type];
-    int c = I_c[pebble_type];
+    int B = I_r[pebble] * G_w + I_c[pebble];
+    int r = I_r[pebble];
+    int c = I_c[pebble];
 
     for (int i = 0; i <= M; i++) {
         if (i == 0) {
             // pass
         } else if (i % 5 == 0) {
-            int N = (B + M/5 * F[pebble_type]) % 1000003;
+            int N = (B + M/5 * F[pebble]) % 1000003;
             r = N / G_w;
             c = N % G_w;
         } else if (i % 5 == 1) {
@@ -67,7 +70,13 @@ void generate_move(State *state, Board *board, int pebble_type, int move_count) 
     printf("%d %d\n", x, y);
 }
 
-void prompt_player(Board *board, char pebble) {
+void prompt_computer(Board *board, State *state, char pebble) {
+
+
+    
+}
+
+void prompt_player(Board *board, State *state, char pebble) {
     while (1) {
         printf("Player %c> ", pebble);
 
@@ -98,15 +107,24 @@ void prompt_player(Board *board, char pebble) {
 }
 
 
-void start_game(State *state, Board *board) {
+void start_game(State *state, Board *board, char p1type, char p2type) {
 
     while(1) {
+        print_board(board);
+        // should it encounter a victory condition on the board state
+        
+        if (p1type == 'c') {
+            prompt_computer(board, state, 'O');
+        } else {
+            prompt_player(board, state, 'O');
+        }
+        print_board(board);
 
-        // Will exit program on victory condition
-        print_board(board);
-        prompt_player(board, '0');
-        print_board(board);
-        prompt_player(board, 'X');
+        if (p2type == 'c') {
+            prompt_computer(board, state, 'X');
+        } else {
+            prompt_player(board, state, 'X');
+        }
     }
 
     /* generate_move(state, board, 0, 0); // side effects on x and y */
@@ -177,12 +195,12 @@ int main(int argc, char **argv) {
         State *state = load_state(argv[3]);
         Board *board = load_board(argv[3]);
 
-        start_game(state, board);
+        start_game(state, board, p1type, p2type);
     } 
     
     State *state = new_State();
     Board *board = new_Board(height, width);  
-    start_game(state, board);
+    start_game(state, board, p1type, p2type);
          
     return 0;
 }
