@@ -6,26 +6,6 @@
 #include "state.c"
 
 
-void debug(void);
-void start_game(State *state, Board *board, char p1type, char p2type);
-int prompt_computer(Board *board, State *state, char pebble);
-int prompt_player(Board *board, State *state, char pebble);
-void generate_move(int *x, int *y, int move_count, int width, int height, char pebble);
-
-void debug(void) {
-    printf("%s\n", "DEBUG ROUTINE");
-
-    int row;
-    int col;
-
-    generate_move(&row, &col, 0, 7, 7, 'O');
-    printf("%d %d\n", row, col);
-    generate_move(&row, &col, 1, 7, 7, 'O');
-    printf("%d %d\n", row, col);
-    generate_move(&row, &col, 2, 7, 7, 'O');
-    printf("%d %d\n", row, col);
-}
-
 void generate_move(int *x, int *y, int move_count, 
         int width, int height, char pebble) {
 
@@ -37,7 +17,7 @@ void generate_move(int *x, int *y, int move_count,
         pebble_index = 1;
     }
 
-    // 0th for "0", 1th for "X"
+    // 0th for "O", 1th for "X"
     int I_r[] = { 1, 2 };
     int I_c[] = { 4, 10 };
     int F[] = { 29, 17 };
@@ -120,7 +100,6 @@ int prompt_player(Board *board, State *state, char pebble) {
             continue; // Reprompt if invalid number of args
         }
         
-        // 
         int status = set_node(board, col, row, pebble);
        
         if (status == STATUS_INVALID) {
@@ -171,6 +150,20 @@ void start_game(State *state, Board *board, char p1type, char p2type) {
     }
 }
 
+
+void debug(void) {
+    printf("%s\n", "DEBUG ROUTINE");
+
+    int row;
+    int col;
+
+    generate_move(&row, &col, 0, 7, 7, 'O');
+    printf("%d %d\n", row, col);
+    generate_move(&row, &col, 1, 7, 7, 'O');
+    printf("%d %d\n", row, col);
+    generate_move(&row, &col, 2, 7, 7, 'O');
+    printf("%d %d\n", row, col);
+}
 
 int main(int argc, char **argv) {
 
@@ -234,8 +227,8 @@ int main(int argc, char **argv) {
         start_game(state, board, p1type, p2type);
     } 
     
-    State *state = new_State();
-    Board *board = new_Board(height, width);  
+    State *state = new_state();
+    Board *board = new_board(height, width);  
 
     // can terminate the program
     start_game(state, board, p1type, p2type);

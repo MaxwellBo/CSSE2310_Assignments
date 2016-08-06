@@ -11,18 +11,15 @@ typedef struct State {
     int move_number_for_X;
 } State;
 
-State *new_State(void);
-State *load_state(char *filename);
-void free_state(State *self);
 
-State *new_State(void) {
+State *new_state(void) {
 
     State *self = malloc(sizeof(State));
 
     self->next_player = 0;
     self->row_for_O = 0;
     self->col_for_O = 0;
-    self->move_number_for_O = -1;
+    self->move_number_for_O = -1; // The first turn will incr this to 0
     self->row_for_X = 0;
     self->col_for_X = 0;
     self->move_number_for_X = -1;
@@ -31,6 +28,7 @@ State *new_State(void) {
 }
 
 State *load_state(char *filename) {
+    
     State *self = malloc(sizeof(State));
 
     return self;

@@ -10,11 +10,7 @@ typedef struct Node {
     struct Node *right;
 } Node;
 
-Node *new_Node(char contents);
-void free_node(Node *self);
-bool has_liberties(Node *self);
-
-Node *new_Node(char contents) {
+Node *new_node(char contents) {
     Node *self = malloc(sizeof(Node));
     
     self->contents = contents;

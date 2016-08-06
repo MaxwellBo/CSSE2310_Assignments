@@ -13,14 +13,7 @@ typedef struct Board {
     Node ***board; // TODO: Figure out why I can't declare an array of arrays
 } Board;
 
-Board *new_Board(int height, int width);
-Board *load_Board(char *filename);
-void free_board(Board *self);
-void print_board(Board *self);
-Node *get_node(Board *self, int x, int y);
-int set_node(Board *self, int x, int y, char pebble);
-
-Board *new_Board(int height, int width) {
+Board *new_board(int height, int width) {
 
     Board *self = malloc(sizeof(Board));
 
@@ -33,7 +26,7 @@ Board *new_Board(int height, int width) {
         self->board[i] = malloc(sizeof(Node *) * width);
 
         for (int j = 0; j < width; j++) {
-            self->board[i][j] = new_Node('.');
+            self->board[i][j] = new_node('.');
         }
     }
 
@@ -108,7 +101,7 @@ int set_node(Board *self, int x, int y, char pebble) {
     }
 
     if (staged->contents != '.') {
-        // Pebble not empty
+        // Requested location not empty
         return STATUS_INVALID;
     }
 
