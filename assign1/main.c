@@ -118,9 +118,12 @@ void start_game(Board *board, State *state, int p1type, int p2type) {
     int (*prompts[2])(Board *, State *, char) = { &prompt_human, 
         &prompt_computer };
    
+    int current_player;
     int board_status;
 
     while(1) {
+        current_player = !(state->next_player);
+
         print_board(board);
         incr_move_number_for(state, first_player);
 
@@ -132,6 +135,9 @@ void start_game(Board *board, State *state, int p1type, int p2type) {
             exit(0);
         }
 
+        state->next_player = !state->next_player;
+        current_player = !(state->next_player);
+        
         print_board(board);
         incr_move_number_for(state, second_player);
 
@@ -142,6 +148,8 @@ void start_game(Board *board, State *state, int p1type, int p2type) {
             printf("Player %c wins\n", second_player);
             exit(0);
         }
+
+        state->next_player = !state->next_player;
     }
 }
 

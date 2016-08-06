@@ -16,7 +16,7 @@ State *new_state(void) {
 
     State *self = malloc(sizeof(State));
 
-    self->next_player = 0;
+    self->next_player = 1;
     self->row_for_O = 0;
     self->col_for_O = 0;
     self->move_number_for_O = -1; // The first turn will incr this to 0
