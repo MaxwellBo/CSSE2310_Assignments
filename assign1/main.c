@@ -87,7 +87,7 @@ int prompt_computer(Board *board, State *state, char pebble) {
     int status = set_node(board, col, row, pebble);
 
     
-    printf("Player %c: %d %d\n", pebble, col, row);
+    printf("Player %c: %d %d\n", pebble, row, col);
 
     return status; 
     
@@ -167,7 +167,6 @@ int main(int argc, char **argv) {
     char p2type;
     int height = 4;
     int width = 4;
-
 
     // TODO: REMOVE BEFORE HANDING IN
     if (argc == 1) {
