@@ -120,7 +120,8 @@ int prompt_player(Board *board, State *state, char pebble) {
             continue; // Reprompt if invalid number of args
         }
         
-        int status = set_node(board, row, col, pebble);
+        // 
+        int status = set_node(board, col, row, pebble);
        
         if (status == STATUS_INVALID) {
             continue; // Reprompt if invalid movement
