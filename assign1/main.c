@@ -5,6 +5,8 @@
 #include "board.c"
 #include "state.c"
 
+#define HUMAN 0
+#define COMPUTER 1
 
 void generate_move(int *x, int *y, int move_count, 
         int width, int height, char pebble) {
@@ -56,9 +58,6 @@ void generate_move(int *x, int *y, int move_count,
 }
 
 int prompt_computer(Board *board, State *state, char pebble) {
-
-    incr_move_number_for(state, pebble);
-
     int failed_moves = 0;
 
     while (1) {
@@ -84,10 +83,7 @@ int prompt_computer(Board *board, State *state, char pebble) {
     }
 }
 
-int prompt_player(Board *board, State *state, char pebble) {
-    
-    incr_move_number_for(state, pebble);
-
+int prompt_human(Board *board, State *state, char pebble) {
     while (1) {
         printf("Player %c> ", pebble);
         int row;
@@ -111,40 +107,39 @@ int prompt_player(Board *board, State *state, char pebble) {
 }
 
 
-void start_game(State *state, Board *board, char p1type, char p2type) {
+void start_game(Board *board, State *state, int p1type, int p2type) {
     
     // if 0 (O), start with X, else, start with O
-    char to_play_first = state->next_player ? 'X' : 'O';
-    char to_play_second = state->next_player ? 'O' : 'X';
+    char current_player = state->next_player ? 'X' : 'O';
+    char next_player = state->next_player ? 'O' : 'X';
+
+    // Where HUMAN is 0, where COMPUTER is 1
+    // Both of these functions have side effects on IO and state
+    int (*prompts[2])(Board *, State *, char) = { &prompt_human, 
+        &prompt_computer };
    
     int board_status;
 
     while(1) {
         print_board(board);
-        // All prompt_x have side effects, on both IO and board, and state
-        if (p1type == 'c') {
-            board_status = prompt_computer(board, state, to_play_first);
-        } else {
-            board_status = prompt_player(board, state, to_play_first);
-        }
+        incr_move_number_for(state, first_player);
+
+        board_status = (*prompts[p1type])(board, state, first_player);
         
         if (board_status == STATUS_VICTORY) {
             print_board(board);
-            printf("Player %c wins\n", to_play_first);
+            printf("Player %c wins\n", first_player);
             exit(0);
         }
 
         print_board(board);
+        incr_move_number_for(state, second_player);
 
-        if (p2type == 'c') {
-            board_status = prompt_computer(board, state, to_play_second);
-        } else {
-            board_status = prompt_player(board, state, to_play_second);
-        }
+        board_status = (*prompts[p2type])(board, state, second_player);
 
         if (board_status == STATUS_VICTORY) {
             print_board(board);
-            printf("Player %c wins\n", to_play_second);
+            printf("Player %c wins\n", second_player);
             exit(0);
         }
     }
@@ -167,8 +162,8 @@ void debug(void) {
 
 int main(int argc, char **argv) {
 
-    char p1type;
-    char p2type;
+    int p1type;
+    int p2type;
     int height = 4;
     int width = 4;
 
@@ -185,18 +180,18 @@ int main(int argc, char **argv) {
     }
 
     if (strcmp(argv[1], "c") == 0) {
-        p1type = 'c';
+        p1type = COMPUTER;
     } else if (strcmp(argv[1], "h") == 0) {
-        p1type = 'h';
+        p1type = HUMAN;
     } else {
         fprintf(stderr, "%s\n", "Invalid player type");
         exit(2);
     }
 
     if (strcmp(argv[2], "c") == 0) {
-        p2type = 'c';
+        p2type = COMPUTER;
     } else if (strcmp(argv[2], "h") == 0) {
-        p2type = 'h';
+        p2type = HUMAN;
     } else {
         fprintf(stderr, "%s\n", "Invalid player type");
         exit(2);
@@ -224,14 +219,14 @@ int main(int argc, char **argv) {
         Board *board = load_board(argv[3]);
 
         // can terminate the program
-        start_game(state, board, p1type, p2type);
+        start_game(board, state, p1type, p2type);
     } 
     
     State *state = new_state();
     Board *board = new_board(height, width);  
 
     // can terminate the program
-    start_game(state, board, p1type, p2type);
+    start_game(board, state, p1type, p2type);
          
     exit(0);
 }
