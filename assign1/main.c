@@ -26,7 +26,8 @@ void debug(void) {
     printf("%d %d\n", row, col);
 }
 
-void generate_move(int *x, int *y, int move_count, int width, int height, char pebble) {
+void generate_move(int *x, int *y, int move_count, 
+        int width, int height, char pebble) {
 
     int pebble_index;
 
@@ -76,21 +77,31 @@ void generate_move(int *x, int *y, int move_count, int width, int height, char p
 
 int prompt_computer(Board *board, State *state, char pebble) {
 
-    int row;
-    int col;
-    
-    generate_move(&row, &col, get_move_number_for(state, pebble)
-            , board->width, board->height, pebble);
-
     incr_move_number_for(state, pebble);
 
-    int status = set_node(board, col, row, pebble);
+    int failed_moves = 0;
 
-    
-    printf("Player %c: %d %d\n", pebble, row, col);
+    while (1) {
+        int row;
+        int col;
 
-    return status; 
-    
+        generate_move(&row, 
+                &col, 
+                get_move_number_for(state, pebble) + failed_moves, 
+                board->width, 
+                board->height, 
+                pebble);
+
+        int status = set_node(board, col, row, pebble);
+
+        if (status == STATUS_INVALID) {
+            failed_moves++;
+            continue;
+        } else {
+            printf("Player %c: %d %d\n", pebble, row, col);
+            return status;
+        }
+    }
 }
 
 int prompt_player(Board *board, State *state, char pebble) {
@@ -99,14 +110,13 @@ int prompt_player(Board *board, State *state, char pebble) {
 
     while (1) {
         printf("Player %c> ", pebble);
-
         int row;
         int col;
 
-        int assigned = scanf("%d %d", &row, &col);
+        int args_assigned = scanf("%d %d", &row, &col);
         // TODO: Make it reprompt on partial string
 
-        if (assigned != 2) {
+        if (args_assigned != 2) {
             continue; // Reprompt if invalid number of args
         }
         
@@ -177,29 +187,25 @@ int main(int argc, char **argv) {
     if (!(argc == 3 || argc == 4 || argc == 5)) {
         fprintf(stderr, "%s\n", 
             "Usage: nogo p1type p2type [height width | filename]");
-        return 1;
+        exit(1);
     }
 
     if (strcmp(argv[1], "c") == 0) {
-        printf("%s\n", "Computer 1");
         p1type = 'c';
     } else if (strcmp(argv[1], "h") == 0) {
-        printf("%s\n", "Human 1");
         p1type = 'h';
     } else {
         fprintf(stderr, "%s\n", "Invalid player type");
-        return 2;
+        exit(2);
     }
 
     if (strcmp(argv[2], "c") == 0) {
-        printf("%s\n", "Computer 2");
         p2type = 'c';
     } else if (strcmp(argv[2], "h") == 0) {
-        printf("%s\n", "Human 2");
         p2type = 'h';
     } else {
         fprintf(stderr, "%s\n", "Invalid player type");
-        return 2;
+        exit(2);
     }
 
     // Board dimensions invalid checked first
@@ -209,14 +215,14 @@ int main(int argc, char **argv) {
             height = atoi(argv[3]);
         } else {
             fprintf(stderr, "%s\n", "Invalid board dimension");
-            return 3;
+            exit(3);
         }
 
         if (4 <= atoi(argv[4]) && atoi(argv[4]) <= 100) {
             width = atoi(argv[4]);
         } else {
             fprintf(stderr, "%s\n", "Invalid board dimension");
-            return 3;
+            exit(3);
         }
     } else {
         printf("%s\n", "LOADING FILE");
@@ -233,7 +239,7 @@ int main(int argc, char **argv) {
     // can terminate the program
     start_game(state, board, p1type, p2type);
          
-    return 0;
+    exit(0);
 }
 
 

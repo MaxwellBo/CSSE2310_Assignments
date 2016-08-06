@@ -22,10 +22,10 @@ State *new_State(void) {
     self->next_player = 0;
     self->row_for_O = 0;
     self->col_for_O = 0;
-    self->move_number_for_O = 0;
+    self->move_number_for_O = -1;
     self->row_for_X = 0;
     self->col_for_X = 0;
-    self->move_number_for_X = 0;
+    self->move_number_for_X = -1;
 
     return self;
 }
