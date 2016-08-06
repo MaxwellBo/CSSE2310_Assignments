@@ -5,31 +5,37 @@
 #include "board.c"
 #include "state.c"
 
+
 void debug(void);
 void start_game(State *state, Board *board, char p1type, char p2type);
-void generate_move(int move_count, int width, int height, int pebble);
-void prompt_computer(Board *board, State *state, char pebble);
-void prompt_player(Board *board, State *state, char pebble);
+int prompt_computer(Board *board, State *state, char pebble);
+int prompt_player(Board *board, State *state, char pebble);
+void generate_move(int *x, int *y, int move_count, int width, int height, char pebble);
 
 void debug(void) {
     printf("%s\n", "DEBUG ROUTINE");
 
-    Board *b1 = new_Board(5, 5);
-    set_node(b1, 1, 1, 'X');
-    set_node(b1, 0, 0, 'O');
-    set_node(b1, 1, 0, 'X');
-    set_node(b1, 0, 1, 'O');
+    int row;
+    int col;
 
-    print_board(b1);
-
-    set_node(b1, 0, 2, 'X');
-
-    print_board(b1); // side effects
-
-    free_board(b1);
+    generate_move(&row, &col, 0, 7, 7, 'O');
+    printf("%d %d\n", row, col);
+    generate_move(&row, &col, 1, 7, 7, 'O');
+    printf("%d %d\n", row, col);
+    generate_move(&row, &col, 2, 7, 7, 'O');
+    printf("%d %d\n", row, col);
 }
 
-void generate_move(int move_count, int width, int height, int pebble) {
+void generate_move(int *x, int *y, int move_count, int width, int height, char pebble) {
+
+    int pebble_index;
+
+    if (pebble == 'O') {
+        pebble_index = 0;
+    } else {
+        pebble_index = 1;
+    }
+
     // 0th for "0", 1th for "X"
     int I_r[] = { 1, 2 };
     int I_c[] = { 4, 10 };
@@ -38,15 +44,15 @@ void generate_move(int move_count, int width, int height, int pebble) {
     int G_h = height;
     int M = move_count;
 
-    int B = I_r[pebble] * G_w + I_c[pebble];
-    int r = I_r[pebble];
-    int c = I_c[pebble];
+    int B = I_r[pebble_index] * G_w + I_c[pebble_index];
+    int r = I_r[pebble_index];
+    int c = I_c[pebble_index];
 
     for (int i = 0; i <= M; i++) {
         if (i == 0) {
             // pass
         } else if (i % 5 == 0) {
-            int N = (B + M/5 * F[pebble]) % 1000003;
+            int N = (B + M/5 * F[pebble_index]) % 1000003;
             r = N / G_w;
             c = N % G_w;
         } else if (i % 5 == 1) {
@@ -64,71 +70,94 @@ void generate_move(int move_count, int width, int height, int pebble) {
         }
     }
 
-    int x = r % G_h;
-    int y = c % G_w;
-    
-    printf("%d %d\n", x, y);
+    *x = r % G_h;
+    *y = c % G_w;
 }
 
-void prompt_computer(Board *board, State *state, char pebble) {
+int prompt_computer(Board *board, State *state, char pebble) {
 
+    int row;
+    int col;
+    
+    generate_move(&row, &col, get_move_number_for(state, pebble)
+            , board->width, board->height, pebble);
 
+    incr_move_number_for(state, pebble);
+
+    int status = set_node(board, col, row, pebble);
+
+    
+    printf("Player %c: %d %d\n", pebble, col, row);
+
+    return status; 
     
 }
 
-void prompt_player(Board *board, State *state, char pebble) {
+int prompt_player(Board *board, State *state, char pebble) {
+    
+    incr_move_number_for(state, pebble);
+
     while (1) {
         printf("Player %c> ", pebble);
 
-        int row = -1;
-        int col = -1;
+        int row;
+        int col;
+
         int assigned = scanf("%d %d", &row, &col);
         // TODO: Make it reprompt on partial string
 
         if (assigned != 2) {
-            continue; // Reprompt
+            continue; // Reprompt if invalid number of args
         }
         
         int status = set_node(board, row, col, pebble);
        
-        if (status == 0) {
-            // Success
-            break;
-        } else if (status == 1) {
-            // OOB
-            continue;
+        if (status == STATUS_INVALID) {
+            continue; // Reprompt if invalid movement
         } else {
-            // Victory condition
-            print_board(board);
-            printf("Player %c wins\n", pebble);
-            exit(0);
+            return status;
         }
     }
 }
 
 
 void start_game(State *state, Board *board, char p1type, char p2type) {
+    
+    // if 0 (O), start with X, else, start with O
+    char to_play_first = state->next_player ? 'X' : 'O';
+    char to_play_second = state->next_player ? 'O' : 'X';
+   
+    int board_status;
 
     while(1) {
         print_board(board);
-        // should it encounter a victory condition on the board state
-        
+        // All prompt_x have side effects, on both IO and board, and state
         if (p1type == 'c') {
-            prompt_computer(board, state, 'O');
+            board_status = prompt_computer(board, state, to_play_first);
         } else {
-            prompt_player(board, state, 'O');
+            board_status = prompt_player(board, state, to_play_first);
         }
+        
+        if (board_status == STATUS_VICTORY) {
+            print_board(board);
+            printf("Player %c wins\n", to_play_first);
+            exit(0);
+        }
+
         print_board(board);
 
         if (p2type == 'c') {
-            prompt_computer(board, state, 'X');
+            board_status = prompt_computer(board, state, to_play_second);
         } else {
-            prompt_player(board, state, 'X');
+            board_status = prompt_player(board, state, to_play_second);
+        }
+
+        if (board_status == STATUS_VICTORY) {
+            print_board(board);
+            printf("Player %c wins\n", to_play_second);
+            exit(0);
         }
     }
-
-    /* generate_move(state, board, 0, 0); // side effects on x and y */
-    /* generate_move(state, board, 0, 1); // side effects on x and y */
 }
 
 
@@ -195,11 +224,14 @@ int main(int argc, char **argv) {
         State *state = load_state(argv[3]);
         Board *board = load_board(argv[3]);
 
+        // can terminate the program
         start_game(state, board, p1type, p2type);
     } 
     
     State *state = new_State();
     Board *board = new_Board(height, width);  
+
+    // can terminate the program
     start_game(state, board, p1type, p2type);
          
     return 0;

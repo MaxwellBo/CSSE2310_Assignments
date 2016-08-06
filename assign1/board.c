@@ -3,6 +3,10 @@
 
 #include "node.c"
 
+#define STATUS_SUCCESS 0
+#define STATUS_INVALID 1
+#define STATUS_VICTORY 2
+
 typedef struct Board {
     int height;
     int width;
@@ -100,12 +104,12 @@ int set_node(Board *self, int x, int y, char pebble) {
     
     if (staged == NULL) {
         // Can't set node OOB
-        return 1;
+        return STATUS_INVALID;
     }
 
     if (staged->contents != '.') {
         // Pebble not empty
-        return 1;
+        return STATUS_INVALID;
     }
 
     staged->contents = pebble;
@@ -145,9 +149,9 @@ int set_node(Board *self, int x, int y, char pebble) {
             && neighbours[i]->contents != '.'
             && neighbours[i]->contents != pebble
             && !has_liberties(neighbours[i])) {
-                return 2;
+                return STATUS_VICTORY;
             }
     }
 
-    return 0;
+    return STATUS_SUCCESS;
 }

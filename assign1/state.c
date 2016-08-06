@@ -27,7 +27,6 @@ State *new_State(void) {
     self->col_for_X = 0;
     self->move_number_for_X = 0;
 
-
     return self;
 }
 
@@ -40,3 +39,36 @@ State *load_state(char *filename) {
 void free_state(State *self) {
     free(self);
 }
+
+int get_move_number_for(State *self, char pebble) {
+    if (pebble == 'O') {
+        return self->move_number_for_O;
+    } else {
+        return self->move_number_for_X;
+    }
+}
+
+void incr_move_number_for(State *self, char pebble) {
+    if (pebble == 'O') {
+        (self->move_number_for_O)++;
+    } else {
+        (self->move_number_for_X)++;
+    }
+}
+
+void set_row_for(State *self, char pebble, int x) {
+    if (pebble == 'O') {
+        self->row_for_O = x;
+    } else {
+        self->row_for_X = x;
+    }
+}
+
+void set_col_for(State *self, char pebble, int x) {
+    if (pebble == 'O') {
+        self->col_for_O = x;
+    } else {
+        self->col_for_X = x;
+    }
+}
+
