@@ -174,6 +174,11 @@ void debug(void) {
     write_state(state, "write.txt");
     write_board(board, "write.txt");
 
+    state = read_state("write.txt");
+    board = read_board("write.txt");
+
+    print_board(board);
+
     free_state(state);
     free_board(board);
 

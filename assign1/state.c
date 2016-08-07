@@ -46,10 +46,6 @@ State *read_state(char *filename) {
     free(data);
     fclose(file);
 
-    printf("%d %d %d %d %d %d %d\n", staged->next_player, staged->row_for_O, staged->col_for_O,
--            staged->move_number_for_O, staged->row_for_X, staged->col_for_X, staged->move_number_for_X);
-
-
     return staged;
 }
 
