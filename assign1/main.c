@@ -108,10 +108,9 @@ int prompt_human(Board *board, State *state, char pebble) {
 
 
 void start_game(Board *board, State *state, int p1type, int p2type) {
-    
-    // if 0 (O), start with X, else, start with O
-    char first_player = state->next_player ? 'X' : 'O';
-    char second_player = state->next_player ? 'O' : 'X';
+   
+    char first_player = state->next_player ? 'O' : 'X';
+    char second_player = state->next_player ? 'X' : 'O';
 
     // Where HUMAN is 0, where COMPUTER is 1
     // Both of these functions have side effects on IO and state
