@@ -157,18 +157,10 @@ void start_game(Board *board, State *state, int p1type, int p2type) {
 void debug(void) {
     printf("%s\n", "DEBUG ROUTINE");
 
-    int row;
-    int col;
-
     Board *board = read_board("test.txt");
     print_board(board);
+    write_board(board, "write.txt");
 
-    generate_move(&row, &col, 0, 7, 7, 'O');
-    printf("%d %d\n", row, col);
-    generate_move(&row, &col, 1, 7, 7, 'O');
-    printf("%d %d\n", row, col);
-    generate_move(&row, &col, 2, 7, 7, 'O');
-    printf("%d %d\n", row, col);
 }
 
 int main(int argc, char **argv) {

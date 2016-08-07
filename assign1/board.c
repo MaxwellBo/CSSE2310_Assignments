@@ -42,7 +42,6 @@ Board *read_board(char *filename) {
     int width;
 
     FILE *file = fopen(filename, "r");
-    rewind(file);
     char *data = read_line(file); // mallocs
     sscanf(data, "%d %d", &height, &width);
     free(data);
@@ -63,6 +62,21 @@ Board *read_board(char *filename) {
     fclose(file);
 
     return staged;
+}
+
+void write_board(Board *self, char *filename) {
+    FILE *file = fopen(filename, "a");
+
+    for (int i = 0; i < self->height; i++) {
+
+        for (int j = 0; j < self->width; j++) {
+            fprintf(file, "%c", self->board[i][j]->contents);
+        }
+
+        fprintf(file, "\n");
+    }
+
+    fclose(file);
 }
 
 void free_board(Board *self) {
