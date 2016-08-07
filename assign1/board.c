@@ -2,6 +2,7 @@
 #include <stdio.h>
 
 #include "node.c"
+#include "utils.c"
 
 #define STATUS_SUCCESS 0
 #define STATUS_INVALID 1
@@ -12,6 +13,8 @@ typedef struct Board {
     int width;
     Node ***board; // TODO: Figure out why I can't declare an array of arrays
 } Board;
+
+int set_node(Board *, int, int, char);
 
 Board *new_board(int height, int width) {
 
@@ -33,12 +36,33 @@ Board *new_board(int height, int width) {
     return self;
 }
 
-Board *load_board(char *filename) {
-    Board *self = malloc(sizeof(Board));
+Board *read_board(char *filename) {
 
-    // TODO: Fill in stub
+    int height;
+    int width;
 
-    return self;
+    FILE *file = fopen(filename, "r");
+    rewind(file);
+    char *data = read_line(file); // mallocs
+    sscanf(data, "%d %d", &height, &width);
+    free(data);
+
+    Board *staged = new_board(height, width);
+
+    for (int y = 0; y < staged->height; y++) {
+
+        char *row = read_line(file);
+
+        for (int x = 0; x < staged->width; x++) {
+            set_node(staged, x, y, row[x]);
+        }
+
+        free(row);
+    }
+
+    fclose(file);
+
+    return staged;
 }
 
 void free_board(Board *self) {

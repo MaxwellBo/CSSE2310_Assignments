@@ -27,7 +27,8 @@ State *new_state(void) {
     return self;
 }
 
-State *load_state(char *filename) {
+State *read_state(char *filename) {
+
     
     State *self = malloc(sizeof(State));
 

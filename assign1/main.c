@@ -160,6 +160,9 @@ void debug(void) {
     int row;
     int col;
 
+    Board *board = read_board("test.txt");
+    print_board(board);
+
     generate_move(&row, &col, 0, 7, 7, 'O');
     printf("%d %d\n", row, col);
     generate_move(&row, &col, 1, 7, 7, 'O');
@@ -223,8 +226,8 @@ int main(int argc, char **argv) {
         }
     } else {
         printf("%s\n", "LOADING FILE");
-        State *state = load_state(argv[3]);
-        Board *board = load_board(argv[3]);
+        State *state = read_state(argv[3]);
+        Board *board = read_board(argv[3]);
 
         // can terminate the program
         start_game(board, state, p1type, p2type);
