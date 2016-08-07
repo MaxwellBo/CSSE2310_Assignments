@@ -5,6 +5,8 @@
 #include "board.c"
 #include "state.c"
 
+#define MAX_LENGTH 70
+
 #define HUMAN 0
 #define COMPUTER 1
 
@@ -85,17 +87,30 @@ int prompt_computer(Board *board, State *state, char pebble) {
 
 int prompt_human(Board *board, State *state, char pebble) {
     while (1) {
-        printf("Player %c> ", pebble);
+
+        char *filename = malloc(sizeof(char) * MAX_LENGTH);
         int row;
         int col;
 
-        int args_assigned = scanf("%d %d", &row, &col);
-        // TODO: Make it reprompt on partial string
+        printf("Player %c> ", pebble);
 
-        if (args_assigned != 2) {
-            continue; // Reprompt if invalid number of args
+        char *line = read_line(stdin);
+
+        int assigned_filename = sscanf(line, "w%s", filename);
+        int assigned_dimensions = sscanf(line, "%d %d", &row, &col);
+
+        if (assigned_filename) {
+            write_dimensions(board, filename);
+            write_state(state, filename);
+            write_board(board, filename);
         }
         
+        free(filename);
+
+        if (assigned_dimensions != 2) {
+            continue; // Reprompt if invalid number of args
+        }
+
         int status = set_node(board, col, row, pebble);
        
         if (status == STATUS_INVALID) {
