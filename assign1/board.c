@@ -64,6 +64,14 @@ Board *read_board(char *filename) {
     return staged;
 }
 
+void write_dimensions(Board *self, char *filename) {
+    FILE *file = fopen(filename, "w");
+
+    fprintf(file, "%d %d ", self->height, self->width);
+
+    fclose(file);
+}
+
 void write_board(Board *self, char *filename) {
     FILE *file = fopen(filename, "a");
 

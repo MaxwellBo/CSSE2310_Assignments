@@ -169,6 +169,9 @@ void debug(void) {
     Board *board = read_board("test.txt");
 
     print_board(board);
+
+    write_dimensions(board, "write.txt");
+    write_state(state, "write.txt");
     write_board(board, "write.txt");
 
     free_state(state);

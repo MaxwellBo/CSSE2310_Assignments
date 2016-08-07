@@ -47,9 +47,26 @@ State *read_state(char *filename) {
     fclose(file);
 
     printf("%d %d %d %d %d %d %d\n", staged->next_player, staged->row_for_O, staged->col_for_O,
-            staged->move_number_for_O, staged->row_for_X, staged->col_for_X, staged->move_number_for_X);
+-            staged->move_number_for_O, staged->row_for_X, staged->col_for_X, staged->move_number_for_X);
+
 
     return staged;
+}
+
+void write_state(State *self, char *filename) {
+    FILE *file = fopen(filename, "a");
+
+    fprintf(file, "%d %d %d %d %d %d %d\n", 
+            self->next_player, 
+            self->row_for_O, 
+            self->col_for_O,
+            self->move_number_for_O, 
+            self->row_for_X, 
+            self->col_for_X, 
+            self->move_number_for_X
+           );
+
+    fclose(file);
 }
 
 void free_state(State *self) {
