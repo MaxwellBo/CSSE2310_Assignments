@@ -116,6 +116,7 @@ int prompt_human(Board *board, State *state, char pebble) {
         if (status == STATUS_INVALID) {
             continue; // Reprompt if invalid movement
         } else {
+            incr_move_number_for(state, pebble);
             return status;
         }
     }
@@ -139,7 +140,6 @@ void start_game(Board *board, State *state, int p1type, int p2type) {
         current_player = !(state->next_player);
 
         print_board(board);
-        incr_move_number_for(state, first_player);
 
         board_status = (*prompts[p1type])(board, state, first_player);
         
@@ -157,7 +157,6 @@ void start_game(Board *board, State *state, int p1type, int p2type) {
         current_player = !(state->next_player);
         
         print_board(board);
-        incr_move_number_for(state, second_player);
 
         board_status = (*prompts[p2type])(board, state, second_player);
 
