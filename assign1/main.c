@@ -132,6 +132,10 @@ void start_game(Board *board, State *state, int p1type, int p2type) {
         if (board_status == STATUS_VICTORY) {
             print_board(board);
             printf("Player %c wins\n", first_player);
+
+            free_state(state);
+            free_board(board);
+
             exit(0);
         }
 
@@ -146,6 +150,10 @@ void start_game(Board *board, State *state, int p1type, int p2type) {
         if (board_status == STATUS_VICTORY) {
             print_board(board);
             printf("Player %c wins\n", second_player);
+
+            free_state(state);
+            free_board(board);
+
             exit(0);
         }
 
@@ -157,9 +165,14 @@ void start_game(Board *board, State *state, int p1type, int p2type) {
 void debug(void) {
     printf("%s\n", "DEBUG ROUTINE");
 
+    State *state = read_state("test.txt");
     Board *board = read_board("test.txt");
+
     print_board(board);
     write_board(board, "write.txt");
+
+    free_state(state);
+    free_board(board);
 
 }
 
@@ -203,14 +216,14 @@ int main(int argc, char **argv) {
     // Board dimensions invalid checked first
     if (argc == 5) {
         // atoi returns 0 if conversion fails
-        if (4 <= atoi(argv[3]) && atoi(argv[3]) <= 100) {
+        if (4 <= atoi(argv[3]) && atoi(argv[3]) <= 1000) {
             height = atoi(argv[3]);
         } else {
             fprintf(stderr, "%s\n", "Invalid board dimension");
             exit(3);
         }
 
-        if (4 <= atoi(argv[4]) && atoi(argv[4]) <= 100) {
+        if (4 <= atoi(argv[4]) && atoi(argv[4]) <= 1000) {
             width = atoi(argv[4]);
         } else {
             fprintf(stderr, "%s\n", "Invalid board dimension");

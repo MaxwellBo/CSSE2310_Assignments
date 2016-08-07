@@ -11,7 +11,7 @@
 typedef struct Board {
     int height;
     int width;
-    Node ***board; // TODO: Figure out why I can't declare an array of arrays
+    Node ***board; 
 } Board;
 
 int set_node(Board *, int, int, char);

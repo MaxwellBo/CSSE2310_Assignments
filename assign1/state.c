@@ -28,11 +28,28 @@ State *new_state(void) {
 }
 
 State *read_state(char *filename) {
+    State *staged = new_state(); 
 
-    
-    State *self = malloc(sizeof(State));
+    FILE *file = fopen(filename, "r");
+    char *data = read_line(file); // mallocs
 
-    return self;
+    sscanf(data, "%*d %*d %d %d %d %d %d %d %d", 
+            &staged->next_player,
+            &staged->row_for_O,
+            &staged->col_for_O,
+            &staged->move_number_for_O,
+            &staged->row_for_X,
+            &staged->col_for_X,
+            &staged->move_number_for_X
+          );
+
+    free(data);
+    fclose(file);
+
+    printf("%d %d %d %d %d %d %d\n", staged->next_player, staged->row_for_O, staged->col_for_O,
+            staged->move_number_for_O, staged->row_for_X, staged->col_for_X, staged->move_number_for_X);
+
+    return staged;
 }
 
 void free_state(State *self) {
