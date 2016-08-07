@@ -188,8 +188,6 @@ int main(int argc, char **argv) {
 
     int p1type;
     int p2type;
-    int height = 4;
-    int width = 4;
 
     // TODO: REMOVE BEFORE HANDING IN
     if (argc == 1) {
@@ -223,6 +221,9 @@ int main(int argc, char **argv) {
 
     // Board dimensions invalid checked first
     if (argc == 5) {
+        int height;
+        int width;
+
         // atoi returns 0 if conversion fails
         if (4 <= atoi(argv[3]) && atoi(argv[3]) <= 1000) {
             height = atoi(argv[3]);
@@ -237,22 +238,20 @@ int main(int argc, char **argv) {
             fprintf(stderr, "%s\n", "Invalid board dimension");
             exit(3);
         }
+
+        State *state = new_state();
+        Board *board = new_board(height, width);  
+
+        // can terminate the program
+        start_game(board, state, p1type, p2type);
+
     } else {
-        printf("%s\n", "LOADING FILE");
         State *state = read_state(argv[3]);
         Board *board = read_board(argv[3]);
 
         // can terminate the program
         start_game(board, state, p1type, p2type);
     } 
-    
-    State *state = new_state();
-    Board *board = new_board(height, width);  
-
-    // can terminate the program
-    start_game(board, state, p1type, p2type);
-         
-    exit(0);
 }
 
 
