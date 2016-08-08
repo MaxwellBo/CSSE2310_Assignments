@@ -88,13 +88,13 @@ int prompt_computer(Board *board, State *state, char pebble) {
 int prompt_human(Board *board, State *state, char pebble) {
     while (1) {
 
-        char *filename = malloc(sizeof(char) * MAX_LENGTH);
-        int row;
-        int col;
-
         printf("Player %c> ", pebble);
 
         char *line = read_line(stdin);
+
+        char *filename = malloc(sizeof(char) * MAX_LENGTH);
+        int row;
+        int col;
 
         int assigned_filename = sscanf(line, "w%s", filename);
         int assigned_dimensions = sscanf(line, "%d %d", &row, &col);
