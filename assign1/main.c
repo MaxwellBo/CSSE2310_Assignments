@@ -255,22 +255,32 @@ int main(int argc, char **argv) {
         State *state = new_state();
         Board *board = new_board(height, width);  
 
-        // can terminate the program
-        start_game(board, state, p1type, p2type);
+        int row;
+        int col;
 
-        generate_move(&state->row_for_O, 
-                &state->col_for_O, 
+        generate_move(&col,
+                &row, 
                 get_move_number_for(state, 'O'), 
                 board->width, 
                 board->height, 
                 'O');
+        
+        set_col_for(state, 'O', col);
+        set_row_for(state, 'O', row);
 
-        generate_move(&state->row_for_X ,
-                &state->col_for_X, 
+        generate_move(&col,
+                &row, 
                 get_move_number_for(state, 'X'), 
                 board->width, 
                 board->height, 
                 'X');
+
+        set_col_for(state, 'X', col);
+        set_row_for(state, 'X', row);
+
+        // can terminate the program
+        start_game(board, state, p1type, p2type);
+
 
     } else {
         State *state = read_state(argv[3]);
@@ -280,5 +290,4 @@ int main(int argc, char **argv) {
         start_game(board, state, p1type, p2type);
     } 
 }
-
 
