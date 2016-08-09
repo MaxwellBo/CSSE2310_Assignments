@@ -258,6 +258,20 @@ int main(int argc, char **argv) {
         // can terminate the program
         start_game(board, state, p1type, p2type);
 
+        generate_move(&state->row_for_O, 
+                &state->col_for_O, 
+                get_move_number_for(state, 'O'), 
+                board->width, 
+                board->height, 
+                'O');
+
+        generate_move(&state->row_for_X ,
+                &state->col_for_X, 
+                get_move_number_for(state, 'X'), 
+                board->width, 
+                board->height, 
+                'X');
+
     } else {
         State *state = read_state(argv[3]);
         Board *board = read_board(argv[3]);
