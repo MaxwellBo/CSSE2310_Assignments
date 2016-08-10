@@ -31,6 +31,12 @@ State *read_state(char *filename) {
     State *staged = new_state(); 
 
     FILE *file = fopen(filename, "r");
+
+    if (file == NULL) {
+        fprintf(stderr, "%s\n", "Unable to open file");
+        // TODO: Return null instead of aborting here
+        exit(4);
+    }
     char *data = read_line(file); // mallocs
 
     sscanf(data, "%*d %*d %d %d %d %d %d %d %d", 

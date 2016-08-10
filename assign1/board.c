@@ -42,6 +42,12 @@ Board *read_board(char *filename) {
     int width;
 
     FILE *file = fopen(filename, "r");
+
+    if (file == NULL) {
+        fprintf(stderr, "%s\n", "Unable to open file");
+        exit(4);
+    }
+
     char *data = read_line(file); // mallocs
     sscanf(data, "%d %d", &height, &width);
     free(data);

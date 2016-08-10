@@ -293,11 +293,14 @@ int main(int argc, char **argv) {
         set_row_for(state, 'X', row);
         set_col_for(state, 'X', col);
 
-        // can terminate the program
+        // Can perform IO
+        // Can terminate program
         start_game(board, state, p1type, p2type);
 
 
     } else {
+        // Can perform IO
+        // Can terminate program on invalid reads
         State *state = read_state(argv[3]);
         Board *board = read_board(argv[3]);
 
