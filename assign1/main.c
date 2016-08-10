@@ -190,38 +190,38 @@ void start_game(Board *board, State *state, int p1type, int p2type) {
 }
 
 
-void debug(void) {
-    printf("%s\n", "DEBUG ROUTINE");
-
-    State *state = read_state("test.txt");
-    Board *board = read_board("test.txt");
-
-    print_board(board);
-
-    write_dimensions(board, "write.txt");
-    write_state(state, "write.txt");
-    write_board(board, "write.txt");
-
-    state = read_state("write.txt");
-    board = read_board("write.txt");
-
-    print_board(board);
-
-    free_state(state);
-    free_board(board);
-
-}
+/* void debug(void) { */
+/*     printf("%s\n", "DEBUG ROUTINE"); */
+/*  */
+/*     State *state = read_state("test.txt"); */
+/*     Board *board = read_board("test.txt"); */
+/*  */
+/*     print_board(board); */
+/*  */
+/*     write_dimensions(board, "write.txt"); */
+/*     write_state(state, "write.txt"); */
+/*     write_board(board, "write.txt"); */
+/*  */
+/*     state = read_state("write.txt"); */
+/*     board = read_board("write.txt"); */
+/*  */
+/*     print_board(board); */
+/*  */
+/*     free_state(state); */
+/*     free_board(board); */
+/*  */
+/* } */
 
 int main(int argc, char **argv) {
 
     int p1type;
     int p2type;
 
-    // TODO: REMOVE BEFORE HANDING IN
-    if (argc == 1) {
-        debug();
-        return 0;
-    }
+    /* // TODO: REMOVE BEFORE HANDING IN */
+    /* if (argc == 1) { */
+    /*     debug(); */
+    /*     return 0; */
+    /* } */
 
     if (!(argc == 3 || argc == 4 || argc == 5)) {
         fprintf(stderr, "%s\n", 
