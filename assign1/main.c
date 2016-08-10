@@ -10,7 +10,7 @@
 #define HUMAN 0
 #define COMPUTER 1
 
-void generate_move(int *x, int *y, int move_count, 
+void generate_move(int *row, int *col, int move_count, 
         int width, int height, char pebble) {
 
     int pebble_index;
@@ -55,33 +55,49 @@ void generate_move(int *x, int *y, int move_count,
         }
     }
 
-    *x = r % G_h;
-    *y = c % G_w;
+    *row = r % G_h;
+    *col = c % G_w;
 }
 
 int prompt_computer(Board *board, State *state, char pebble) {
+    
+    int row = get_row_for(state, pebble);
+    int col = get_col_for(state, pebble);
     int failed_moves = 0;
 
     while (1) {
-        int row;
-        int col;
 
-        generate_move(&row, 
+        int status = set_node(board, col, row, pebble);
+
+        if (status == STATUS_INVALID) {
+            failed_moves++;
+
+            generate_move(&row, 
                 &col, 
                 get_move_number_for(state, pebble) + failed_moves, 
                 board->width, 
                 board->height, 
                 pebble);
 
-        int status = set_node(board, col, row, pebble);
-
-        if (status == STATUS_INVALID) {
-            failed_moves++;
             continue;
         } else {
             printf("Player %c: %d %d\n", pebble, row, col);
+            incr_move_number_for(state, pebble);
+
+            generate_move(&row, 
+                &col, 
+                get_move_number_for(state, pebble), 
+                board->width, 
+                board->height, 
+                pebble);
+            
+            set_row_for(state, pebble, row);
+            set_col_for(state, pebble, col);
+
             return status;
         }
+
+
     }
 }
 
@@ -116,7 +132,6 @@ int prompt_human(Board *board, State *state, char pebble) {
         if (status == STATUS_INVALID) {
             continue; // Reprompt if invalid movement
         } else {
-            incr_move_number_for(state, pebble);
             return status;
         }
     }
@@ -258,25 +273,25 @@ int main(int argc, char **argv) {
         int row;
         int col;
 
-        generate_move(&col,
-                &row, 
+        generate_move(&row,
+                &col, 
                 get_move_number_for(state, 'O'), 
                 board->width, 
                 board->height, 
                 'O');
         
-        set_col_for(state, 'O', col);
         set_row_for(state, 'O', row);
+        set_col_for(state, 'O', col);
 
-        generate_move(&col,
-                &row, 
+        generate_move(&row,
+                &col, 
                 get_move_number_for(state, 'X'), 
                 board->width, 
                 board->height, 
                 'X');
 
-        set_col_for(state, 'X', col);
         set_row_for(state, 'X', row);
+        set_col_for(state, 'X', col);
 
         // can terminate the program
         start_game(board, state, p1type, p2type);

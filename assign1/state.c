@@ -85,6 +85,23 @@ void incr_move_number_for(State *self, char pebble) {
     }
 }
 
+int get_row_for(State *self, char pebble) {
+    if (pebble == 'O') {
+        return self->row_for_O;
+    } else {
+        return self->row_for_X;
+    }
+}
+
+int get_col_for(State *self, char pebble) {
+    if (pebble == 'O') {
+        return self->col_for_O;
+    } else {
+        return self->col_for_X;
+    }
+}
+
+
 void set_row_for(State *self, char pebble, int x) {
     if (pebble == 'O') {
         self->row_for_O = x;
