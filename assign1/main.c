@@ -223,7 +223,7 @@ int main(int argc, char **argv) {
     /*     return 0; */
     /* } */
 
-    if (!(argc == 3 || argc == 4 || argc == 5)) {
+    if (!(argc == 4 || argc == 5)) {
         fprintf(stderr, "%s\n", 
             "Usage: nogo p1type p2type [height width | filename]");
         exit(1);

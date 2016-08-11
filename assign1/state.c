@@ -34,7 +34,6 @@ State *read_state(char *filename) {
 
     if (file == NULL) {
         fprintf(stderr, "%s\n", "Unable to open file");
-        // TODO: Return null instead of aborting here
         exit(4);
     }
     char *data = read_line(file); // mallocs
