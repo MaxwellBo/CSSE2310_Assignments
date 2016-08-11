@@ -59,7 +59,7 @@ Board *read_board(char *filename) {
         char *row = read_line(file);
 
         for (int x = 0; x < staged->width; x++) {
-            if (row[x] == '\0') {
+            if (row[x] != '.' || row[x] != 'O' || row[x] != 'X') {
                 fprintf(stderr, "%s\n", "Incorrect file contents");
                 exit(5);
             }
