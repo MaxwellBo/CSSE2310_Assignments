@@ -59,6 +59,11 @@ Board *read_board(char *filename) {
         char *row = read_line(file);
 
         for (int x = 0; x < staged->width; x++) {
+            if (row[x] == '\0') {
+                fprintf(stderr, "%s\n", "Incorrect file contents");
+                exit(5);
+            }
+
             set_node(staged, x, y, row[x]);
         }
 
