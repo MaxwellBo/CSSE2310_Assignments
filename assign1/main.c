@@ -108,6 +108,13 @@ int prompt_human(Board *board, State *state, char pebble) {
 
         char *line = read_line(stdin);
 
+        if (line[0] == '\0') {
+            fprintf(stderr, "%s\n", "End of input from user");
+            free_board(board);
+            free_state(state);
+            exit(6);
+        }
+
         char *filename = malloc(sizeof(char) * MAX_LENGTH);
         int row;
         int col;
@@ -149,16 +156,16 @@ void start_game(Board *board, State *state, int p1type, int p2type) {
         &prompt_computer };
    
     int current_player;
-    int board_status;
+    int status;
 
     while(1) {
         current_player = !(state->next_player);
 
         print_board(board);
 
-        board_status = (*prompts[p1type])(board, state, first_player);
+        status = (*prompts[p1type])(board, state, first_player);
         
-        if (board_status == STATUS_VICTORY) {
+        if (status == STATUS_VICTORY) {
             print_board(board);
             printf("Player %c wins\n", first_player);
 
@@ -173,9 +180,9 @@ void start_game(Board *board, State *state, int p1type, int p2type) {
         
         print_board(board);
 
-        board_status = (*prompts[p2type])(board, state, second_player);
+        status = (*prompts[p2type])(board, state, second_player);
 
-        if (board_status == STATUS_VICTORY) {
+        if (status == STATUS_VICTORY) {
             print_board(board);
             printf("Player %c wins\n", second_player);
 
