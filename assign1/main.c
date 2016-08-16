@@ -147,25 +147,28 @@ int prompt_human(Board *board, State *state, char pebble) {
 
 void start_game(Board *board, State *state, int p1type, int p2type) {
    
-
+    
     // Where HUMAN is 0, where COMPUTER is 1
     // Both of these functions have side effects on IO and state
-    int (*prompts[2])(Board *, State *, char) = { &prompt_human, 
-        &prompt_computer };
+    int (*prompts[2])(Board *, State *, char) = { p1type ? &prompt_computer : &prompt_human,
+    p2type ? &prompt_computer : &prompt_human };
 
     char players[] = { 'O', 'X' };
-   
+
     int status;
+    int index;
 
     while(1) {
 
         print_board(board);
 
-        status = (*prompts[p1type])(board, state, players[state->next_player]);
+        index = state->next_player;
+
+        status = (*prompts[index])(board, state, players[index]);
         
         if (status == STATUS_VICTORY) {
             print_board(board);
-            printf("Player %c wins\n", players[state->next_player]);
+            printf("Player %c wins\n", players[index]);
 
             free_state(state);
             free_board(board);
@@ -174,33 +177,7 @@ void start_game(Board *board, State *state, int p1type, int p2type) {
         }
         else if (status == STATUS_LOSS) {
             print_board(board);
-            printf("Player %c wins\n", players[!state->next_player]);
-
-            free_state(state);
-            free_board(board);
-
-            exit(0);
-
-        }
-
-        state->next_player = !state->next_player;
-        
-        print_board(board);
-
-        status = (*prompts[p2type])(board, state, players[state->next_player]);
-
-        if (status == STATUS_VICTORY) {
-            print_board(board);
-            printf("Player %c wins\n", players[state->next_player]);
-
-            free_state(state);
-            free_board(board);
-
-            exit(0);
-        }
-        else if (status == STATUS_LOSS) {
-            print_board(board);
-            printf("Player %c wins\n", players[!state->next_player]);
+            printf("Player %c wins\n", players[!index]);
 
             free_state(state);
             free_board(board);
