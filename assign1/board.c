@@ -16,6 +16,14 @@ typedef struct Board {
 
 int set_node(Board *, int, int, char);
 
+bool areValidDimensions(int height, int width) {
+
+    bool heightOK = (4 <= height && height <= 1000);
+    bool widthOK = (4 <= width && width <= 1000);
+    
+    return heightOK && widthOK;
+}
+
 Board *new_board(int height, int width) {
 
     Board *self = malloc(sizeof(Board));
@@ -51,6 +59,11 @@ Board *read_board(char *filename) {
     char *data = read_line(file); // mallocs
     sscanf(data, "%d %d", &height, &width);
     free(data);
+
+    if (!areValidDimensions(height, width)) {
+        fprintf(stderr, "%s\n", "Incorrect file contents");
+        exit(5);
+    } 
 
     Board *staged = new_board(height, width);
 

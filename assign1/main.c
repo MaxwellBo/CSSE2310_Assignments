@@ -260,14 +260,8 @@ int main(int argc, char **argv) {
         int width;
 
         // atoi returns 0 if conversion fails
-        if (4 <= atoi(argv[3]) && atoi(argv[3]) <= 1000) {
+        if (areValidDimensions(atoi(argv[3]), atoi(argv[4]))) {
             height = atoi(argv[3]);
-        } else {
-            fprintf(stderr, "%s\n", "Invalid board dimension");
-            exit(3);
-        }
-
-        if (4 <= atoi(argv[4]) && atoi(argv[4]) <= 1000) {
             width = atoi(argv[4]);
         } else {
             fprintf(stderr, "%s\n", "Invalid board dimension");
