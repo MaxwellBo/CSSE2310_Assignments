@@ -147,27 +147,25 @@ int prompt_human(Board *board, State *state, char pebble) {
 
 void start_game(Board *board, State *state, int p1type, int p2type) {
    
-    char second_player = state->next_player ? 'O' : 'X';
-    char first_player = state->next_player ? 'X' : 'O';
 
     // Where HUMAN is 0, where COMPUTER is 1
     // Both of these functions have side effects on IO and state
     int (*prompts[2])(Board *, State *, char) = { &prompt_human, 
         &prompt_computer };
+
+    char players[] = { 'O', 'X' };
    
-    int current_player;
     int status;
 
     while(1) {
-        current_player = !(state->next_player);
 
         print_board(board);
 
-        status = (*prompts[p1type])(board, state, first_player);
+        status = (*prompts[p1type])(board, state, players[state->next_player]);
         
         if (status == STATUS_VICTORY) {
             print_board(board);
-            printf("Player %c wins\n", first_player);
+            printf("Player %c wins\n", players[state->next_player]);
 
             free_state(state);
             free_board(board);
@@ -176,7 +174,7 @@ void start_game(Board *board, State *state, int p1type, int p2type) {
         }
         else if (status == STATUS_LOSS) {
             print_board(board);
-            printf("Player %c wins\n", second_player);
+            printf("Player %c wins\n", players[!state->next_player]);
 
             free_state(state);
             free_board(board);
@@ -186,15 +184,14 @@ void start_game(Board *board, State *state, int p1type, int p2type) {
         }
 
         state->next_player = !state->next_player;
-        current_player = !(state->next_player);
         
         print_board(board);
 
-        status = (*prompts[p2type])(board, state, second_player);
+        status = (*prompts[p2type])(board, state, players[state->next_player]);
 
         if (status == STATUS_VICTORY) {
             print_board(board);
-            printf("Player %c wins\n", second_player);
+            printf("Player %c wins\n", players[state->next_player]);
 
             free_state(state);
             free_board(board);
@@ -203,7 +200,7 @@ void start_game(Board *board, State *state, int p1type, int p2type) {
         }
         else if (status == STATUS_LOSS) {
             print_board(board);
-            printf("Player %c wins\n", first_player);
+            printf("Player %c wins\n", players[!state->next_player]);
 
             free_state(state);
             free_board(board);
