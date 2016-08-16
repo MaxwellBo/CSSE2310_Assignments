@@ -1,7 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-// TODO: Change this function name
 char *read_line(FILE *file) {
     char *result = malloc(sizeof(char));
     int position = 0;
@@ -19,5 +18,14 @@ char *read_line(FILE *file) {
             position++;
         }
         result = realloc(result, position + 1);
+    }
+}
+
+char invert_pebble(char pebble) {
+    if (pebble == 'O') {
+        return 'X';
+    }
+    else {
+        return 'O';
     }
 }

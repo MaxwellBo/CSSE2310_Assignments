@@ -7,6 +7,7 @@
 #define STATUS_SUCCESS 0
 #define STATUS_INVALID 1
 #define STATUS_VICTORY 2
+#define STATUS_LOSS 3
 
 typedef struct Board {
     int height;
@@ -181,6 +182,7 @@ int set_node(Board *self, int x, int y, char pebble) {
     Node *below = get_node(self, x, y + 1);
     Node *to_left = get_node(self, x - 1, y);
     Node *to_right = get_node(self, x + 1, y);
+    Node *on = get_node(self, x, y);
 
     // Here we're just binding the nodes bidirectionally to any
     // neighbouring nodes
@@ -204,16 +206,27 @@ int set_node(Board *self, int x, int y, char pebble) {
         to_right->left = staged;
     }
 
-    Node *neighbours[] = { above, below, to_left, to_right };
+    Node *victory_nodes[] = { above, below, to_left, to_right };
 
     // Check if any enemy strings now have no liberties
     for (int i = 0; i < 4; i++) {
-        if (neighbours[i] != NULL
-            && neighbours[i]->contents != '.'
-            && neighbours[i]->contents != pebble
-            && !has_liberties(neighbours[i])) {
+        if (victory_nodes[i] != NULL
+            && victory_nodes[i]->contents != '.'
+            && victory_nodes[i]->contents != pebble
+            && !has_liberties(victory_nodes[i])) {
                 return STATUS_VICTORY;
-            }
+        }
+    }
+
+    Node *loss_nodes[] = { above, below, to_left, to_right, on };
+
+    for (int i = 0; i < 5; i++) {
+        if (loss_nodes[i] != NULL
+            && loss_nodes[i]->contents != '.'
+            && loss_nodes[i]->contents != invert_pebble(pebble)
+            && !has_liberties(loss_nodes[i])) {
+            return STATUS_LOSS;
+        }
     }
 
     return STATUS_SUCCESS;

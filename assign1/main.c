@@ -174,6 +174,16 @@ void start_game(Board *board, State *state, int p1type, int p2type) {
 
             exit(0);
         }
+        else if (status == STATUS_LOSS) {
+            print_board(board);
+            printf("Player %c wins\n", second_player);
+
+            free_state(state);
+            free_board(board);
+
+            exit(0);
+
+        }
 
         state->next_player = !state->next_player;
         current_player = !(state->next_player);
@@ -190,6 +200,16 @@ void start_game(Board *board, State *state, int p1type, int p2type) {
             free_board(board);
 
             exit(0);
+        }
+        else if (status == STATUS_LOSS) {
+            print_board(board);
+            printf("Player %c wins\n", first_player);
+
+            free_state(state);
+            free_board(board);
+
+            exit(0);
+
         }
 
         state->next_player = !state->next_player;
