@@ -166,24 +166,21 @@ void start_game(Board *board, State *state, int p1type, int p2type) {
 
         status = (*prompts[index])(board, state, players[index]);
         
-        if (status == STATUS_VICTORY) {
+        if (status == STATUS_VICTORY || status == STATUS_LOSS) {
             print_board(board);
-            printf("Player %c wins\n", players[index]);
+
+            if (status == STATUS_VICTORY) {
+                printf("Player %c wins\n", players[index]);
+            }
+            else {
+                // Committed sudoku
+                printf("Player %c wins\n", players[!index]);
+            }
 
             free_state(state);
             free_board(board);
 
             exit(0);
-        }
-        else if (status == STATUS_LOSS) {
-            print_board(board);
-            printf("Player %c wins\n", players[!index]);
-
-            free_state(state);
-            free_board(board);
-
-            exit(0);
-
         }
 
         state->next_player = !state->next_player;
