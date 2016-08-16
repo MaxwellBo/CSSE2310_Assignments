@@ -51,6 +51,11 @@ bool has_liberties(Node *self) {
             return true;
         }
 
+        if (neighbours[i]->seen == true) {
+            continue;
+        }
+
+
         // This string has liberties if any pebbles in the string have
         // liberties
         if (neighbours[i]->contents == self->contents
