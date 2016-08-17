@@ -182,7 +182,6 @@ int set_node(Board *self, int x, int y, char pebble) {
     Node *below = get_node(self, x, y + 1);
     Node *to_left = get_node(self, x - 1, y);
     Node *to_right = get_node(self, x + 1, y);
-    Node *on = get_node(self, x, y);
 
     // Here we're just binding the nodes bidirectionally to any
     // neighbouring nodes
@@ -218,7 +217,7 @@ int set_node(Board *self, int x, int y, char pebble) {
         }
     }
 
-    Node *loss_nodes[] = { above, below, to_left, to_right, on };
+    Node *loss_nodes[] = { above, below, to_left, to_right, staged };
 
     // Check if the player committed sudoku
     for (int i = 0; i < 5; i++) {
