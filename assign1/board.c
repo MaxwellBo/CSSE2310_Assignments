@@ -220,6 +220,7 @@ int set_node(Board *self, int x, int y, char pebble) {
 
     Node *loss_nodes[] = { above, below, to_left, to_right, on };
 
+    // Check if the player committed sudoku
     for (int i = 0; i < 5; i++) {
         if (loss_nodes[i] != NULL
             && loss_nodes[i]->contents != '.'

@@ -51,6 +51,7 @@ bool has_liberties(Node *self) {
             return true;
         }
 
+        // Seen nodes are still processing or something
         if (neighbours[i]->seen == true) {
             continue;
         }
