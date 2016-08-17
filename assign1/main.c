@@ -115,12 +115,12 @@ int prompt_human(Board *board, State *state, char pebble) {
             exit(6);
         }
 
-        char *filename = malloc(sizeof(char) * MAX_LENGTH);
+        char *filename = malloc(sizeof(char) * MAX_LENGTH + 1);
         int row;
         int col;
 
-        int assigned_filename = sscanf(line, "w%s", filename);
-        int assigned_dimensions = sscanf(line, "%d %d", &row, &col);
+        int assigned_filename = sscanf(line, "w%70s", filename);
+        int assigned_dimensions = sscanf(line, "%4d %4d", &row, &col);
 
         if (assigned_filename) {
             write_dimensions(board, filename);
