@@ -251,6 +251,7 @@ int main(int argc, char **argv) {
         int width;
 
         // atoi returns 0 if conversion fails
+        // TODO: Add isDigit check for the whole string
         if (areValidDimensions(atoi(argv[3]), atoi(argv[4]))) {
             height = atoi(argv[3]);
             width = atoi(argv[4]);
