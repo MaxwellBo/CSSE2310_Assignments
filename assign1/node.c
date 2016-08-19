@@ -12,6 +12,10 @@ typedef struct Node {
 
 /*
  * Creates a node with the specified contents
+ *
+ * - Allocates memory
+ *
+ * Returns a pointer to the newly allocated node
  */
 Node *new_node(char contents) {
     Node *self = malloc(sizeof(Node));

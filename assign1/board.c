@@ -29,6 +29,12 @@ bool are_valid_dimensions(int height, int width) {
     return heightOK && widthOK;
 }
 
+/* Creates a board with the specified dimensions.
+ *
+ * - Allocates memory
+ *
+ * Returns a pointer to the newly allocated board.
+ */ 
 Board *new_board(int height, int width) {
 
     Board *self = malloc(sizeof(Board));
@@ -49,6 +55,16 @@ Board *new_board(int height, int width) {
     return self;
 }
 
+/*
+ * Reads a board from a file with the matching filename
+ *
+ * - Performs IO to stderr and the filesystem
+ * - Aborts the program if problems with the filesytem or file are
+ *   encountered
+ * - Allocates memory
+ *
+ * Returns a pointer to the newly allocated board.
+ */
 Board *read_board(char *filename) {
 
     int height;
@@ -93,6 +109,12 @@ Board *read_board(char *filename) {
     return staged;
 }
 
+/*
+ * Writes the height and width to a file with the matching filename.
+ * The file is created if it does not exist, and is cleared if it exists.
+ *
+ * - Performs IO to the filesystem
+ */
 void write_dimensions(Board *self, char *filename) {
     FILE *file = fopen(filename, "w");
 
@@ -101,6 +123,12 @@ void write_dimensions(Board *self, char *filename) {
     fclose(file);
 }
 
+/*
+ * Writes the board (the grid) to a file with the matching filename, in
+ * append mode.
+ *
+ * - Performs IO to the filesystem
+ */
 void write_board(Board *self, char *filename) {
     FILE *file = fopen(filename, "a");
 
@@ -116,6 +144,9 @@ void write_board(Board *self, char *filename) {
     fclose(file);
 }
 
+/*
+ * Frees a board, and the nodes contained within its datastructure
+ */
 void free_board(Board *self) {
     for (int i = 0; i < self->height; i++) {
         for (int j = 0; j < self->width; j++) {
@@ -130,6 +161,11 @@ void free_board(Board *self) {
     free(self);
 }
 
+/*
+ * Prints a pretty representation of the board to stdout
+ *
+ * - Performs IO to stdout
+ */
 void print_board(Board *self) {
 
     printf("/");
@@ -155,6 +191,14 @@ void print_board(Board *self) {
     printf("/\n");
 }
 
+/*
+ * A getter for nodes contained within the board. The board is 0 indexed
+ * from the top left hand corner. NOTE: This argument order is the opposite
+ * of the (row, column) ordering.
+ *
+ * Returns a pointer to the requested node, or a NULL pointer if the requested
+ * coordinate is OOB
+ */
 Node *get_node(Board *self, int x, int y) {
     if (!(0 <= x && x < self->width)) {
         return NULL;
