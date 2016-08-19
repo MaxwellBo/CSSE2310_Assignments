@@ -233,6 +233,19 @@ void start_game(Board *board, State *state, int p1type, int p2type) {
 }
 
 /*
+ * Loads a game from file
+ */
+void start_game_from_file(char *filename, int p1type, int p2type) {
+    // Can perform IO
+    // Can terminate program on invalid reads
+    State *state = read_state(filename);
+    Board *board = read_board(filename);
+
+    // Can terminate the program
+    start_game(board, state, p1type, p2type);
+}
+
+/*
  * Author: 43926871
  *
  * - Performs IO to stdout and stderr
@@ -308,19 +321,10 @@ int main(int argc, char **argv) {
         set_row_for(state, 'X', row);
         set_col_for(state, 'X', col);
 
-        // Can perform IO
-        // Can terminate program
         start_game(board, state, p1type, p2type);
-
 
     } else {
-        // Can perform IO
-        // Can terminate program on invalid reads
-        State *state = read_state(argv[3]);
-        Board *board = read_board(argv[3]);
-
-        // can terminate the program
-        start_game(board, state, p1type, p2type);
+        start_game_from_file(argv[3], p1type, p2type);
     } 
 }
 
