@@ -80,11 +80,13 @@ State *read_state(char *filename) {
  * Writes the state to a file with the matching filename, in append mode.
  *
  * - Performs IO the filesystem
+ *
+ * Returns the number of characters written
  */
-void write_state(State *self, char *filename) {
+int write_state(State *self, char *filename) {
     FILE *file = fopen(filename, "a");
 
-    fprintf(file, "%d %d %d %d %d %d %d\n", 
+    int written = fprintf(file, "%d %d %d %d %d %d %d\n", 
             self->nextPlayer, 
             self->rowForO, 
             self->colForO,
@@ -95,6 +97,8 @@ void write_state(State *self, char *filename) {
             );
 
     fclose(file);
+
+    return written;
 }
 
 /*

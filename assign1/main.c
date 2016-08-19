@@ -158,9 +158,15 @@ int prompt_human(Board *board, State *state, char pebble) {
         int assignedDimensions = sscanf(line, "%4d %4d", &row, &col);
 
         if (assignedFilename) {
-            write_dimensions(board, filename);
-            write_state(state, filename);
-            write_board(board, filename);
+            int dimCharsWritten = write_dimensions(board, filename);
+            int stateCharsWritten = write_state(state, filename);
+            int boardCharsWritten = write_board(board, filename);
+
+            if (dimCharsWritten < 0 || stateCharsWritten < 0 
+                    || boardCharsWritten < 0) {
+                // Unable to save game - reprompt;
+                continue;
+            }
         }
         
         free(filename);

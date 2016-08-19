@@ -114,13 +114,17 @@ Board *read_board(char *filename) {
  * The file is created if it does not exist, and is cleared if it exists.
  *
  * - Performs IO to the filesystem
+ *
+ * Returns the number of characters written
  */
-void write_dimensions(Board *self, char *filename) {
+int write_dimensions(Board *self, char *filename) {
     FILE *file = fopen(filename, "w");
 
-    fprintf(file, "%d %d ", self->height, self->width);
+    int written = fprintf(file, "%d %d ", self->height, self->width);
 
     fclose(file);
+
+    return written;
 }
 
 /*
@@ -128,20 +132,25 @@ void write_dimensions(Board *self, char *filename) {
  * append mode.
  *
  * - Performs IO to the filesystem
+ *
+ * Returns the number of characters written
  */
-void write_board(Board *self, char *filename) {
+int write_board(Board *self, char *filename) {
     FILE *file = fopen(filename, "a");
 
+    int written = 0;
     for (int i = 0; i < self->height; i++) {
 
         for (int j = 0; j < self->width; j++) {
-            fprintf(file, "%c", self->board[i][j]->contents);
+            written += fprintf(file, "%c", self->board[i][j]->contents);
         }
 
-        fprintf(file, "\n");
+        written += fprintf(file, "\n");
     }
 
     fclose(file);
+
+    return written;
 }
 
 /*
@@ -273,6 +282,7 @@ int set_node(Board *self, int x, int y, char pebble) {
     Node *toLeft = get_node(self, x - 1, y);
     Node *toRight = get_node(self, x + 1, y);
 
+    // Make sure we can actually explore the graph
     bind_neighbours(above, below, toLeft, toRight, staged);
     Node *neighbours[] = {above, below, toLeft, toRight, staged};
 
