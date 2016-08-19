@@ -282,7 +282,6 @@ void start_new_game(int height, int width, int p1type, int p2type) {
  * - Can terminate the program
  */
 int main(int argc, char **argv) {
-
     int p1type;
     int p2type;
 
@@ -315,10 +314,9 @@ int main(int argc, char **argv) {
         int height;
         int width;
 
-        // atoi returns 0 if conversion fails
         // TODO: Add isDigit check for the whole string
         if (are_valid_dimensions(atoi(argv[3]), atoi(argv[4]))) {
-            height = atoi(argv[3]);
+            height = atoi(argv[3]); // atoi returns 0 if conversion fails
             width = atoi(argv[4]);
         } else {
             fprintf(stderr, "%s\n", "Invalid board dimension");
