@@ -245,6 +245,36 @@ void start_game_from_file(char *filename, int p1type, int p2type) {
     start_game(board, state, p1type, p2type);
 }
 
+void start_new_game(int height, int width, int p1type, int p2type) {
+    State *state = new_state();
+    Board *board = new_board(height, width);
+
+    int row;
+    int col;
+
+    generate_move(&row,
+            &col, 
+            get_move_number_for(state, 'O'), 
+            board->width, 
+            board->height, 
+            'O');
+    
+    set_row_for(state, 'O', row);
+    set_col_for(state, 'O', col);
+
+    generate_move(&row,
+            &col, 
+            get_move_number_for(state, 'X'), 
+            board->width, 
+            board->height, 
+            'X');
+
+    set_row_for(state, 'X', row);
+    set_col_for(state, 'X', col);
+
+    start_game(board, state, p1type, p2type);
+}
+
 /*
  * Author: 43926871
  *
@@ -295,33 +325,7 @@ int main(int argc, char **argv) {
             exit(3);
         }
 
-        State *state = new_state();
-        Board *board = new_board(height, width);
-
-        int row;
-        int col;
-
-        generate_move(&row,
-                &col, 
-                get_move_number_for(state, 'O'), 
-                board->width, 
-                board->height, 
-                'O');
-        
-        set_row_for(state, 'O', row);
-        set_col_for(state, 'O', col);
-
-        generate_move(&row,
-                &col, 
-                get_move_number_for(state, 'X'), 
-                board->width, 
-                board->height, 
-                'X');
-
-        set_row_for(state, 'X', row);
-        set_col_for(state, 'X', col);
-
-        start_game(board, state, p1type, p2type);
+        start_new_game(height, width, p1type, p2type);
 
     } else {
         start_game_from_file(argv[3], p1type, p2type);
