@@ -10,6 +10,9 @@ typedef struct Node {
     struct Node *right;
 } Node;
 
+/*
+ * Creates a node with the specified contents
+ */
 Node *new_node(char contents) {
     Node *self = malloc(sizeof(Node));
     
@@ -23,10 +26,18 @@ Node *new_node(char contents) {
     return self;
 }
 
+/*
+ * Frees a node
+ */
 void free_node(Node *self) {
     free(self);
 }
 
+/*
+ * Takes a node (which is part of a parent string), checks whether
+ * that node has liberties, and if needed, checks whether any of the
+ * members of the rest of the string have liberties
+ */
 bool has_liberties(Node *self) {
     Node *neighbours[] = { self->up, self->down, self->left, self->right };
 

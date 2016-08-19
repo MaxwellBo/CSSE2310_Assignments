@@ -11,10 +11,11 @@
 #define COMPUTER 1
 
 /*
- * Given the number of the move that the move is being generated for
- * the dimensions of the board, and the color of the pebble,
- * mutate the row and column parameters for where the move is to be
- * placed
+ * Given the previous row and column of the last moved placed, the number of
+ * the move that the move is being generated for the dimensions of the board, 
+ * and the color of the pebble, the function will mutate the row and 
+ * column parameters for where the move is to be placed.
+ * 
  */
 void generate_move(int *row, int *col, int moveCount, 
         int width, int height, char pebble) {
@@ -110,8 +111,6 @@ int prompt_computer(Board *board, State *state, char pebble) {
 
             return status;
         }
-
-
     }
 }
 
@@ -124,7 +123,6 @@ int prompt_computer(Board *board, State *state, char pebble) {
  * - Performs IO on stdout, stderr and the filesystem
  *
  * Returns that status of the board, indicating game completion.
- *
  */
 int prompt_human(Board *board, State *state, char pebble) {
     while (1) {
@@ -176,13 +174,15 @@ int prompt_human(Board *board, State *state, char pebble) {
  *
  * - Performs IO on stdout
  * - Can terminate the program
- *
  */
 void start_game(Board *board, State *state, int p1type, int p2type) {
     // Where HUMAN is 0, where COMPUTER is 1
     // Both of these functions have side effects on IO and state
-    int (*prompts[2])(Board *, State *, char) = { p1type ? &prompt_computer : &prompt_human,
-    p2type ? &prompt_computer : &prompt_human };
+    int (*prompts[2])(Board *, State *, char) = { 
+        p1type ? 
+            &prompt_computer : &prompt_human,
+        p2type ? 
+            &prompt_computer : &prompt_human };
 
     char players[] = { 'O', 'X' };
 
@@ -202,8 +202,7 @@ void start_game(Board *board, State *state, int p1type, int p2type) {
 
             if (status == STATUS_VICTORY) {
                 printf("Player %c wins\n", players[index]);
-            }
-            else {
+            } else {
                 // Committed sudoku
                 printf("Player %c wins\n", players[!index]);
             }
@@ -218,39 +217,13 @@ void start_game(Board *board, State *state, int p1type, int p2type) {
     }
 }
 
-
-/* void debug(void) { */
-/*     printf("%s\n", "DEBUG ROUTINE"); */
-/*  */
-/*     State *state = read_state("test.txt"); */
-/*     Board *board = read_board("test.txt"); */
-/*  */
-/*     print_board(board); */
-/*  */
-/*     write_dimensions(board, "write.txt"); */
-/*     write_state(state, "write.txt"); */
-/*     write_board(board, "write.txt"); */
-/*  */
-/*     state = read_state("write.txt"); */
-/*     board = read_board("write.txt"); */
-/*  */
-/*     print_board(board); */
-/*  */
-/*     free_state(state); */
-/*     free_board(board); */
-/*  */
-/* } */
-
+/*
+ * Author: 43926871
+ */
 int main(int argc, char **argv) {
 
     int p1type;
     int p2type;
-
-    /* // TODO: REMOVE BEFORE HANDING IN */
-    /* if (argc == 1) { */
-    /*     debug(); */
-    /*     return 0; */
-    /* } */
 
     if (!(argc == 4 || argc == 5)) {
         fprintf(stderr, "%s\n", 

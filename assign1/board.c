@@ -17,6 +17,10 @@ typedef struct Board {
 
 int set_node(Board *, int, int, char);
 
+/*
+ * Given a height and width, validates whether they lie between the limits of 
+ * the board dimensions.
+ */
 bool are_valid_dimensions(int height, int width) {
 
     bool heightOK = (4 <= height && height <= 1000);
