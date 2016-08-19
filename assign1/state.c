@@ -12,6 +12,12 @@ typedef struct State {
 } State;
 
 
+/* Creates a state and fills it with default values and sentinel values
+ * 
+ * - Allocates memory
+ *
+ *   Returns the pointer to the newly alocated state 
+ */
 State *new_state(void) {
 
     State *self = malloc(sizeof(State));
@@ -27,6 +33,16 @@ State *new_state(void) {
     return self;
 }
 
+/*
+ * Reads a state from a file with the matching filename
+ *
+ * - Performs IO to stederr and the filesystem
+ * - Aborts the program if probems with the filesystem or file are
+ *   encountered
+ * - Allocates memory
+ *
+ * Return a pointer to a newly allocated state.
+ */
 State *read_state(char *filename) {
     State *staged = new_state(); 
 
@@ -38,6 +54,7 @@ State *read_state(char *filename) {
     }
     char *data = read_line(file); // mallocs
 
+    // TODO: COUNT
     sscanf(data, "%*d %*d %d %d %d %d %d %d %d", 
             &staged->nextPlayer,
             &staged->rowForO,
@@ -50,10 +67,15 @@ State *read_state(char *filename) {
 
     free(data);
     fclose(file);
-
+ 
     return staged;
 }
 
+/*
+ * Wrties the state to a file with the matching filename, in append mode.
+ *
+ * - Performs IO the filesystem
+ */
 void write_state(State *self, char *filename) {
     FILE *file = fopen(filename, "a");
 
@@ -70,10 +92,18 @@ void write_state(State *self, char *filename) {
     fclose(file);
 }
 
+/*
+ * Frees a state
+ */
 void free_state(State *self) {
     free(self);
 }
 
+/*
+ * Getter for the move count of the player with the specified pebble
+ *
+ * Returns the movecount
+ */
 int get_move_number_for(State *self, char pebble) {
     if (pebble == 'O') {
         return self->moveNumberForO;
@@ -82,6 +112,9 @@ int get_move_number_for(State *self, char pebble) {
     }
 }
 
+/*
+ * Increments the move count of the player with the specified pebble
+ */
 void incr_move_number_for(State *self, char pebble) {
     if (pebble == 'O') {
         (self->moveNumberForO)++;
@@ -90,6 +123,11 @@ void incr_move_number_for(State *self, char pebble) {
     }
 }
 
+/*
+ * Gets the row of the pebble to be played next of the player with the specified pebble
+ *
+ * Returns the row number (0 indexed)
+ */
 int get_row_for(State *self, char pebble) {
     if (pebble == 'O') {
         return self->rowForO;
@@ -98,6 +136,11 @@ int get_row_for(State *self, char pebble) {
     }
 }
 
+/*
+ * Gets the column of the pebble to be played next of the player with the specified pebble
+ *
+ * Returns the column number (0 indexed)
+ */
 int get_col_for(State *self, char pebble) {
     if (pebble == 'O') {
         return self->colForO;
@@ -107,6 +150,9 @@ int get_col_for(State *self, char pebble) {
 }
 
 
+/*
+ * Sets the row of the pebble to be played next of the player with the specified pebble
+ */
 void set_row_for(State *self, char pebble, int x) {
     if (pebble == 'O') {
         self->rowForO = x;
@@ -115,6 +161,9 @@ void set_row_for(State *self, char pebble, int x) {
     }
 }
 
+/*
+ * Sets the column of the pebble to be played next of the player with the specified pebble
+ */
 void set_col_for(State *self, char pebble, int x) {
     if (pebble == 'O') {
         self->colForO = x;

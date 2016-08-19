@@ -219,6 +219,9 @@ void start_game(Board *board, State *state, int p1type, int p2type) {
 
 /*
  * Author: 43926871
+ *
+ * - Performs IO to stdout and stderr
+ * - Can terminate the program
  */
 int main(int argc, char **argv) {
 

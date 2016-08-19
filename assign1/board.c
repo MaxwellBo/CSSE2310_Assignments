@@ -211,6 +211,17 @@ Node *get_node(Board *self, int x, int y) {
     return self->board[y][x];
 }
 
+/*
+ * A setter for nodes contained within the board. The board is 0 indexed
+ * from the top left hand corner. NOTE: This argument order is the opposite
+ * of the (row, column) ordering.
+ *
+ * Takes a pebble and the coordinates where the pebble is to be placed.
+ *
+ * Returns an integer representing the status of the board after the 
+ * pebble is placed, indicating OOB, or invalid placement, or a victory
+ * condition
+ * */
 int set_node(Board *self, int x, int y, char pebble) {
     Node *staged = get_node(self, x, y);
     
