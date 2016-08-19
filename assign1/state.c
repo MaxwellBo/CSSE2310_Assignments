@@ -55,7 +55,6 @@ State *read_state(char *filename) {
 
     char *data = read_line(file); // mallocs
 
-    // TODO: COUNT
     int assignedData = sscanf(data, "%*d %*d %d %d %d %d %d %d %d", 
                                 &staged->nextPlayer,
                                 &staged->rowForO,
@@ -130,7 +129,8 @@ void incr_move_number_for(State *self, char pebble) {
 }
 
 /*
- * Gets the row of the pebble to be played next of the player with the specified pebble
+ * Gets the row of the pebble to be played next of the player with the
+ * specified pebble
  *
  * Returns the row number (0 indexed)
  */
@@ -143,7 +143,8 @@ int get_row_for(State *self, char pebble) {
 }
 
 /*
- * Gets the column of the pebble to be played next of the player with the specified pebble
+ * Gets the column of the pebble to be played next of the player with the
+ * specified pebble
  *
  * Returns the column number (0 indexed)
  */
@@ -157,7 +158,8 @@ int get_col_for(State *self, char pebble) {
 
 
 /*
- * Sets the row of the pebble to be played next of the player with the specified pebble
+ * Sets the row of the pebble to be played next of the player with the 
+ * specified pebble
  */
 void set_row_for(State *self, char pebble, int x) {
     if (pebble == 'O') {
@@ -168,7 +170,8 @@ void set_row_for(State *self, char pebble, int x) {
 }
 
 /*
- * Sets the column of the pebble to be played next of the player with the specified pebble
+ * Sets the column of the pebble to be played next of the player with 
+ * the specified pebble
  */
 void set_col_for(State *self, char pebble, int x) {
     if (pebble == 'O') {
