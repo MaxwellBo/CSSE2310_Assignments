@@ -10,6 +10,12 @@
 #define HUMAN 0
 #define COMPUTER 1
 
+/*
+ * Given the number of the move that the move is being generated for
+ * the dimensions of the board, and the color of the pebble,
+ * mutate the row and column parameters for where the move is to be
+ * placed
+ */
 void generate_move(int *row, int *col, int move_count, 
         int width, int height, char pebble) {
 
@@ -59,6 +65,16 @@ void generate_move(int *row, int *col, int move_count,
     *col = c % G_w;
 }
 
+/*
+ * Given a board and a game state and a pebble, ask the computer to make 
+ * a move. The computer will fetch a move from the save file, attempt to
+ * use it, and if failing that, generate more moves until a successful move
+ * made. The computer will store generated moves and increment the movecount.
+ *
+ * - Mutates board and game state.
+ *
+ * Returns that status of the board, indicating game completion
+ */
 int prompt_computer(Board *board, State *state, char pebble) {
     
     int row = get_row_for(state, pebble);
@@ -101,6 +117,17 @@ int prompt_computer(Board *board, State *state, char pebble) {
     }
 }
 
+/*
+ * Given a board and a game state and a pebble, ask the user to make 
+ * move. The chosen move will be attempted, and if it fails the
+ * player will be reprompted.
+ *
+ * - Mutates board and game state.
+ * - Performs IO on stdout, stderr and the filesystem
+ *
+ * Returns that status of the board, indicating game completion.
+ *
+ */
 int prompt_human(Board *board, State *state, char pebble) {
     while (1) {
 
