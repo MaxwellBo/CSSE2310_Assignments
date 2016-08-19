@@ -78,10 +78,10 @@ Board *read_board(char *filename) {
     }
 
     char *data = read_line(file); // mallocs
-    sscanf(data, "%d %d", &height, &width);
+    int assignedDimensions = sscanf(data, "%d %d", &height, &width);
     free(data);
 
-    if (!are_valid_dimensions(height, width)) {
+    if (!(assignedDimensions == 2 && are_valid_dimensions(height, width))) {
         fprintf(stderr, "%s\n", "Incorrect file contents");
         exit(5);
     } 

@@ -16,7 +16,7 @@ typedef struct State {
  * 
  * - Allocates memory
  *
- *   Returns the pointer to the newly alocated state 
+ * Returns the pointer to the newly alocated state 
  */
 State *new_state(void) {
 
@@ -56,15 +56,20 @@ State *read_state(char *filename) {
     char *data = read_line(file); // mallocs
 
     // TODO: COUNT
-    sscanf(data, "%*d %*d %d %d %d %d %d %d %d", 
-            &staged->nextPlayer,
-            &staged->rowForO,
-            &staged->colForO,
-            &staged->moveNumberForO,
-            &staged->rowForX,
-            &staged->colForX,
-            &staged->moveNumberForX
-          );
+    int assignedData = sscanf(data, "%*d %*d %d %d %d %d %d %d %d", 
+                                &staged->nextPlayer,
+                                &staged->rowForO,
+                                &staged->colForO,
+                                &staged->moveNumberForO,
+                                &staged->rowForX,
+                                &staged->colForX,
+                                &staged->moveNumberForX
+                              );
+
+    if (assignedData != 7) {
+        fprintf(stderr, "%s\n", "Incorrect file contents");
+        exit(5);
+    }
 
     free(data);
     fclose(file);
