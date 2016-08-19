@@ -78,16 +78,22 @@ void generate_move(int *row, int *col, int moveCount,
  */
 int prompt_computer(Board *board, State *state, char pebble) {
     
+    // Get the last row and column (for r and c in generate_move)
     int row = get_row_for(state, pebble);
     int col = get_col_for(state, pebble);
 
     while (1) {
-
+        // Attempt to place a pebble
         int status = set_node(board, col, row, pebble);
+
+        // And increment the movecount
+        // (it has to be incremented regardless)
         incr_move_number_for(state, pebble);
 
         if (status == STATUS_INVALID) {
 
+            // If it failed, generated a new move with the newly
+            // incremented movecount
             generate_move(&row, 
                 &col, 
                 get_move_number_for(state, pebble), 
@@ -97,8 +103,11 @@ int prompt_computer(Board *board, State *state, char pebble) {
 
             continue;
         } else {
+            // Success!
+            // Print the coordinates of the place pebble
             printf("Player %c: %d %d\n", pebble, row, col);
 
+            // and generate a move for the next turn
             generate_move(&row, 
                 &col, 
                 get_move_number_for(state, pebble), 
@@ -106,6 +115,7 @@ int prompt_computer(Board *board, State *state, char pebble) {
                 board->height, 
                 pebble);
             
+            // and store it
             set_row_for(state, pebble, row);
             set_col_for(state, pebble, col);
 
@@ -178,6 +188,9 @@ int prompt_human(Board *board, State *state, char pebble) {
 void start_game(Board *board, State *state, int p1type, int p2type) {
     // Where HUMAN is 0, where COMPUTER is 1
     // Both of these functions have side effects on IO and state
+
+    // Set up an array with the proper function pointers for the type of
+    // prompt
     int (*prompts[2])(Board *, State *, char) = { 
         p1type ? 
             &prompt_computer : &prompt_human,
@@ -190,13 +203,15 @@ void start_game(Board *board, State *state, int p1type, int p2type) {
     int index;
 
     while(1) {
-
         print_board(board);
 
         index = state->nextPlayer;
 
+        // Use the proper prompt type for the current player
+        // (and tell the prompt what player is actually playing)
         status = (*prompts[index])(board, state, players[index]);
         
+        // See if the last prompt actually did something
         if (status == STATUS_VICTORY || status == STATUS_SUDOKU) {
             print_board(board);
 
