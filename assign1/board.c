@@ -215,6 +215,33 @@ Node *get_node(Board *self, int x, int y) {
 }
 
 /*
+ * Takes a node and all of its neighbours, and bind the node bidirectionally
+ * to its neighbours, if they exist
+ */
+void bind_neighbours(Node *above, Node *below
+        , Node *toLeft, Node *toRight, Node *staged) {
+    if (above) { // AKA: Not a non-existent space
+        staged->up = above;
+        above->down = staged;
+    } 
+
+    if (below) {
+        staged->down = below;
+        below->up = staged;
+    }
+
+    if (toLeft) {
+        staged->left = toLeft;
+        toLeft->right = staged;
+    }
+
+    if (toRight) {
+        staged->right = toRight;
+        toRight->left = staged;
+    }
+}
+
+/*
  * A setter for nodes contained within the board. The board is 0 indexed
  * from the top left hand corner. NOTE: This argument order is the opposite
  * of the (row, column) ordering.
@@ -246,28 +273,7 @@ int set_node(Board *self, int x, int y, char pebble) {
     Node *toLeft = get_node(self, x - 1, y);
     Node *toRight = get_node(self, x + 1, y);
 
-    // Here we're just binding the nodes bidirectionally to any
-    // neighbouring nodes
-    if (above) { // AKA: Not a non-existent space
-        staged->up = above;
-        above->down = staged;
-    } 
-
-    if (below) {
-        staged->down = below;
-        below->up = staged;
-    }
-
-    if (toLeft) {
-        staged->left = toLeft;
-        toLeft->right = staged;
-    }
-
-    if (toRight) {
-        staged->right = toRight;
-        toRight->left = staged;
-    }
-
+    bind_neighbours(above, below, toLeft, toRight, staged);
     Node *neighbours[] = {above, below, toLeft, toRight, staged};
 
     // Check if any enemy strings now have no liberties
