@@ -36,29 +36,29 @@ void generate_move(int *row, int *col, int moveCount,
     int M = moveCount;
 
     int B = I_r[pebbleIndex] * G_w + I_c[pebbleIndex];
-    int r = I_r[pebbleIndex];
-    int c = I_c[pebbleIndex];
 
-    for (int i = 0; i <= M; i++) {
-        if (i == 0) {
-            // pass
-        } else if (i % 5 == 0) {
-            int N = (B + M/5 * F[pebbleIndex]) % 1000003;
-            r = N / G_w;
-            c = N % G_w;
-        } else if (i % 5 == 1) {
-            r += 1;
-            c += 1;
-        } else if (i % 5 == 2) {
-            r += 2;
-            c += 1;
-        } else if (i % 5 == 3) {
-            r += 1;
-            c += 0;
-        } else if (i % 5 == 4) {
-            r += 0;
-            c += 1;
-        }
+    int r;
+    int c;
+
+    if (M == 0) {
+        r = I_r[pebbleIndex];
+        c = I_c[pebbleIndex];
+    } else if (M % 5 == 0) {
+        int N = (B + M/5 * F[pebbleIndex]) % 1000003;
+        r = N / G_w;
+        c = N % G_w;
+    } else if (M % 5 == 1) {
+        r = *row + 1;
+        c = *col + 1;
+    } else if (M % 5 == 2) {
+        r = *row + 2;
+        c = *col + 1;
+    } else if (M % 5 == 3) {
+        r = *row + 1;
+        c = *col + 0;
+    } else if (M % 5 == 4) {
+        r = *row + 0;
+        c = *col + 1;
     }
 
     *row = r % G_h;
