@@ -79,18 +79,17 @@ int prompt_computer(Board *board, State *state, char pebble) {
     
     int row = get_row_for(state, pebble);
     int col = get_col_for(state, pebble);
-    int failedMoves = 0;
 
     while (1) {
 
         int status = set_node(board, col, row, pebble);
+        incr_move_number_for(state, pebble);
 
         if (status == STATUS_INVALID) {
-            failedMoves++;
 
             generate_move(&row, 
                 &col, 
-                get_move_number_for(state, pebble) + failedMoves, 
+                get_move_number_for(state, pebble), 
                 board->width, 
                 board->height, 
                 pebble);
@@ -98,8 +97,6 @@ int prompt_computer(Board *board, State *state, char pebble) {
             continue;
         } else {
             printf("Player %c: %d %d\n", pebble, row, col);
-
-            incr_move_number_for(state, pebble);
 
             generate_move(&row, 
                 &col, 
