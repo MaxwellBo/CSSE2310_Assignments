@@ -29,9 +29,9 @@ void generate_move(int *row, int *col, int moveCount,
     }
 
     // 0th for "O", 1th for "X"
-    int ir[] = { 1, 2 };
-    int ic[] = { 4, 10 };
-    int f[] = { 29, 17 };
+    int ir[] = {1, 2};
+    int ic[] = {4, 10};
+    int f[] = {29, 17};
     int gw = width;
     int gh = height;
     int m = moveCount;
@@ -45,7 +45,7 @@ void generate_move(int *row, int *col, int moveCount,
         r = ir[pebbleIndex];
         c = ic[pebbleIndex];
     } else if (m % 5 == 0) {
-        int n = (b + m/5 * f[pebbleIndex]) % 1000003;
+        int n = (b + m / 5 * f[pebbleIndex]) % 1000003;
         r = n / gw;
         c = n % gw;
     } else if (m % 5 == 1) {
@@ -95,11 +95,12 @@ int prompt_computer(Board *board, State *state, char pebble) {
             // If it failed, generated a new move with the newly
             // incremented movecount
             generate_move(&row, 
-                &col, 
-                get_move_number_for(state, pebble), 
-                board->width, 
-                board->height, 
-                pebble);
+                    &col, 
+                    get_move_number_for(state, pebble), 
+                    board->width, 
+                    board->height, 
+                    pebble
+                    );
 
             continue;
         } else {
@@ -109,11 +110,12 @@ int prompt_computer(Board *board, State *state, char pebble) {
 
             // and generate a move for the next turn
             generate_move(&row, 
-                &col, 
-                get_move_number_for(state, pebble), 
-                board->width, 
-                board->height, 
-                pebble);
+                    &col, 
+                    get_move_number_for(state, pebble), 
+                    board->width, 
+                    board->height, 
+                    pebble
+                    );
             
             // and store it
             set_row_for(state, pebble, row);

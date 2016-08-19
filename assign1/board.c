@@ -268,26 +268,25 @@ int set_node(Board *self, int x, int y, char pebble) {
         toRight->left = staged;
     }
 
-    Node *victoryNodes[] = { above, below, toLeft, toRight };
+    Node *neighbours[] = {above, below, toLeft, toRight, staged};
 
     // Check if any enemy strings now have no liberties
     for (int i = 0; i < 4; i++) {
-        if (victoryNodes[i] != NULL
-            && victoryNodes[i]->contents != '.'
-            && victoryNodes[i]->contents != pebble
-            && !has_liberties(victoryNodes[i])) {
-                return STATUS_VICTORY;
+        if (neighbours[i] != NULL
+                && neighbours[i]->contents != '.'
+                && neighbours[i]->contents != pebble
+                && !has_liberties(neighbours[i])) {
+            return STATUS_VICTORY;
         }
     }
 
-    Node *lossNodes[] = { above, below, toLeft, toRight, staged };
-
-    // Check if the player committed sudoku
+    // Check if the player committed sudoku, including the most recently
+    // staged node
     for (int i = 0; i < 5; i++) {
-        if (lossNodes[i] != NULL
-            && lossNodes[i]->contents != '.'
-            && lossNodes[i]->contents != invert_pebble(pebble)
-            && !has_liberties(lossNodes[i])) {
+        if (neighbours[i] != NULL
+                && neighbours[i]->contents != '.'
+                && neighbours[i]->contents != invert_pebble(pebble)
+                && !has_liberties(neighbours[i])) {
             return STATUS_SUDOKU;
         }
     }

@@ -56,14 +56,14 @@ State *read_state(char *filename) {
     char *data = read_line(file); // mallocs
 
     int assignedData = sscanf(data, "%*d %*d %d %d %d %d %d %d %d", 
-                                &staged->nextPlayer,
-                                &staged->rowForO,
-                                &staged->colForO,
-                                &staged->moveNumberForO,
-                                &staged->rowForX,
-                                &staged->colForX,
-                                &staged->moveNumberForX
-                              );
+            &staged->nextPlayer,
+            &staged->rowForO,
+            &staged->colForO,
+            &staged->moveNumberForO,
+            &staged->rowForX,
+            &staged->colForX,
+            &staged->moveNumberForX
+            );
 
     if (assignedData != 7) {
         fprintf(stderr, "%s\n", "Incorrect file contents");
@@ -92,7 +92,7 @@ void write_state(State *self, char *filename) {
             self->rowForX, 
             self->colForX, 
             self->moveNumberForX
-           );
+            );
 
     fclose(file);
 }
