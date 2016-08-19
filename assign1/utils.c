@@ -9,7 +9,6 @@
  *
  * Returns a pointer to the newly allocated string
  */
-
 char *read_line(FILE *file) {
     char *result = malloc(sizeof(char));
     int position = 0;
@@ -21,8 +20,7 @@ char *read_line(FILE *file) {
         if (next == EOF || next == '\n') {
             result[position] = '\0';
             return result;
-        } 
-        else {
+        } else {
             result[position] = (char)next;
             position++;
         }
@@ -39,8 +37,7 @@ char *read_line(FILE *file) {
 char invert_pebble(char pebble) {
     if (pebble == 'O') {
         return 'X';
-    }
-    else {
+    } else {
         return 'O';
     }
 }

@@ -52,6 +52,7 @@ State *read_state(char *filename) {
         fprintf(stderr, "%s\n", "Unable to open file");
         exit(4);
     }
+
     char *data = read_line(file); // mallocs
 
     // TODO: COUNT
