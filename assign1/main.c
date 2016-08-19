@@ -249,9 +249,13 @@ void start_new_game(int height, int width, int p1type, int p2type) {
     State *state = new_state();
     Board *board = new_board(height, width);
 
+    // Have to declare variables because generate_move exports its output
+    // into these values
     int row;
     int col;
-
+    
+    // Need to generate the intial moves
+    // Generate for Player O
     generate_move(&row,
             &col, 
             get_move_number_for(state, 'O'), 
@@ -262,6 +266,7 @@ void start_new_game(int height, int width, int p1type, int p2type) {
     set_row_for(state, 'O', row);
     set_col_for(state, 'O', col);
 
+    // Generate for Player X
     generate_move(&row,
             &col, 
             get_move_number_for(state, 'X'), 
