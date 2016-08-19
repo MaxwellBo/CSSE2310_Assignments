@@ -25,7 +25,7 @@ State *new_state(void) {
     self->nextPlayer = 0;
     self->rowForO = -1;
     self->colForO = -1;
-    self->moveNumberForO = 0; // The first turn will incr this to 0
+    self->moveNumberForO = 0;
     self->rowForX = -1;
     self->colForX = -1;
     self->moveNumberForX = 0;
@@ -77,7 +77,7 @@ State *read_state(char *filename) {
 }
 
 /*
- * Wrties the state to a file with the matching filename, in append mode.
+ * Writes the state to a file with the matching filename, in append mode.
  *
  * - Performs IO the filesystem
  */

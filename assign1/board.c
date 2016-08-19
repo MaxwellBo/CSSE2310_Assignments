@@ -168,12 +168,14 @@ void free_board(Board *self) {
  */
 void print_board(Board *self) {
 
+    // Print the top line
     printf("/");
     for (int i = 0; i < self->width; i++) {
         printf("-");
     }
     printf("\\\n"); // esacped \ and a newline
 
+    // Print the board
     for (int i = 0; i < self->height; i++) {
         printf("|");
 
@@ -184,6 +186,7 @@ void print_board(Board *self) {
         printf("|\n");
     }
 
+    // Print the bottom line
     printf("\\");
     for (int i = 0; i < self->width; i++) {
         printf("-");
@@ -237,6 +240,7 @@ int set_node(Board *self, int x, int y, char pebble) {
 
     staged->contents = pebble;
 
+    // Get the neighbours of the node
     Node *above = get_node(self, x, y - 1);
     Node *below = get_node(self, x, y + 1);
     Node *toLeft = get_node(self, x - 1, y);
