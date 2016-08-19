@@ -98,6 +98,7 @@ int prompt_computer(Board *board, State *state, char pebble) {
             continue;
         } else {
             printf("Player %c: %d %d\n", pebble, row, col);
+
             incr_move_number_for(state, pebble);
 
             generate_move(&row, 
@@ -171,10 +172,16 @@ int prompt_human(Board *board, State *state, char pebble) {
     }
 }
 
-
+/*
+ * Give a board, a gamestate and the types of each player, initializes 
+ * the main game loop. This function multiplexes out the required prompt
+ * functions to the respective players.
+ *
+ * - Performs IO on stdout
+ * - Can terminate the program
+ *
+ */
 void start_game(Board *board, State *state, int p1type, int p2type) {
-   
-    
     // Where HUMAN is 0, where COMPUTER is 1
     // Both of these functions have side effects on IO and state
     int (*prompts[2])(Board *, State *, char) = { p1type ? &prompt_computer : &prompt_human,
