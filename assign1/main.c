@@ -29,41 +29,41 @@ void generate_move(int *row, int *col, int moveCount,
     }
 
     // 0th for "O", 1th for "X"
-    int I_r[] = { 1, 2 };
-    int I_c[] = { 4, 10 };
-    int F[] = { 29, 17 };
-    int G_w = width;
-    int G_h = height;
-    int M = moveCount;
+    int ir[] = { 1, 2 };
+    int ic[] = { 4, 10 };
+    int f[] = { 29, 17 };
+    int gw = width;
+    int gh = height;
+    int m = moveCount;
 
-    int B = I_r[pebbleIndex] * G_w + I_c[pebbleIndex];
+    int b = ir[pebbleIndex] * gw + ic[pebbleIndex];
 
     int r;
     int c;
 
-    if (M == 0) {
-        r = I_r[pebbleIndex];
-        c = I_c[pebbleIndex];
-    } else if (M % 5 == 0) {
-        int N = (B + M/5 * F[pebbleIndex]) % 1000003;
-        r = N / G_w;
-        c = N % G_w;
-    } else if (M % 5 == 1) {
+    if (m == 0) {
+        r = ir[pebbleIndex];
+        c = ic[pebbleIndex];
+    } else if (m % 5 == 0) {
+        int n = (b + m/5 * f[pebbleIndex]) % 1000003;
+        r = n / gw;
+        c = n % gw;
+    } else if (m % 5 == 1) {
         r = *row + 1;
         c = *col + 1;
-    } else if (M % 5 == 2) {
+    } else if (m % 5 == 2) {
         r = *row + 2;
         c = *col + 1;
-    } else if (M % 5 == 3) {
+    } else if (m % 5 == 3) {
         r = *row + 1;
         c = *col + 0;
-    } else if (M % 5 == 4) {
+    } else if (m % 5 == 4) {
         r = *row + 0;
         c = *col + 1;
     }
 
-    *row = r % G_h;
-    *col = c % G_w;
+    *row = r % gh;
+    *col = c % gw;
 }
 
 /*
