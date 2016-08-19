@@ -7,8 +7,8 @@ typedef struct State {
     int colForO;
     int moveNumberForO;
     int rowForX;
-    int col_for_X;
-    int move_number_for_X;
+    int colForX;
+    int moveNumberForX;
 } State;
 
 
@@ -27,8 +27,8 @@ State *new_state(void) {
     self->colForO = -1;
     self->moveNumberForO = 0; // The first turn will incr this to 0
     self->rowForX = -1;
-    self->col_for_X = -1;
-    self->move_number_for_X = 0;
+    self->colForX = -1;
+    self->moveNumberForX = 0;
 
     return self;
 }
@@ -61,8 +61,8 @@ State *read_state(char *filename) {
             &staged->colForO,
             &staged->moveNumberForO,
             &staged->rowForX,
-            &staged->col_for_X,
-            &staged->move_number_for_X
+            &staged->colForX,
+            &staged->moveNumberForX
           );
 
     free(data);
@@ -85,8 +85,8 @@ void write_state(State *self, char *filename) {
             self->colForO,
             self->moveNumberForO, 
             self->rowForX, 
-            self->col_for_X, 
-            self->move_number_for_X
+            self->colForX, 
+            self->moveNumberForX
            );
 
     fclose(file);
@@ -108,7 +108,7 @@ int get_move_number_for(State *self, char pebble) {
     if (pebble == 'O') {
         return self->moveNumberForO;
     } else {
-        return self->move_number_for_X;
+        return self->moveNumberForX;
     }
 }
 
@@ -119,7 +119,7 @@ void incr_move_number_for(State *self, char pebble) {
     if (pebble == 'O') {
         (self->moveNumberForO)++;
     } else {
-        (self->move_number_for_X)++;
+        (self->moveNumberForX)++;
     }
 }
 
@@ -145,7 +145,7 @@ int get_col_for(State *self, char pebble) {
     if (pebble == 'O') {
         return self->colForO;
     } else {
-        return self->col_for_X;
+        return self->colForX;
     }
 }
 
@@ -168,7 +168,7 @@ void set_col_for(State *self, char pebble, int x) {
     if (pebble == 'O') {
         self->colForO = x;
     } else {
-        self->col_for_X = x;
+        self->colForX = x;
     }
 }
 
