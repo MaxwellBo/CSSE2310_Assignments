@@ -2,11 +2,11 @@
 #include <stdio.h>
 
 typedef struct State {
-    int next_player;
-    int row_for_O;
-    int col_for_O;
-    int move_number_for_O;
-    int row_for_X;
+    int nextPlayer;
+    int rowForO;
+    int colForO;
+    int moveNumberForO;
+    int rowForX;
     int col_for_X;
     int move_number_for_X;
 } State;
@@ -16,11 +16,11 @@ State *new_state(void) {
 
     State *self = malloc(sizeof(State));
 
-    self->next_player = 0;
-    self->row_for_O = -1;
-    self->col_for_O = -1;
-    self->move_number_for_O = 0; // The first turn will incr this to 0
-    self->row_for_X = -1;
+    self->nextPlayer = 0;
+    self->rowForO = -1;
+    self->colForO = -1;
+    self->moveNumberForO = 0; // The first turn will incr this to 0
+    self->rowForX = -1;
     self->col_for_X = -1;
     self->move_number_for_X = 0;
 
@@ -39,11 +39,11 @@ State *read_state(char *filename) {
     char *data = read_line(file); // mallocs
 
     sscanf(data, "%*d %*d %d %d %d %d %d %d %d", 
-            &staged->next_player,
-            &staged->row_for_O,
-            &staged->col_for_O,
-            &staged->move_number_for_O,
-            &staged->row_for_X,
+            &staged->nextPlayer,
+            &staged->rowForO,
+            &staged->colForO,
+            &staged->moveNumberForO,
+            &staged->rowForX,
             &staged->col_for_X,
             &staged->move_number_for_X
           );
@@ -58,11 +58,11 @@ void write_state(State *self, char *filename) {
     FILE *file = fopen(filename, "a");
 
     fprintf(file, "%d %d %d %d %d %d %d\n", 
-            self->next_player, 
-            self->row_for_O, 
-            self->col_for_O,
-            self->move_number_for_O, 
-            self->row_for_X, 
+            self->nextPlayer, 
+            self->rowForO, 
+            self->colForO,
+            self->moveNumberForO, 
+            self->rowForX, 
             self->col_for_X, 
             self->move_number_for_X
            );
@@ -76,7 +76,7 @@ void free_state(State *self) {
 
 int get_move_number_for(State *self, char pebble) {
     if (pebble == 'O') {
-        return self->move_number_for_O;
+        return self->moveNumberForO;
     } else {
         return self->move_number_for_X;
     }
@@ -84,7 +84,7 @@ int get_move_number_for(State *self, char pebble) {
 
 void incr_move_number_for(State *self, char pebble) {
     if (pebble == 'O') {
-        (self->move_number_for_O)++;
+        (self->moveNumberForO)++;
     } else {
         (self->move_number_for_X)++;
     }
@@ -92,15 +92,15 @@ void incr_move_number_for(State *self, char pebble) {
 
 int get_row_for(State *self, char pebble) {
     if (pebble == 'O') {
-        return self->row_for_O;
+        return self->rowForO;
     } else {
-        return self->row_for_X;
+        return self->rowForX;
     }
 }
 
 int get_col_for(State *self, char pebble) {
     if (pebble == 'O') {
-        return self->col_for_O;
+        return self->colForO;
     } else {
         return self->col_for_X;
     }
@@ -109,15 +109,15 @@ int get_col_for(State *self, char pebble) {
 
 void set_row_for(State *self, char pebble, int x) {
     if (pebble == 'O') {
-        self->row_for_O = x;
+        self->rowForO = x;
     } else {
-        self->row_for_X = x;
+        self->rowForX = x;
     }
 }
 
 void set_col_for(State *self, char pebble, int x) {
     if (pebble == 'O') {
-        self->col_for_O = x;
+        self->colForO = x;
     } else {
         self->col_for_X = x;
     }

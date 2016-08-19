@@ -17,7 +17,7 @@ typedef struct Board {
 
 int set_node(Board *, int, int, char);
 
-bool areValidDimensions(int height, int width) {
+bool are_valid_dimensions(int height, int width) {
 
     bool heightOK = (4 <= height && height <= 1000);
     bool widthOK = (4 <= width && width <= 1000);
@@ -61,7 +61,7 @@ Board *read_board(char *filename) {
     sscanf(data, "%d %d", &height, &width);
     free(data);
 
-    if (!areValidDimensions(height, width)) {
+    if (!are_valid_dimensions(height, width)) {
         fprintf(stderr, "%s\n", "Incorrect file contents");
         exit(5);
     } 
@@ -180,8 +180,8 @@ int set_node(Board *self, int x, int y, char pebble) {
 
     Node *above = get_node(self, x, y - 1);
     Node *below = get_node(self, x, y + 1);
-    Node *to_left = get_node(self, x - 1, y);
-    Node *to_right = get_node(self, x + 1, y);
+    Node *toLeft = get_node(self, x - 1, y);
+    Node *toRight = get_node(self, x + 1, y);
 
     // Here we're just binding the nodes bidirectionally to any
     // neighbouring nodes
@@ -195,36 +195,36 @@ int set_node(Board *self, int x, int y, char pebble) {
         below->up = staged;
     }
 
-    if (to_left) {
-        staged->left = to_left;
-        to_left->right = staged;
+    if (toLeft) {
+        staged->left = toLeft;
+        toLeft->right = staged;
     }
 
-    if (to_right) {
-        staged->right = to_right;
-        to_right->left = staged;
+    if (toRight) {
+        staged->right = toRight;
+        toRight->left = staged;
     }
 
-    Node *victory_nodes[] = { above, below, to_left, to_right };
+    Node *victoryNodes[] = { above, below, toLeft, toRight };
 
     // Check if any enemy strings now have no liberties
     for (int i = 0; i < 4; i++) {
-        if (victory_nodes[i] != NULL
-            && victory_nodes[i]->contents != '.'
-            && victory_nodes[i]->contents != pebble
-            && !has_liberties(victory_nodes[i])) {
+        if (victoryNodes[i] != NULL
+            && victoryNodes[i]->contents != '.'
+            && victoryNodes[i]->contents != pebble
+            && !has_liberties(victoryNodes[i])) {
                 return STATUS_VICTORY;
         }
     }
 
-    Node *loss_nodes[] = { above, below, to_left, to_right, staged };
+    Node *lossNodes[] = { above, below, toLeft, toRight, staged };
 
     // Check if the player committed sudoku
     for (int i = 0; i < 5; i++) {
-        if (loss_nodes[i] != NULL
-            && loss_nodes[i]->contents != '.'
-            && loss_nodes[i]->contents != invert_pebble(pebble)
-            && !has_liberties(loss_nodes[i])) {
+        if (lossNodes[i] != NULL
+            && lossNodes[i]->contents != '.'
+            && lossNodes[i]->contents != invert_pebble(pebble)
+            && !has_liberties(lossNodes[i])) {
             return STATUS_SUDOKU;
         }
     }

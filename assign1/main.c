@@ -16,15 +16,15 @@
  * mutate the row and column parameters for where the move is to be
  * placed
  */
-void generate_move(int *row, int *col, int move_count, 
+void generate_move(int *row, int *col, int moveCount, 
         int width, int height, char pebble) {
 
-    int pebble_index;
+    int pebbleIndex;
 
     if (pebble == 'O') {
-        pebble_index = 0;
+        pebbleIndex = 0;
     } else {
-        pebble_index = 1;
+        pebbleIndex = 1;
     }
 
     // 0th for "O", 1th for "X"
@@ -33,17 +33,17 @@ void generate_move(int *row, int *col, int move_count,
     int F[] = { 29, 17 };
     int G_w = width;
     int G_h = height;
-    int M = move_count;
+    int M = moveCount;
 
-    int B = I_r[pebble_index] * G_w + I_c[pebble_index];
-    int r = I_r[pebble_index];
-    int c = I_c[pebble_index];
+    int B = I_r[pebbleIndex] * G_w + I_c[pebbleIndex];
+    int r = I_r[pebbleIndex];
+    int c = I_c[pebbleIndex];
 
     for (int i = 0; i <= M; i++) {
         if (i == 0) {
             // pass
         } else if (i % 5 == 0) {
-            int N = (B + M/5 * F[pebble_index]) % 1000003;
+            int N = (B + M/5 * F[pebbleIndex]) % 1000003;
             r = N / G_w;
             c = N % G_w;
         } else if (i % 5 == 1) {
@@ -79,18 +79,18 @@ int prompt_computer(Board *board, State *state, char pebble) {
     
     int row = get_row_for(state, pebble);
     int col = get_col_for(state, pebble);
-    int failed_moves = 0;
+    int failedMoves = 0;
 
     while (1) {
 
         int status = set_node(board, col, row, pebble);
 
         if (status == STATUS_INVALID) {
-            failed_moves++;
+            failedMoves++;
 
             generate_move(&row, 
                 &col, 
-                get_move_number_for(state, pebble) + failed_moves, 
+                get_move_number_for(state, pebble) + failedMoves, 
                 board->width, 
                 board->height, 
                 pebble);
@@ -147,10 +147,10 @@ int prompt_human(Board *board, State *state, char pebble) {
         int row;
         int col;
 
-        int assigned_filename = sscanf(line, "w%70s", filename);
-        int assigned_dimensions = sscanf(line, "%4d %4d", &row, &col);
+        int assignedFilename = sscanf(line, "w%70s", filename);
+        int assignedDimensions = sscanf(line, "%4d %4d", &row, &col);
 
-        if (assigned_filename) {
+        if (assignedFilename) {
             write_dimensions(board, filename);
             write_state(state, filename);
             write_board(board, filename);
@@ -158,7 +158,7 @@ int prompt_human(Board *board, State *state, char pebble) {
         
         free(filename);
 
-        if (assigned_dimensions != 2) {
+        if (assignedDimensions != 2) {
             continue; // Reprompt if invalid number of args
         }
 
@@ -196,7 +196,7 @@ void start_game(Board *board, State *state, int p1type, int p2type) {
 
         print_board(board);
 
-        index = state->next_player;
+        index = state->nextPlayer;
 
         status = (*prompts[index])(board, state, players[index]);
         
@@ -217,7 +217,7 @@ void start_game(Board *board, State *state, int p1type, int p2type) {
             exit(0);
         }
 
-        state->next_player = !state->next_player;
+        state->nextPlayer = !state->nextPlayer;
     }
 }
 
@@ -286,7 +286,7 @@ int main(int argc, char **argv) {
 
         // atoi returns 0 if conversion fails
         // TODO: Add isDigit check for the whole string
-        if (areValidDimensions(atoi(argv[3]), atoi(argv[4]))) {
+        if (are_valid_dimensions(atoi(argv[3]), atoi(argv[4]))) {
             height = atoi(argv[3]);
             width = atoi(argv[4]);
         } else {
