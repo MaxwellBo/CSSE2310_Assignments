@@ -195,11 +195,12 @@ void start_game(Board *board, State *state, int p1type, int p2type) {
     // prompt
     int (*prompts[2])(Board *, State *, char) = { 
         p1type ? 
-            &prompt_computer : &prompt_human,
+                &prompt_computer : &prompt_human,
         p2type ? 
-            &prompt_computer : &prompt_human };
+                &prompt_computer : &prompt_human
+    };
 
-    char players[] = { 'O', 'X' };
+    char players[] = {'O', 'X'};
 
     int status;
     int index;
@@ -235,7 +236,7 @@ void start_game(Board *board, State *state, int p1type, int p2type) {
 }
 
 /*
- * Loads a game from file
+ * Loads a game from file, with the specified player types
  */
 void start_game_from_file(char *filename, int p1type, int p2type) {
     // Can perform IO
@@ -247,6 +248,10 @@ void start_game_from_file(char *filename, int p1type, int p2type) {
     start_game(board, state, p1type, p2type);
 }
 
+/*
+ * Starts a new game, and initializes the board with starting moves,
+ * with the specified player types
+ */
 void start_new_game(int height, int width, int p1type, int p2type) {
     State *state = new_state();
     Board *board = new_board(height, width);
@@ -294,7 +299,7 @@ int main(int argc, char **argv) {
 
     if (!(argc == 4 || argc == 5)) {
         fprintf(stderr, "%s\n", 
-            "Usage: nogo p1type p2type [height width | filename]");
+                "Usage: nogo p1type p2type [height width | filename]");
         exit(1);
     }
 
