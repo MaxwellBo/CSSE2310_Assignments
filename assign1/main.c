@@ -200,7 +200,7 @@ void start_game(Board *board, State *state, int p1type, int p2type) {
 
         status = (*prompts[index])(board, state, players[index]);
         
-        if (status == STATUS_VICTORY || status == STATUS_LOSS) {
+        if (status == STATUS_VICTORY || status == STATUS_SUDOKU) {
             print_board(board);
 
             if (status == STATUS_VICTORY) {
@@ -295,7 +295,7 @@ int main(int argc, char **argv) {
         }
 
         State *state = new_state();
-        Board *board = new_board(height, width);  
+        Board *board = new_board(height, width);
 
         int row;
         int col;

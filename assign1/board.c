@@ -7,7 +7,7 @@
 #define STATUS_SUCCESS 0
 #define STATUS_INVALID 1
 #define STATUS_VICTORY 2
-#define STATUS_LOSS 3
+#define STATUS_SUDOKU 3
 
 typedef struct Board {
     int height;
@@ -225,7 +225,7 @@ int set_node(Board *self, int x, int y, char pebble) {
             && loss_nodes[i]->contents != '.'
             && loss_nodes[i]->contents != invert_pebble(pebble)
             && !has_liberties(loss_nodes[i])) {
-            return STATUS_LOSS;
+            return STATUS_SUDOKU;
         }
     }
 
