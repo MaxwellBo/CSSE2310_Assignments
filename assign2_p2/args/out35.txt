@@ -1,0 +1,7 @@
+5 - h h 47
+/-------\
+|.......|
+|.......|
+|.......|
+\-------/
+Player X> Player X> 6: End of input from user

@@ -1,0 +1,2 @@
+5 - c h 4-4
+3: Invalid board dimension
