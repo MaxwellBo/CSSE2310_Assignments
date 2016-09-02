@@ -1,2 +1,2 @@
-4 - h h tests/x9.map
+4: - h h tests/x9.map 
 5: Incorrect file contents

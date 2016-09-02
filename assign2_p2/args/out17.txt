@@ -1,2 +1,2 @@
-4 - c c tests/missing
+4: - c c tests/missing 
 4: Unable to open file

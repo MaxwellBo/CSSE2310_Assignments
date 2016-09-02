@@ -1,2 +1,2 @@
-4 - h h tests/e4.map
+4: - h h tests/e4.map 
 5: Incorrect file contents

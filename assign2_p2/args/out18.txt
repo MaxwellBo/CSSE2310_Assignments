@@ -1,2 +1,2 @@
-4 - c c /xx/cow
+4: - c c /xx/cow 
 4: Unable to open file

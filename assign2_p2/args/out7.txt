@@ -1,2 +1,2 @@
-5 - h 0h 57q
+5: - h 0h 5 7q
 2: Invalid player type 
