@@ -60,7 +60,7 @@ void phase_B(const char* guess)
 {
     consume(9);
     int i;
-    int v=(blackBoxC() & 31);
+    int v=(blackBoxC() & 31); // 15
     if (strlen(guess)==7)
     {
         int z=0;
