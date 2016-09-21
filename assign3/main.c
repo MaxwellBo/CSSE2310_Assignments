@@ -37,40 +37,31 @@ char *get_error_message(int errno) {
  * - Can terminate the program
  */
 int main(int argc, char **argv) {
-
 	int toChildPipe[2];
     int toParentPipe[2];
 
     pipe(toChildPipe);
     pipe(toParentPipe);
 
-	if (fork() == 0) {
-		close(toChildPipe[WRITE_DESCRIPTOR]);
-		close(toParentPipe[READ_DESCRIPTOR]);
+    int pid=fork();
 
-		// Moves the pipe entry over the top of stdout
-		dup2(toParentPipe[WRITE_DESCRIPTOR], 1);
-		printf("%d", 17);
-		fflush(stdout);
-
-		// Null terminator
- 		// execl("/usr/bin/ls", "ls", "-al", 0);
- 	} else {
- 		close(toChildPipe[READ_DESCRIPTOR]);
- 		close(toParentPipe[WRITE_DESCRIPTOR]);
-
- 		FILE* fromChild = fdopen(toParentPipe[READ_DESCRIPTOR], "r");
+    if (pid != 0) {
+    	// Parent reads from child
+		close(toParentPipe[WRITE_DESCRIPTOR]);
+ 		FILE* fromChild = fdopen(toParentPipe[0], "r");
 
  		char *buffer = malloc(sizeof(char) * 80);
  		buffer[79] = '\0';
 
  		fscanf(fromChild, "%s", buffer);
  		printf("%s\n", buffer);
+    } else {
+    	// Child yells at parent
 
-	 	printf("%s\n", "Hello from parent");
+		close(toParentPipe[READ_DESCRIPTOR]);
 
- 	}
- 	
-
+	    dup2(toParentPipe[WRITE_DESCRIPTOR], 1);
+	    execlp("ls", "ls", 0);
+    }
     return 0;
 }
