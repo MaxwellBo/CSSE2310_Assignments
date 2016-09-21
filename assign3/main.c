@@ -60,8 +60,7 @@ int main(int argc, char **argv) {
 
  		char *line = read_line(fromChild);
  		printf("%s\n", line);
- 		fflush(stdout);
- 		
+
     } else {
 		close(toParentPipe[READ_DESCRIPTOR]);
 		close(toChildPipe[WRITE_DESCRIPTOR]);
