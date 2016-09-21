@@ -30,7 +30,6 @@ char *get_error_message(int errno) {
 	}
 }
 
-
 /*
  * Author: 43926871
  *
@@ -48,15 +47,28 @@ int main(int argc, char **argv) {
 	if (fork() == 0) {
 		close(toChildPipe[WRITE_DESCRIPTOR]);
 		close(toParentPipe[READ_DESCRIPTOR]);
-		// dup2
-		printf("%s\n", "Hello from child");
- 		execl("/usr/bin/ls", "ls", "-al", 0);
+
+		// Moves the pipe entry over the top of stdout
+		dup2(toParentPipe[WRITE_DESCRIPTOR], 1);
+		printf("%d", 17);
+		fflush(stdout);
+
+		// Null terminator
+ 		// execl("/usr/bin/ls", "ls", "-al", 0);
  	} else {
  		close(toChildPipe[READ_DESCRIPTOR]);
  		close(toParentPipe[WRITE_DESCRIPTOR]);
 
-	 	wait(NULL);
+ 		FILE* fromChild = fdopen(toParentPipe[READ_DESCRIPTOR], "r");
+
+ 		char *buffer = malloc(sizeof(char) * 80);
+ 		buffer[79] = '\0';
+
+ 		fscanf(fromChild, "%s", buffer);
+ 		printf("%s\n", buffer);
+
 	 	printf("%s\n", "Hello from parent");
+
  	}
  	
 
