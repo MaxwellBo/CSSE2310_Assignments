@@ -69,7 +69,7 @@ int main(int argc, char **argv) {
 	    dup2(toParentPipe[WRITE_DESCRIPTOR], STDOUT_FILENO);
 	    dup2(toChildPipe[READ_DESCRIPTOR], STDIN_FILENO);
 
-	    execlp("echo", "echo", "yelling at parent", 0);
+	    execl("./player", "player", 0);
     }
     return 0;
 }
