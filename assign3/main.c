@@ -55,14 +55,14 @@ int main(int argc, char **argv) {
  		FILE* fromChild = fdopen(toParentPipe[READ_DESCRIPTOR], "r");
  		FILE* toChild = fdopen(toChildPipe[WRITE_DESCRIPTOR], "w");
 
- 		char *line = read_line(fromChild);
- 		printf("%s\n", line);
- 		
  		fprintf(toChild, "%s\n", "yelling at child");
  		fflush(toChild);
 
+ 		char *line = read_line(fromChild);
+ 		printf("%s\n", line);
+ 		fflush(stdout);
+ 		
     } else {
-    	// Child yells at parent
 		close(toParentPipe[READ_DESCRIPTOR]);
 		close(toChildPipe[WRITE_DESCRIPTOR]);
 
