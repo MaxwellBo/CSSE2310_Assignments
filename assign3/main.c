@@ -43,29 +43,37 @@ int main(int argc, char **argv) {
 	// argv[1] is rolls
 	// argv[2] is points
 	// Must be at least 2 players (argv[3] and argv[4])
-	// if (argc <= 4) {
-	// 	fprintf(stderr, "%s\n", get_error_message(1));
-	// 	exit(1);
-	// }
+	if (argc <= 4) {
+		fprintf(stderr, "%s\n", get_error_message(1));
+		exit(1);
+	}
 
-	Bipe *bipe = new_bipe();
+	int playerArgumentOffset = 3;
+	int numberOfPlayers = argc - 3;
 
-    int pid=fork();
+	pid_t pids[numberOfPlayers];
+	Bipe *bipes[numberOfPlayers];
 
-    if (pid != 0) {
-    	// Parent reads from child
-    	use_as_parent(bipe);
+	for (int i = 0; i < numberOfPlayers; i++) {
+		bipes[i] = new_bipe();
 
- 		fprintf(bipe->outbox, "%s\n", "yelling at child");
- 		fflush(bipe->outbox);
+		if ((pids[i] = fork()) == 0) {
+			use_as_child(bipes[i]);
 
- 		char *line = read_line(bipe->inbox);
+			// Prevents loop in forked child
+	    	execl("./player", "player", 0);
+		}
+	}
+
+	// If the process has gotten to here, it's clearly a parent
+	for (int i = 0; i < numberOfPlayers; i++) {
+    	use_as_parent(bipes[i]);
+
+ 		fprintf(bipes[i]->outbox, "%s\n", "yelling at child");
+ 		fflush(bipes[i]->outbox);
+
+ 		char *line = read_line(bipes[i]->inbox);
  		printf("%s\n", line);
 
-    } else {
-    	use_as_child(bipe);
-
-	    execl("./player", "player", 0);
-    }
-    return 0;
+	}
 }
