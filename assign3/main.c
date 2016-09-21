@@ -39,6 +39,14 @@ char *get_error_message(int errno) {
  * - Can terminate the program
  */
 int main(int argc, char **argv) {
+	// argv[1] is rolls
+	// argv[2] is points
+	// Must be at least 2 players (argv[3] and argv[4])
+	if (argc <= 4) {
+		fprintf(stderr, "%s\n", get_error_message(1));
+		exit(1);
+	}
+	
 	int toChildPipe[2];
     int toParentPipe[2];
 
