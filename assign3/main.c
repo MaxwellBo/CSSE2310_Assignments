@@ -60,8 +60,12 @@ int main(int argc, char **argv) {
 		if ((pids[i] = fork()) == 0) {
 			use_as_child(bipes[i]);
 
+			char *label = malloc(sizeof(char) * 2);
+			label[1] = '\0';
+			label[0] = i + 65;
+
 			// Prevents loop in forked child
-	    	execl("./player", "player", 0);
+	    	execl("./player", "player", "numberOfPlayers", label, 0);
 		}
 	}
 

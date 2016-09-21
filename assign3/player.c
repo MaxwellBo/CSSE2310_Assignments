@@ -31,7 +31,7 @@ int main(int argc, char **argv) {
 	// printf("%s\n", "Child starts");
 	char *line = read_line(stdin);
 
-	fprintf(stdout, "Echoing: %s\n", line);
+	fprintf(stdout, "Echoing from %s: %s\n", argv[2], line);
 	fflush(stdout);
 
     return 0;
