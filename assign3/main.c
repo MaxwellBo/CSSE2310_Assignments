@@ -3,6 +3,7 @@
 #include <unistd.h>
 
 #include "utils.c"
+#include "bipe.c"
 
 #define READ_DESCRIPTOR 0
 #define WRITE_DESCRIPTOR 1
@@ -42,39 +43,27 @@ int main(int argc, char **argv) {
 	// argv[1] is rolls
 	// argv[2] is points
 	// Must be at least 2 players (argv[3] and argv[4])
-	if (argc <= 4) {
-		fprintf(stderr, "%s\n", get_error_message(1));
-		exit(1);
-	}
-	
-	int toChildPipe[2];
-    int toParentPipe[2];
+	// if (argc <= 4) {
+	// 	fprintf(stderr, "%s\n", get_error_message(1));
+	// 	exit(1);
+	// }
 
-    pipe(toChildPipe);
-    pipe(toParentPipe);
+	Bipe *bipe = new_bipe();
 
     int pid=fork();
 
     if (pid != 0) {
     	// Parent reads from child
-		close(toParentPipe[WRITE_DESCRIPTOR]);
-		close(toChildPipe[READ_DESCRIPTOR]);
+    	use_as_parent(bipe);
 
- 		FILE* fromChild = fdopen(toParentPipe[READ_DESCRIPTOR], "r");
- 		FILE* toChild = fdopen(toChildPipe[WRITE_DESCRIPTOR], "w");
+ 		fprintf(bipe->outbox, "%s\n", "yelling at child");
+ 		fflush(bipe->outbox);
 
- 		fprintf(toChild, "%s\n", "yelling at child");
- 		fflush(toChild);
-
- 		char *line = read_line(fromChild);
+ 		char *line = read_line(bipe->inbox);
  		printf("%s\n", line);
 
     } else {
-		close(toParentPipe[READ_DESCRIPTOR]);
-		close(toChildPipe[WRITE_DESCRIPTOR]);
-
-	    dup2(toParentPipe[WRITE_DESCRIPTOR], STDOUT_FILENO);
-	    dup2(toChildPipe[READ_DESCRIPTOR], STDIN_FILENO);
+    	use_as_child(bipe);
 
 	    execl("./player", "player", 0);
     }
