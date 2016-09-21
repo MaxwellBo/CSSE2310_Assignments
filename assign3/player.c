@@ -11,7 +11,11 @@
  * - Can terminate the program
  */
 int main(int argc, char **argv) {
-	printf("%s\n", "Yelling angrily at parent");
+	printf("%s\n", "Child starts");
+
+	char *line = read_line(stdin);
+
+	printf("Echoing: %s\n", line);
 
     return 0;
 }

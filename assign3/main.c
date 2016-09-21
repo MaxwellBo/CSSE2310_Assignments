@@ -53,13 +53,13 @@ int main(int argc, char **argv) {
 		close(toChildPipe[READ_DESCRIPTOR]);
 
  		FILE* fromChild = fdopen(toParentPipe[READ_DESCRIPTOR], "r");
- 		FILE* toChild = fdopen(toParentPipe[WRITE_DESCRIPTOR], "w");
+ 		FILE* toChild = fdopen(toChildPipe[WRITE_DESCRIPTOR], "w");
 
  		char *line = read_line(fromChild);
  		printf("%s\n", line);
  		
- 		// fprintf(toChild, "%s\n", "yelling at child");
- 		// fflush(toChild);
+ 		fprintf(toChild, "%s\n", "yelling at child");
+ 		fflush(toChild);
 
     } else {
     	// Child yells at parent
