@@ -65,7 +65,7 @@ int main(int argc, char **argv) {
 			label[0] = i + 65;
 
 			// Prevents loop in forked child
-	    	execl("./player", "player", "numberOfPlayers", label, 0);
+	    	execl(argv[playerArgumentOffset + i], "player", "numberOfPlayers", label, 0);
 		}
 	}
 
