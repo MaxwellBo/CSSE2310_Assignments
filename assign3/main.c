@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <unistd.h>
 
+#include "utils.c"
+
 #define READ_DESCRIPTOR 0
 #define WRITE_DESCRIPTOR 1
 
@@ -48,20 +50,17 @@ int main(int argc, char **argv) {
     if (pid != 0) {
     	// Parent reads from child
 		close(toParentPipe[WRITE_DESCRIPTOR]);
- 		FILE* fromChild = fdopen(toParentPipe[0], "r");
+ 		FILE* fromChild = fdopen(toParentPipe[READ_DESCRIPTOR], "r");
 
- 		char *buffer = malloc(sizeof(char) * 80);
- 		buffer[79] = '\0';
-
- 		fscanf(fromChild, "%s", buffer);
- 		printf("%s\n", buffer);
+ 		char *line = read_line(fromChild);
+ 		printf("%s\n", line);
+ 		fflush(stdout);
     } else {
     	// Child yells at parent
-
 		close(toParentPipe[READ_DESCRIPTOR]);
 
-	    dup2(toParentPipe[WRITE_DESCRIPTOR], 1);
-	    execlp("ls", "ls", 0);
+	    dup2(toParentPipe[WRITE_DESCRIPTOR], STDOUT_FILENO);
+	    execlp("echo", "echo", "actually working", 0);
     }
     return 0;
 }
