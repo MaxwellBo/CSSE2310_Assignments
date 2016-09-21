@@ -50,17 +50,26 @@ int main(int argc, char **argv) {
     if (pid != 0) {
     	// Parent reads from child
 		close(toParentPipe[WRITE_DESCRIPTOR]);
+		close(toChildPipe[READ_DESCRIPTOR]);
+
  		FILE* fromChild = fdopen(toParentPipe[READ_DESCRIPTOR], "r");
+ 		FILE* toChild = fdopen(toParentPipe[WRITE_DESCRIPTOR], "w");
 
  		char *line = read_line(fromChild);
  		printf("%s\n", line);
- 		fflush(stdout);
+ 		
+ 		// fprintf(toChild, "%s\n", "yelling at child");
+ 		// fflush(toChild);
+
     } else {
     	// Child yells at parent
 		close(toParentPipe[READ_DESCRIPTOR]);
+		close(toChildPipe[WRITE_DESCRIPTOR]);
 
 	    dup2(toParentPipe[WRITE_DESCRIPTOR], STDOUT_FILENO);
-	    execlp("echo", "echo", "actually working", 0);
+	    dup2(toChildPipe[READ_DESCRIPTOR], STDIN_FILENO);
+
+	    execlp("echo", "echo", "yelling at parent", 0);
     }
     return 0;
 }
