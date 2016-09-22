@@ -46,6 +46,7 @@ void validate_args(int argc, char **argv) {
 
 	bool invalidNumberOfArgs = !((3 + MIN_PLAYERS) <= argc && argc <= (3 + MAX_PLAYERS));
 
+	// Returns 0 if atoi fails, which is invalid anyway
 	bool invalidScore = !(0 < atoi(argv[WINSCORE]));
 
 	int status;
@@ -62,6 +63,30 @@ void validate_args(int argc, char **argv) {
 	exit(status);
 }
 
+FILE *get_rollfile(char *filepath) {
+	
+	FILE *rollfile = fopen(filepath, "r");
+
+	if (rollfile == NULL) {
+		fprintf(stderr, "%s\n", get_error_message(3));
+		exit(3);
+	}
+
+	while (1) {
+      	char c = fgetc(rollfile);
+
+		if (c == EOF) { 
+	   		return rollfile;
+	   	}
+
+     	if (!((c == '1') || (c == '2') || (c == '3') 
+      		|| (c == 'H') || (c == 'A') || (c == 'P') || (c == '\n'))) {
+      		fprintf(stderr, "%s\n", get_error_message(4));
+      		exit(4);
+      }
+   }
+}
+
 /*
  * Author: 43926871
  *
@@ -72,6 +97,9 @@ int main(int argc, char **argv) {
 
 	// Can terminate the program 
 	validate_args(argc, argv);
+
+	// Can terminate the program
+	FILE *rollfile = get_rollfile(argv[ROLLFILE]);
 
 	int numberOfPlayers = argc - NON_PLAYER_ARGS;
 
@@ -93,7 +121,7 @@ int main(int argc, char **argv) {
 			numberOfPlayersArg[2] = '\0';
 
 			// Prevents loop in forked child
-	    	execl(argv[NON_PLAYER_ARGS + i], "player", numberOfPlayersArg, label, 0);
+	    	execl(argv[NON_PLAYER_ARGS + i], "player", numberOfPlayersArg, label, NULL);
 		}
 	}
 
