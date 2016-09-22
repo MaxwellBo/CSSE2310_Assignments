@@ -58,6 +58,7 @@ int main(int argc, char **argv) {
 	for (int i = 0; i < numberOfPlayers; i++) {
 		bipes[i] = new_bipe();
 
+
 		if ((pids[i] = fork()) == 0) {
 			use_as_child(bipes[i]);
 
@@ -65,10 +66,8 @@ int main(int argc, char **argv) {
 			char label[2] = { (char)i + 'A', '\0' };
 
 			char numberOfPlayersArg[3];
-			scanf(numberOfPlayersArg, "%d", numberOfPlayers);
+			sprintf(numberOfPlayersArg, "%d", numberOfPlayers);
 			numberOfPlayersArg[2] = '\0';
-
-			printf("%s\n", numberOfPlayersArg);
 
 			// Prevents loop in forked child
 	    	execl(argv[playerArgumentOffset + i], "player", numberOfPlayersArg, label, 0);
