@@ -9,6 +9,14 @@
 #define READ_DESCRIPTOR 0
 #define WRITE_DESCRIPTOR 1
 
+#define NON_PLAYER_ARGS 3
+
+#define MIN_PLAYERS 2
+#define MAX_PLAYERS 26
+
+#define ROLLFILE 1
+#define WINSCORE 2
+
 char *get_error_message(int errno) {
 	switch (errno) {
 		case 1:
@@ -49,8 +57,7 @@ int main(int argc, char **argv) {
 		exit(1);
 	}
 
-	int playerArgumentOffset = 3;
-	int numberOfPlayers = argc - 3;
+	int numberOfPlayers = argc - NON_PLAYER_ARGS;
 
 	pid_t pids[numberOfPlayers];
 	Bipe *bipes[numberOfPlayers];
@@ -70,7 +77,7 @@ int main(int argc, char **argv) {
 			numberOfPlayersArg[2] = '\0';
 
 			// Prevents loop in forked child
-	    	execl(argv[playerArgumentOffset + i], "player", numberOfPlayersArg, label, 0);
+	    	execl(argv[NON_PLAYER_ARGS + i], "player", numberOfPlayersArg, label, 0);
 		}
 	}
 
@@ -85,4 +92,24 @@ int main(int argc, char **argv) {
  		printf("%s\n", line);
 
 	}
+}
+
+void validates_args(int argc, char **argv) {
+
+	bool invalidNumberOfArgs = !((3 + MIN_PLAYERS) <= argc && argc <= (3 + MAX_PLAYERS));
+
+	bool invalidScore = !(0 <= atoi(argv[WINSCORE]));
+
+	int status;
+
+	if (invalidNumberOfArgs) {
+		status = 1;
+	} else if (invalidScore) {
+		status = 2;
+	} else {
+		return;
+	}
+
+	fprintf(stderr, "%s\n", get_error_message(status));
+	exit(status);
 }

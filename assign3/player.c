@@ -6,6 +6,9 @@
 
 #include "utils.c"
 
+#define NUMBER_OF_PLAYERS 1
+#define MY_ID 2
+
 char *get_error_message(int errno) {
 	switch (errno) {
 		case 1:
@@ -24,14 +27,16 @@ char *get_error_message(int errno) {
 }
 
 void validates_args(int argc, char **argv) {
-	int status;
 
 	bool invalidNumberOfArgs = argc != 3;
 
-	bool invalidPlayerCount = !(2 <= atoi(argv[1]) && atoi(argv[1]) <= 26);
+	bool invalidPlayerCount = !(2 <= atoi(argv[NUMBER_OF_PLAYERS]) 
+		&& atoi(argv[NUMBER_OF_PLAYERS]) <= 26);
 
-	bool invalidPlayerID = strlen(argv[2]) != 1 || 
-		!('A' <= argv[2][0] && argv[2][0] <= 'Z');
+	bool invalidPlayerID = strlen(argv[MY_ID]) != 1 || 
+		!('A' <= argv[MY_ID][0] && argv[MY_ID][0] <= 'Z');
+
+	int status;
 
 	if (invalidNumberOfArgs) {
 		status = 1;
@@ -62,7 +67,7 @@ int main(int argc, char **argv) {
 	// printf("%s\n", "Child starts");
 	char *line = read_line(stdin);
 
-	fprintf(stdout, "%s %s %s\n", argv[1], argv[2], line);
+	fprintf(stdout, "%s %s %s\n", argv[NUMBER_OF_PLAYERS], argv[MY_ID], line);
 	fflush(stdout);
 
     return 0;
