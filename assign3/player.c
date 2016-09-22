@@ -26,7 +26,7 @@ char *get_error_message(int errno) {
 	}
 }
 
-void validates_args(int argc, char **argv) {
+void validate_args(int argc, char **argv) {
 
 	bool invalidNumberOfArgs = argc != 3;
 
@@ -61,7 +61,7 @@ void validates_args(int argc, char **argv) {
 int main(int argc, char **argv) {
 
 	// Can terminate the program
-	validates_args(argc, argv);
+	validate_args(argc, argv);
 
 
 	// printf("%s\n", "Child starts");

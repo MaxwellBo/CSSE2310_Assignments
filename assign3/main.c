@@ -42,6 +42,26 @@ char *get_error_message(int errno) {
 	}
 }
 
+void validate_args(int argc, char **argv) {
+
+	bool invalidNumberOfArgs = !((3 + MIN_PLAYERS) <= argc && argc <= (3 + MAX_PLAYERS));
+
+	bool invalidScore = !(0 < atoi(argv[WINSCORE]));
+
+	int status;
+
+	if (invalidNumberOfArgs) {
+		status = 1;
+	} else if (invalidScore) {
+		status = 2;
+	} else {
+		return;
+	}
+
+	fprintf(stderr, "%s\n", get_error_message(status));
+	exit(status);
+}
+
 /*
  * Author: 43926871
  *
@@ -49,13 +69,9 @@ char *get_error_message(int errno) {
  * - Can terminate the program
  */
 int main(int argc, char **argv) {
-	// argv[1] is rolls
-	// argv[2] is points
-	// Must be at least 2 players (argv[3] and argv[4])
-	if (argc <= 4) {
-		fprintf(stderr, "%s\n", get_error_message(1));
-		exit(1);
-	}
+
+	// Can terminate the program 
+	validate_args(argc, argv);
 
 	int numberOfPlayers = argc - NON_PLAYER_ARGS;
 
@@ -94,22 +110,3 @@ int main(int argc, char **argv) {
 	}
 }
 
-void validates_args(int argc, char **argv) {
-
-	bool invalidNumberOfArgs = !((3 + MIN_PLAYERS) <= argc && argc <= (3 + MAX_PLAYERS));
-
-	bool invalidScore = !(0 <= atoi(argv[WINSCORE]));
-
-	int status;
-
-	if (invalidNumberOfArgs) {
-		status = 1;
-	} else if (invalidScore) {
-		status = 2;
-	} else {
-		return;
-	}
-
-	fprintf(stderr, "%s\n", get_error_message(status));
-	exit(status);
-}
