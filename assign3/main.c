@@ -76,6 +76,7 @@ FILE *get_rollfile(char *filepath) {
       	char c = fgetc(rollfile);
 
 		if (c == EOF) { 
+			rewind(rollfile);
 	   		return rollfile;
 	   	}
 
