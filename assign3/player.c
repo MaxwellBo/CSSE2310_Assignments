@@ -6,6 +6,7 @@
 
 #include "utils.c"
 
+#define PLAYER 0
 #define NUMBER_OF_PLAYERS 1
 #define MY_ID 2
 
@@ -67,8 +68,10 @@ int main(int argc, char **argv) {
 	// printf("%s\n", "Child starts");
 	char *line = read_line(stdin);
 
-	fprintf(stdout, "%s %s %s\n", argv[NUMBER_OF_PLAYERS], argv[MY_ID], line);
+	fprintf(stdout, "%s %s %s\n", argv[PLAYER], argv[NUMBER_OF_PLAYERS], argv[MY_ID]);
 	fflush(stdout);
+
+	fprintf(stderr, "From hub:%s\n", line);
 
     return 0;
 }
