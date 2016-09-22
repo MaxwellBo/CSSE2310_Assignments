@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
+#include <stdbool.h>
 
 #include "utils.c"
 
@@ -22,31 +23,21 @@ char *get_error_message(int errno) {
 	}
 }
 
-/*
- * Author: 43926871
- *
- * - Performs IO to stdout and stderr
- * - Can terminate the program
- */
-int main(int argc, char **argv) {
-	// printf("%s\n", "Child starts");
-	char *line = read_line(stdin);
-
-	fprintf(stdout, "%s %s %s\n", argv[1], argv[2], line);
-	fflush(stdout);
-
-    return 0;
-}
-
 void validates_args(int argc, char **argv) {
 	int status;
 
-	if (argc != 3) {
+	bool invalidNumberOfArgs = argc != 3;
+
+	bool invalidPlayerCount = !(2 <= atoi(argv[1]) && atoi(argv[1]) <= 26);
+
+	bool invalidPlayerID = strlen(argv[2]) != 1 || 
+		!('A' <= argv[2][0] && argv[2][0] <= 'Z');
+
+	if (invalidNumberOfArgs) {
 		status = 1;
-	} else if (2 <= atoi(argv[1]) && atoi(argv[1]) <= 26) {
+	} else if (invalidPlayerCount) {
 		status = 2;
-	} else if (strlen(argv[2]) == 1 &&
-		'A' <= argv[2][0] && argv[2][0] <= 'Z') {
+	} else if (invalidPlayerID) {
 		status = 3;
 	} else {
 		return;
@@ -56,12 +47,24 @@ void validates_args(int argc, char **argv) {
 	exit(status);
 }
 
-void validate_args_no(int argc, char **argv) {
+/*
+ * Author: 43926871
+ *
+ * - Performs IO to stdout and stderr
+ * - Can terminate the program
+ */
+int main(int argc, char **argv) {
+
+	// Can terminate the program
+	validates_args(argc, argv);
+
+
+	// printf("%s\n", "Child starts");
+	char *line = read_line(stdin);
+
+	fprintf(stdout, "%s %s %s\n", argv[1], argv[2], line);
+	fflush(stdout);
+
+    return 0;
 }
 
-void validate_players(int argc, char **argv) {
-}
-
-void validate_ID(int argc, char **argv) {
-
-}
