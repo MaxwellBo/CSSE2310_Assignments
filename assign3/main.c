@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <stdbool.h>
 
 #include "utils.c"
 #include "bipe.c"
@@ -60,12 +61,17 @@ int main(int argc, char **argv) {
 		if ((pids[i] = fork()) == 0) {
 			use_as_child(bipes[i]);
 
-			char *label = malloc(sizeof(char) * 2);
-			label[1] = '\0';
-			label[0] = i + 65;
+			// A for (i = 0), B for (i = 1)
+			char label[2] = { (char)i + 'A', '\0' };
+
+			char numberOfPlayersArg[3];
+			scanf(numberOfPlayersArg, "%d", numberOfPlayers);
+			numberOfPlayersArg[2] = '\0';
+
+			printf("%s\n", numberOfPlayersArg);
 
 			// Prevents loop in forked child
-	    	execl(argv[playerArgumentOffset + i], "player", "numberOfPlayers", label, 0);
+	    	execl(argv[playerArgumentOffset + i], "player", numberOfPlayersArg, label, 0);
 		}
 	}
 
