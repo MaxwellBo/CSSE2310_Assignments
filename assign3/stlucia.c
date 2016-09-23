@@ -87,8 +87,9 @@ void validate_rollfile(FILE *rollfile) {
 }
 
 void main_loop(FILE *rollfile, int winscore, int playerCount, Faculty **faculties) {
-	// If the process has gotten to here, it's clearly a parent
 	for (int i = 0; i < playerCount; i++) {
+		
+		// Open file pointers to the child processes
     	use_as_parent(faculties[i]->pipe);
 
  		fprintf(faculties[i]->pipe->outbox, "%s\n", "yelling at child");
@@ -132,6 +133,9 @@ int main(int argc, char **argv) {
 		faculties[i]->pid = pid;
 
 		if (pid == 0) {
+			// ---------- CHILD ---------- 
+
+			// Redirect stdin/stdout
 			use_as_child(faculties[i]->pipe);
 
 			// A for (i = 0), B for (i = 1)
@@ -141,12 +145,11 @@ int main(int argc, char **argv) {
 			sprintf(playerCountArg, "%d", playerCount);
 			playerCountArg[2] = '\0';
 
-			// Prevents loop in forked child
 	    	execl(argv[NON_PLAYER_ARGS + i], "player", playerCountArg, label, NULL);
 		}
 	}
 
-	// and then
+	// ---------- PARENT ---------- 
 	main_loop(rollfile, atoi(argv[WINSCORE]), playerCount, faculties);
 
 }
