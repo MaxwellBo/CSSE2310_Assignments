@@ -1,13 +1,11 @@
 #include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
 #include <stdbool.h>
 
-#include "bipe.c"
+#include "pipe.c"
 
 typedef struct Faculty {
 	pid_t pid;
-	Bipe *bipe;
+	Pipe *pipe;
 	int health;
 	int score;
 	bool eliminated;
@@ -16,7 +14,7 @@ typedef struct Faculty {
 Faculty *new_faculty() {
 	Faculty *self = malloc(sizeof(Faculty));
 
-	self->bipe = new_bipe();
+	self->pipe = new_pipe();
 	self->health = 30; // TODO: Figure out what this number should be
 	self->score = 0;
 	self->eliminated = false;

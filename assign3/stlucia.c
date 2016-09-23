@@ -113,7 +113,7 @@ int main(int argc, char **argv) {
 		faculties[i]->pid = pid;
 
 		if (pid == 0) {
-			use_as_child(faculties[i]->bipe);
+			use_as_child(faculties[i]->pipe);
 
 			// A for (i = 0), B for (i = 1)
 			char label[2] = { (char)i + 'A', '\0' };
@@ -129,12 +129,12 @@ int main(int argc, char **argv) {
 
 	// If the process has gotten to here, it's clearly a parent
 	for (int i = 0; i < numberOfPlayers; i++) {
-    	use_as_parent(faculties[i]->bipe);
+    	use_as_parent(faculties[i]->pipe);
 
- 		fprintf(faculties[i]->bipe->outbox, "%s\n", "yelling at child");
- 		fflush(faculties[i]->bipe->outbox);
+ 		fprintf(faculties[i]->pipe->outbox, "%s\n", "yelling at child");
+ 		fflush(faculties[i]->pipe->outbox);
 
- 		char *line = read_line(faculties[i]->bipe->inbox);
+ 		char *line = read_line(faculties[i]->pipe->inbox);
  		printf("%s\n", line);
 	}
 }

@@ -2,22 +2,19 @@
 #include <stdio.h>
 #include <unistd.h>
 
-/*
- * Biderection pipe? Geddit? Ha.
- */
 #define READ_DESCRIPTOR 0
 #define WRITE_DESCRIPTOR 1
 
-typedef struct Bipe {
+typedef struct Pipe {
     int *toParent;
     int *toChild;
     FILE *inbox;
     FILE *outbox;
-} Bipe;
+} Pipe;
 
 
-Bipe *new_bipe() {
-	Bipe *self = malloc(sizeof(Bipe));
+Pipe *new_pipe() {
+	Pipe *self = malloc(sizeof(Pipe));
 
 	self->toParent = malloc(sizeof(int) * 2);
 	self->toChild = malloc(sizeof(int) * 2);
@@ -31,7 +28,7 @@ Bipe *new_bipe() {
 	return self;
 }
 
-void use_as_parent(Bipe *self) {
+void use_as_parent(Pipe *self) {
 	// Close the ends we won't use
 	close(self->toParent[WRITE_DESCRIPTOR]);
 	close(self->toChild[READ_DESCRIPTOR]);
@@ -40,7 +37,7 @@ void use_as_parent(Bipe *self) {
  	self->outbox = fdopen(self->toChild[WRITE_DESCRIPTOR], "w");
 }
 
-void use_as_child(Bipe *self) {
+void use_as_child(Pipe *self) {
 	close(self->toParent[READ_DESCRIPTOR]);
 	close(self->toChild[WRITE_DESCRIPTOR]);
 
