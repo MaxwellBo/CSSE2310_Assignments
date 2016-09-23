@@ -14,32 +14,32 @@ typedef struct Pipe {
 
 
 Pipe *new_pipe() {
-	Pipe *self = malloc(sizeof(Pipe));
+    Pipe *self = malloc(sizeof(Pipe));
 
-	self->toParent = malloc(sizeof(int) * 2);
-	self->toChild = malloc(sizeof(int) * 2);
+    self->toParent = malloc(sizeof(int) * 2);
+    self->toChild = malloc(sizeof(int) * 2);
 
-	pipe(self->toParent);
-	pipe(self->toChild);
+    pipe(self->toParent);
+    pipe(self->toChild);
 
-	self->inbox = NULL;
-	self->outbox = NULL;
+    self->inbox = NULL;
+    self->outbox = NULL;
 
-	return self;
+    return self;
 }
 
 void use_as_parent(Pipe *self) {
-	// Close the ends we won't use
-	close(self->toParent[WRITE_DESCRIPTOR]);
-	close(self->toChild[READ_DESCRIPTOR]);
+    // Close the ends we won't use
+    close(self->toParent[WRITE_DESCRIPTOR]);
+    close(self->toChild[READ_DESCRIPTOR]);
 
- 	self->inbox = fdopen(self->toParent[READ_DESCRIPTOR], "r");
- 	self->outbox = fdopen(self->toChild[WRITE_DESCRIPTOR], "w");
+    self->inbox = fdopen(self->toParent[READ_DESCRIPTOR], "r");
+    self->outbox = fdopen(self->toChild[WRITE_DESCRIPTOR], "w");
 }
 
 void use_as_child(Pipe *self) {
-	close(self->toParent[READ_DESCRIPTOR]);
-	close(self->toChild[WRITE_DESCRIPTOR]);
+    close(self->toParent[READ_DESCRIPTOR]);
+    close(self->toChild[WRITE_DESCRIPTOR]);
 
     dup2(self->toParent[WRITE_DESCRIPTOR], STDOUT_FILENO);
     dup2(self->toChild[READ_DESCRIPTOR], STDIN_FILENO);
