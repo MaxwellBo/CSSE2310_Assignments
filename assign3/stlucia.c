@@ -3,8 +3,8 @@
 #include <unistd.h>
 #include <stdbool.h>
 
+#include "faculty.c"
 #include "utils.c"
-#include "bipe.c"
 
 #define READ_DESCRIPTOR 0
 #define WRITE_DESCRIPTOR 1
@@ -104,15 +104,16 @@ int main(int argc, char **argv) {
 
 	int numberOfPlayers = argc - NON_PLAYER_ARGS;
 
-	pid_t pids[numberOfPlayers];
-	Bipe *bipes[numberOfPlayers];
+	Faculty *faculties[numberOfPlayers];
 
 	for (int i = 0; i < numberOfPlayers; i++) {
-		bipes[i] = new_bipe();
+		faculties[i] = new_faculty();
 
+		pid_t pid = fork();
+		faculties[i]->pid = pid;
 
-		if ((pids[i] = fork()) == 0) {
-			use_as_child(bipes[i]);
+		if (pid == 0) {
+			use_as_child(faculties[i]->bipe);
 
 			// A for (i = 0), B for (i = 1)
 			char label[2] = { (char)i + 'A', '\0' };
@@ -128,14 +129,13 @@ int main(int argc, char **argv) {
 
 	// If the process has gotten to here, it's clearly a parent
 	for (int i = 0; i < numberOfPlayers; i++) {
-    	use_as_parent(bipes[i]);
+    	use_as_parent(faculties[i]->bipe);
 
- 		fprintf(bipes[i]->outbox, "%s\n", "yelling at child");
- 		fflush(bipes[i]->outbox);
+ 		fprintf(faculties[i]->bipe->outbox, "%s\n", "yelling at child");
+ 		fflush(faculties[i]->bipe->outbox);
 
- 		char *line = read_line(bipes[i]->inbox);
+ 		char *line = read_line(faculties[i]->bipe->inbox);
  		printf("%s\n", line);
-
 	}
 }
 
