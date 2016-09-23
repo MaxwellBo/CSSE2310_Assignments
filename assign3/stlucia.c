@@ -102,11 +102,11 @@ int main(int argc, char **argv) {
 	// Can terminate the program
 	validate_rollfile(rollfile);
 
-	int numberOfPlayers = argc - NON_PLAYER_ARGS;
+	int playerCount = argc - NON_PLAYER_ARGS;
 
-	Faculty *faculties[numberOfPlayers];
+	Faculty *faculties[playerCount];
 
-	for (int i = 0; i < numberOfPlayers; i++) {
+	for (int i = 0; i < playerCount; i++) {
 		faculties[i] = new_faculty();
 
 		pid_t pid = fork();
@@ -118,17 +118,17 @@ int main(int argc, char **argv) {
 			// A for (i = 0), B for (i = 1)
 			char label[2] = { (char)i + 'A', '\0' };
 
-			char numberOfPlayersArg[3];
-			sprintf(numberOfPlayersArg, "%d", numberOfPlayers);
-			numberOfPlayersArg[2] = '\0';
+			char playerCountArg[3];
+			sprintf(playerCountArg, "%d", playerCount);
+			playerCountArg[2] = '\0';
 
 			// Prevents loop in forked child
-	    	execl(argv[NON_PLAYER_ARGS + i], "player", numberOfPlayersArg, label, NULL);
+	    	execl(argv[NON_PLAYER_ARGS + i], "player", playerCountArg, label, NULL);
 		}
 	}
 
 	// If the process has gotten to here, it's clearly a parent
-	for (int i = 0; i < numberOfPlayers; i++) {
+	for (int i = 0; i < playerCount; i++) {
     	use_as_parent(faculties[i]->pipe);
 
  		fprintf(faculties[i]->pipe->outbox, "%s\n", "yelling at child");
