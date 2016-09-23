@@ -63,9 +63,7 @@ void validate_args(int argc, char **argv) {
 	exit(status);
 }
 
-FILE *get_rollfile(char *filepath) {
-	
-	FILE *rollfile = fopen(filepath, "r");
+void validate_rollfile(FILE *rollfile) {
 
 	if (rollfile == NULL) {
 		fprintf(stderr, "%s\n", get_error_message(3));
@@ -77,7 +75,7 @@ FILE *get_rollfile(char *filepath) {
 
 		if (c == EOF) { 
 			rewind(rollfile);
-	   		return rollfile;
+	   		return;
 	   	}
 
      	if (!((c == '1') || (c == '2') || (c == '3') 
@@ -99,8 +97,10 @@ int main(int argc, char **argv) {
 	// Can terminate the program 
 	validate_args(argc, argv);
 
+	FILE *rollfile = fopen(argv[ROLLFILE], "r");
+
 	// Can terminate the program
-	FILE *rollfile = get_rollfile(argv[ROLLFILE]);
+	validate_rollfile(rollfile);
 
 	int numberOfPlayers = argc - NON_PLAYER_ARGS;
 
