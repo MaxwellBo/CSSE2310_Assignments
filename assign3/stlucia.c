@@ -86,6 +86,19 @@ void validate_rollfile(FILE *rollfile) {
    }
 }
 
+void main_loop(FILE *rollfile, int winscore, int playerCount, Faculty **faculties) {
+	// If the process has gotten to here, it's clearly a parent
+	for (int i = 0; i < playerCount; i++) {
+    	use_as_parent(faculties[i]->pipe);
+
+ 		fprintf(faculties[i]->pipe->outbox, "%s\n", "yelling at child");
+ 		fflush(faculties[i]->pipe->outbox);
+
+ 		char *line = read_line(faculties[i]->pipe->inbox);
+ 		printf("%s\n", line);
+	}
+}
+
 /*
  * Author: 43926871
  *
@@ -93,6 +106,8 @@ void validate_rollfile(FILE *rollfile) {
  * - Can terminate the program
  */
 int main(int argc, char **argv) {
+
+	// ---------- VALIDATION ---------- 
 
 	// Can terminate the program 
 	validate_args(argc, argv);
@@ -102,9 +117,13 @@ int main(int argc, char **argv) {
 	// Can terminate the program
 	validate_rollfile(rollfile);
 
+	// ---------- MODEL CREATION ---------- 
+
 	int playerCount = argc - NON_PLAYER_ARGS;
 
-	Faculty *faculties[playerCount];
+	Faculty **faculties = malloc(sizeof(Faculty *) * playerCount);
+
+	// ---------- FORKING ---------- 
 
 	for (int i = 0; i < playerCount; i++) {
 		faculties[i] = new_faculty();
@@ -127,15 +146,8 @@ int main(int argc, char **argv) {
 		}
 	}
 
-	// If the process has gotten to here, it's clearly a parent
-	for (int i = 0; i < playerCount; i++) {
-    	use_as_parent(faculties[i]->pipe);
+	// and then
+	main_loop(rollfile, atoi(argv[WINSCORE]), playerCount, faculties);
 
- 		fprintf(faculties[i]->pipe->outbox, "%s\n", "yelling at child");
- 		fflush(faculties[i]->pipe->outbox);
-
- 		char *line = read_line(faculties[i]->pipe->inbox);
- 		printf("%s\n", line);
-	}
 }
 
