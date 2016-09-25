@@ -67,14 +67,14 @@ int main(int argc, char **argv) {
     // Can terminate the program
     validate_args(argc, argv);
 
+    while(1) {
+        char *line = read_line(stdin);
 
-    // printf("%s\n", "Child starts");
-    char *line = read_line(stdin);
+        fprintf(stdout, "%s\n", "keepall");
+        fflush(stdout);
 
-    fprintf(stdout, "%s %s %s\n", argv[PLAYER], argv[NUMBER_OF_PLAYERS], argv[MY_ID]);
-    fflush(stdout);
-
-    fprintf(stderr, "From hub:%s\n", line);
+        fprintf(stderr, "From hub:%s\n", line);
+    }
 
     return 0;
 }
