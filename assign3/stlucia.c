@@ -104,6 +104,24 @@ char get_roll(FILE *rollfile) {
     }
 }
 
+int compare_rolls(const void *a, const void *b) {
+
+    char char_a = *((char *)a);
+    char char_b = *((char *)b);
+
+    // Treat 'A' as 'J', so that 'H' < 'A' < 'P' when sorted (as 'H' < 'J')
+    char_a = char_a == 'A' ? 'J' : char_a;
+    char_b = char_b == 'A' ? 'J' : char_b;
+
+    if (char_a < char_b) {
+        return -1;
+    } else if (char_a == char_b) {
+        return 0;
+    } else {
+        return 1;
+    }
+}
+
 // IMPURE
 char *get_rolls(FILE *rollfile) {
     char *collector = malloc(sizeof(char) * 7);
@@ -112,6 +130,9 @@ char *get_rolls(FILE *rollfile) {
     for (int i = 0; i < 6; i++) {
         collector[i] = get_roll(rollfile);
     }
+
+    // Sort the first 6 elems of the collector
+    qsort(collector, 6, sizeof(char), compare_rolls);
 
     return collector;
 }
