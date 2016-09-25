@@ -119,8 +119,6 @@ char *get_rolls(FILE *rollfile) {
 // IMPURE
 void main_loop(FILE *rollfile, int winscore, int playerCount, Faculty **faculties) {
     for (int i = 0; i < playerCount; i++) {
-        // Open file pointers to the child processes
-        use_as_parent(faculties[i]->pipe);
 
         char *rolls = get_rolls(rollfile);
         fprintf(faculties[i]->pipe->outbox, "turn %s\n", rolls);
@@ -139,7 +137,6 @@ void main_loop(FILE *rollfile, int winscore, int playerCount, Faculty **facultie
  * - Can terminate the program
  */
 int main(int argc, char **argv) {
-
     // ---------- VALIDATION ---------- 
 
     // Can terminate the program 
@@ -178,11 +175,15 @@ int main(int argc, char **argv) {
             playerCountArg[2] = '\0';
 
             execl(argv[NON_PLAYER_ARGS + i], "player", playerCountArg, label, NULL);
+        } else {
+            // ---------- PARENT ---------- 
+
+            // Open file pointers to the child processes
+            use_as_parent(faculties[i]->pipe);
         }
     }
 
     // ---------- PARENT ---------- 
     main_loop(rollfile, atoi(argv[WINSCORE]), playerCount, faculties);
-
 }
 
