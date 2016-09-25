@@ -106,16 +106,16 @@ char get_roll(FILE *rollfile) {
 
 int compare_rolls(const void *a, const void *b) {
 
-    char char_a = *((char *)a);
-    char char_b = *((char *)b);
+    char charA = *((char *)a);
+    char charB = *((char *)b);
 
     // Treat 'A' as 'J', so that 'H' < 'A' < 'P' when sorted (as 'H' < 'J')
-    char_a = char_a == 'A' ? 'J' : char_a;
-    char_b = char_b == 'A' ? 'J' : char_b;
+    charA = charA == 'A' ? 'J' : charA;
+    charB = charB == 'A' ? 'J' : charB;
 
-    if (char_a < char_b) {
+    if (charA < charB) {
         return -1;
-    } else if (char_a == char_b) {
+    } else if (charA == charB) {
         return 0;
     } else {
         return 1;
