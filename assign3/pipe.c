@@ -13,6 +13,7 @@ typedef struct Pipe {
 } Pipe;
 
 
+// TODO: Error checking for condition 5
 Pipe *new_pipe() {
     Pipe *self = malloc(sizeof(Pipe));
 

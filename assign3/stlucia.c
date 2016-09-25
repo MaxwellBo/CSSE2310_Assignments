@@ -110,8 +110,8 @@ int compare_rolls(const void *a, const void *b) {
     char charB = *((char *)b);
 
     // Treat 'A' as 'J', so that 'H' < 'A' < 'P' when sorted (as 'H' < 'J')
-    charA = charA == 'A' ? 'J' : charA;
-    charB = charB == 'A' ? 'J' : charB;
+    charA = (charA == 'A') ? 'J' : charA;
+    charB = (charB == 'A') ? 'J' : charB;
 
     if (charA < charB) {
         return -1;
@@ -131,7 +131,7 @@ char *get_rolls(FILE *rollfile) {
         collector[i] = get_roll(rollfile);
     }
 
-    // Sort the first 6 elems of the collector
+    // Sort the first 6 elems of the collector, leaving '\0' in place
     qsort(collector, 6, sizeof(char), compare_rolls);
 
     return collector;
