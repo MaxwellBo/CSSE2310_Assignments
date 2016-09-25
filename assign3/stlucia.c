@@ -17,6 +17,7 @@
 #define ROLLFILE 1
 #define WINSCORE 2
 
+// PURE
 char *get_error_message(int errno) {
     switch (errno) {
         case 1:
@@ -42,6 +43,7 @@ char *get_error_message(int errno) {
     }
 }
 
+// IMPURE
 void validate_args(int argc, char **argv) {
 
     bool invalidNumberOfArgs = !((3 + MIN_PLAYERS) <= argc && argc <= (3 + MAX_PLAYERS));
@@ -63,6 +65,7 @@ void validate_args(int argc, char **argv) {
     exit(status);
 }
 
+// IMPURE
 void validate_rollfile(FILE *rollfile) {
 
     if (rollfile == NULL) {
@@ -86,13 +89,43 @@ void validate_rollfile(FILE *rollfile) {
    }
 }
 
+// IMPURE
+char get_roll(FILE *rollfile) {
+    while(1) {
+        char roll = fgetc(rollfile);
+        
+        if (roll == '\n') {
+            continue;
+        } else if (roll == EOF) {
+            rewind(rollfile);
+        } else {
+            return roll;
+        }
+    }
+}
+
+// IMPURE
+char *get_rolls(FILE *rollfile) {
+    char *collector = malloc(sizeof(char) * 7);
+    collector[6] = '\0';
+
+    for (int i = 0; i < 6; i++) {
+        collector[i] = get_roll(rollfile);
+    }
+
+    return collector;
+}
+
+// IMPURE
 void main_loop(FILE *rollfile, int winscore, int playerCount, Faculty **faculties) {
     for (int i = 0; i < playerCount; i++) {
         // Open file pointers to the child processes
         use_as_parent(faculties[i]->pipe);
 
-        fprintf(faculties[i]->pipe->outbox, "%s\n", "yelling at child");
+        char *rolls = get_rolls(rollfile);
+        fprintf(faculties[i]->pipe->outbox, "turn %s\n", rolls);
         fflush(faculties[i]->pipe->outbox);
+        free(rolls);
 
         char *line = read_line(faculties[i]->pipe->inbox);
         printf("%s\n", line);

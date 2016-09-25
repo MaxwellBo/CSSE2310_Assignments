@@ -10,6 +10,7 @@
 #define NUMBER_OF_PLAYERS 1
 #define MY_ID 2
 
+// PURE
 char *get_error_message(int errno) {
     switch (errno) {
         case 1:
@@ -27,6 +28,7 @@ char *get_error_message(int errno) {
     }
 }
 
+// IMPURE
 void validate_args(int argc, char **argv) {
 
     bool invalidNumberOfArgs = argc != 3;
@@ -53,6 +55,7 @@ void validate_args(int argc, char **argv) {
     exit(status);
 }
 
+
 /*
  * Author: 43926871
  *
@@ -75,4 +78,5 @@ int main(int argc, char **argv) {
 
     return 0;
 }
+
 
