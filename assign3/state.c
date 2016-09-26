@@ -26,11 +26,25 @@ State *new_state(int numberOfPlayers, char me) {
     return self;
 }
 
-char *process_roll(State *self, char *rolls) {
+char *build_response(bool *toReroll) {
     char *response = malloc(sizeof(char) * REROLL_LENGTH);
     memset(response, '\0', REROLL_LENGTH);
     strcpy(response, "reroll ");
 
+    char *start = &response[REROLL_DICE_OFFSET];
+
+    for (int i = 0; i < DICE; i++) {
+        if (toReroll[i]) {
+            char dieNo = i + '1';
+            *start = dieNo;
+            start++;
+        }
+    }
+
+    return response;
+}
+
+char *process_roll(State *self, char *rolls) {
     // "they will reroll as many dice as possible as many times as possible"
     bool toReroll[6] = { true, true, true, true, true, true };
 
@@ -65,19 +79,10 @@ char *process_roll(State *self, char *rolls) {
 
     // Then build the string
 
-    char *start = &response[REROLL_DICE_OFFSET];
 
-    for (int i = 0; i < DICE; i++) {
-        if (toReroll[i]) {
-            char dieNo = i + '1';
-            *start = dieNo;
-            start++;
-        }
-    }
-
-
-    return response;
+    return build_response(toReroll);
 }
+
 
 char *process_stay(State *self) {
     char *response = malloc(sizeof(char) * PROCESS_LENGTH);
