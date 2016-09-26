@@ -5,6 +5,7 @@
 #include <stdbool.h>
 
 #include "utils.c"
+#include "state.c"
 
 #define PLAYER 0
 #define NUMBER_OF_PLAYERS 1
@@ -48,22 +49,6 @@ void validate_args(int argc, char **argv) {
     exit(status);
 }
 
-
-char *process_roll(char *rolls) {
-    char *response = malloc(sizeof(char) * 16);
-
-    strcpy(response, "reroll 123456");
-
-    return response;
-}
-
-char *process_stay() {
-    char *response = malloc(sizeof(char) * 5);
-
-    strcpy(response, "stay");
-
-    return response;
-}
 
 /*
  * Author: 43926871
