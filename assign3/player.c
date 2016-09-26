@@ -30,23 +30,15 @@ char *get_error_message(int errno) {
 
 // IMPURE
 void validate_args(int argc, char **argv) {
-
-    bool invalidNumberOfArgs = argc != 3;
-
-    // TODO: Fix this segfault
-    bool invalidPlayerCount = !(2 <= atoi(argv[NUMBER_OF_PLAYERS]) 
-        && atoi(argv[NUMBER_OF_PLAYERS]) <= 26);
-
-    bool invalidPlayerID = strlen(argv[MY_ID]) != 1 || 
-        !('A' <= argv[MY_ID][0] && argv[MY_ID][0] <= 'Z');
-
     int status;
 
-    if (invalidNumberOfArgs) {
+    if (argc != 3) {
         status = 1;
-    } else if (invalidPlayerCount) {
+    } else if (!(2 <= atoi(argv[NUMBER_OF_PLAYERS]) 
+        && atoi(argv[NUMBER_OF_PLAYERS]) <= 26)) {
         status = 2;
-    } else if (invalidPlayerID) {
+    } else if (strlen(argv[MY_ID]) != 1
+        || !('A' <= argv[MY_ID][0] && argv[MY_ID][0] <= 'Z')) {
         status = 3;
     } else {
         return;

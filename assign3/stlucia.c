@@ -45,17 +45,11 @@ char *get_error_message(int errno) {
 
 // IMPURE
 void validate_args(int argc, char **argv) {
-
-    bool invalidNumberOfArgs = !((3 + MIN_PLAYERS) <= argc && argc <= (3 + MAX_PLAYERS));
-
-    // Returns 0 if atoi fails, which is invalid anyway
-    bool invalidScore = !(0 < atoi(argv[WINSCORE]));
-
     int status;
 
-    if (invalidNumberOfArgs) {
+    if (!((3 + MIN_PLAYERS) <= argc && argc <= (3 + MAX_PLAYERS))) {
         status = 1;
-    } else if (invalidScore) {
+    } else if (!(0 < atoi(argv[WINSCORE]))) {
         status = 2;
     } else {
         return;
