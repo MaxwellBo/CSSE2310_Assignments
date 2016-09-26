@@ -1,5 +1,4 @@
 #include <stdlib.h>
-#include <stdbool.h>
 
 #include "faculty.c"
 
@@ -22,7 +21,7 @@ State *new_state(int numberOfPlayers, char me) {
     return self;
 }
 
-char *process_roll(char *rolls) {
+char *process_roll(State *self, char *rolls) {
     char *response = malloc(sizeof(char) * 16);
 
     strcpy(response, "reroll 123456");
@@ -30,7 +29,7 @@ char *process_roll(char *rolls) {
     return response;
 }
 
-char *process_stay() {
+char *process_stay(State *self) {
     char *response = malloc(sizeof(char) * 5);
 
     strcpy(response, "stay");

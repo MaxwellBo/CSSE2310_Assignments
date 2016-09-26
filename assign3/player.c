@@ -61,6 +61,8 @@ int main(int argc, char **argv) {
     // Can terminate the program
     validate_args(argc, argv);
 
+    State *state = new_state(atoi(argv[NUMBER_OF_PLAYERS]), argv[MY_ID][0]);
+
     while(1) {
         char *line = read_line(stdin);
         fprintf(stderr, "From hub:%s\n", line);
@@ -72,11 +74,11 @@ int main(int argc, char **argv) {
         // 0 on successful compare
         if (!strcmp(command, "turn")) {
             // Only pass in the dice
-            response = process_roll(&line[5]);
+            response = process_roll(state, &line[5]);
         } else if (!strcmp(command, "rerolled")) {
-            response = process_roll(&line[7]);
+            response = process_roll(state, &line[7]);
         } else if (!strcmp(command, "stay?")) {
-            response = process_stay();
+            response = process_stay(state);
         } else {
             fprintf(stderr, "%s\n", get_error_message(5));
             exit(5);
@@ -89,5 +91,3 @@ int main(int argc, char **argv) {
 
     return 0;
 }
-
-
