@@ -58,7 +58,11 @@ char *process_roll(char *rolls) {
 }
 
 char *process_stay() {
+    char *response = malloc(sizeof(char) * 5);
 
+    strcpy(response, "stay");
+
+    return response;
 }
 
 /*
@@ -84,6 +88,13 @@ int main(int argc, char **argv) {
         if (!strcmp(command, "turn")) {
             // Only pass in the dice
             response = process_roll(&line[5]);
+        } else if (!strcmp(command, "rerolled")) {
+            response = process_roll(&line[7]);
+        } else if (!strcmp(command, "stay?")) {
+            response = process_stay();
+        } else {
+            fprintf(stderr, "%s\n", get_error_message(5));
+            exit(5);
         }
 
         fprintf(stdout, "%s\n", response);
