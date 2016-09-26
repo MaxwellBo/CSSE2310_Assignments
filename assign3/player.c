@@ -69,11 +69,16 @@ int main(int argc, char **argv) {
 
     while(1) {
         char *line = read_line(stdin);
+        fprintf(stderr, "From hub:%s\n", line);
+
+        char command[17];
+
+        sscanf(line, "%s", command);
+        fprintf(stderr, "%s\n", command);
 
         fprintf(stdout, "%s\n", "keepall");
         fflush(stdout);
 
-        fprintf(stderr, "From hub:%s\n", line);
     }
 
     return 0;
