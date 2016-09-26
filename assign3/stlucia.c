@@ -3,7 +3,7 @@
 #include <unistd.h>
 #include <stdbool.h>
 
-#include "faculty.c"
+#include "client.c"
 #include "utils.c"
 
 #define READ_DESCRIPTOR 0
@@ -132,15 +132,15 @@ char *get_rolls(FILE *rollfile) {
 }
 
 // IMPURE
-void main_loop(FILE *rollfile, int winscore, int playerCount, Faculty **faculties) {
+void main_loop(FILE *rollfile, int winscore, int playerCount, Client **clients) {
     for (int i = 0; i < playerCount; i++) {
 
         char *rolls = get_rolls(rollfile);
-        fprintf(faculties[i]->pipe->outbox, "turn %s\n", rolls);
-        fflush(faculties[i]->pipe->outbox);
+        fprintf(clients[i]->pipe->outbox, "turn %s\n", rolls);
+        fflush(clients[i]->pipe->outbox);
         free(rolls);
 
-        char *line = read_line(faculties[i]->pipe->inbox);
+        char *line = read_line(clients[i]->pipe->inbox);
         printf("%s\n", line);
     }
 }
@@ -166,21 +166,21 @@ int main(int argc, char **argv) {
 
     int playerCount = argc - NON_PLAYER_ARGS;
 
-    Faculty **faculties = malloc(sizeof(Faculty *) * playerCount);
+    Client **clients = malloc(sizeof(Client *) * playerCount);
 
     // ---------- FORKING ---------- 
 
     for (int i = 0; i < playerCount; i++) {
-        faculties[i] = new_faculty();
+        clients[i] = new_client();
 
         pid_t pid = fork();
-        faculties[i]->pid = pid;
+        clients[i]->pid = pid;
 
         if (pid == 0) {
             // ---------- CHILD ---------- 
 
             // Redirect stdin/stdout
-            use_as_child(faculties[i]->pipe);
+            use_as_child(clients[i]->pipe);
 
             // A for (i = 0), B for (i = 1)
             char label[2] = { (char)i + 'A', '\0' };
@@ -194,11 +194,11 @@ int main(int argc, char **argv) {
             // ---------- PARENT ---------- 
 
             // Open file pointers to the child processes
-            use_as_parent(faculties[i]->pipe);
+            use_as_parent(clients[i]->pipe);
         }
     }
 
     // ---------- PARENT ---------- 
-    main_loop(rollfile, atoi(argv[WINSCORE]), playerCount, faculties);
+    main_loop(rollfile, atoi(argv[WINSCORE]), playerCount, clients);
 }
 
