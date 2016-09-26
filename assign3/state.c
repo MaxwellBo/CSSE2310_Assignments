@@ -31,7 +31,8 @@ char *process_roll(State *self, char *rolls) {
     memset(response, '\0', REROLL_LENGTH);
     strcpy(response, "reroll ");
 
-    bool toKeep[6] = { false, false, false, false, false, false };
+    // "they will reroll as many dice as possible as many times as possible"
+    bool toReroll[6] = { true, true, true, true, true, true };
 
     // 1 in the 1th column, 2 in the 2th, etc.
     int tallys[3] = { 0, 0, 0 };
@@ -54,11 +55,11 @@ char *process_roll(State *self, char *rolls) {
         if (rolls[i] == '1' || rolls[i] == '2' || rolls[i] == '3') {
             int index = rolls[i] - '1';
             if (tallys[index] > 2) {
-                toKeep[i] = true;
+                toReroll[i] = false;
             }
             // TODO: Health
         } else if (rolls[i] == 'H') {
-            toKeep[i] = true;
+            toReroll[i] = false;
         }
     }
 
@@ -67,7 +68,7 @@ char *process_roll(State *self, char *rolls) {
     char *start = &response[REROLL_DICE_OFFSET];
 
     for (int i = 0; i < DICE; i++) {
-        if (!toKeep[i]) {
+        if (toReroll[i]) {
             char dieNo = i + '1';
             *start = dieNo;
             start++;
