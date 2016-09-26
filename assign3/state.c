@@ -26,6 +26,10 @@ State *new_state(int numberOfPlayers, char me) {
     return self;
 }
 
+Faculty *get_me(State *self) {
+    return self->faculties[self->me - 'A'];
+}
+
 char *build_response(bool *toReroll) {
     char *response = malloc(sizeof(char) * REROLL_LENGTH);
     memset(response, '\0', REROLL_LENGTH);
@@ -72,13 +76,10 @@ char *process_roll(State *self, char *rolls) {
                 toReroll[i] = false;
             }
             // TODO: Health
-        } else if (rolls[i] == 'H') {
+        } else if (rolls[i] == 'H' && get_me(self)->health < 6) {
             toReroll[i] = false;
         }
     }
-
-    // Then build the string
-
 
     return build_response(toReroll);
 }
@@ -90,8 +91,4 @@ char *process_stay(State *self) {
     strcpy(response, "stay");
 
     return response;
-}
-
-int label_to_index(char me) {
-    return me - 'A';
 }
