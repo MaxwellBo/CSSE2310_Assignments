@@ -63,10 +63,14 @@ char *process_roll(State *self, char *rolls) {
     }
 
     // Then build the string
+
+    char *start = &response[REROLL_DICE_OFFSET];
+
     for (int i = 0; i < DICE; i++) {
         if (!toKeep[i]) {
             char dieNo = i + '1';
-            response[REROLL_DICE_OFFSET + i] = dieNo;
+            *start = dieNo;
+            start++;
         }
     }
 
