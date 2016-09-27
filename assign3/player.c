@@ -4,7 +4,6 @@
 #include <string.h>
 #include <stdbool.h>
 
-#include "utils.c"
 #include "state.c"
 
 #define PLAYER 0

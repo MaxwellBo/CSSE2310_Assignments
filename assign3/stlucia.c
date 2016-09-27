@@ -166,6 +166,10 @@ void process_end_of_turn(int winscore, int playerCount, Client **clients, char *
     sprintf(broadcastMsg, "Player %c rolled %s\n", currentPlayer->label, rolls);
 
     broadcast(playerCount, clients, broadcastMsg);
+
+    char *tallys = tally_faces(rolls);
+
+
 }
 
 // IMPURE
