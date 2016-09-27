@@ -139,7 +139,7 @@ char *get_rerolls(FILE *rollfile, char *rolls, char *rerolls) {
     // Copy so we don't mutate the rolls
     char *collector = malloc(sizeof(char) * DICE + 1);
     // dst, src, size
-    strncpy(collector, rolls, DICE + 1);
+    strcpy(collector, rolls);
 
     // Reroll the specified dice
     while (*rerolls != '\0') {
