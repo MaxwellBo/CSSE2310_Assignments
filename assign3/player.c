@@ -68,7 +68,7 @@ int main(int argc, char **argv) {
         fprintf(stderr, "From hub:%s\n", line);
 
         // Max length
-        char command[strlen("Player ? took ? damage, health is now ?0")];
+        char command[strlen("Player ? took ? damage, health is now ?0")] = { 0 };
         sscanf(line, "%s ", command);
 
         char *response = NULL;
@@ -82,7 +82,6 @@ int main(int argc, char **argv) {
             response = process_stay(state);
         } else if (!strcmp(command, "Player")) {
             process_broadcast(state, line);
-            response = make_string("meme");
         } else {
             fprintf(stderr, "%s\n", get_error_message(5));
             exit(5);
