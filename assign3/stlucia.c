@@ -153,6 +153,14 @@ char *get_rerolls(FILE *rollfile, char *rolls, char *rerolls) {
     return collector;
 }
 
+
+void broadcast(int playerCount, Client **clients, char *message) {
+    for (int i = 0; i < playerCount; i++) {
+        fprintf(clients[i]->pipe->outbox, "%s\n", message);
+        fflush(clients[i]->pipe->outbox);
+    }
+}
+
 // IMPURE
 void main_loop(FILE *rollfile, int winscore, int playerCount, Client **clients) {
     for (int i = 0; i < playerCount; i++) {
@@ -165,7 +173,8 @@ void main_loop(FILE *rollfile, int winscore, int playerCount, Client **clients) 
             char *line = read_line(clients[i]->pipe->inbox);
             fprintf(stderr, "From child:%s\n", line);
 
-            char command[16];
+            // Max length
+            char command[strlen("eliminated0")];
             sscanf(line, "%s ", command);
 
             // 0 on successful compare
@@ -174,6 +183,10 @@ void main_loop(FILE *rollfile, int winscore, int playerCount, Client **clients) 
                 fprintf(clients[i]->pipe->outbox, "rerolled %s\n", rerolls);
                 fflush(clients[i]->pipe->outbox);
             } else if (!strcmp(command, "keepall")) {
+
+                // char command = 
+
+                // broadcast(playerCount, clients, )
                 break;
             }
         }
