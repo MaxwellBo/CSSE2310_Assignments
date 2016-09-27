@@ -156,7 +156,7 @@ char *get_rerolls(FILE *rollfile, char *rolls, char *rerolls) {
 
 void broadcast(int playerCount, Client **clients, char *message) {
     for (int i = 0; i < playerCount; i++) {
-        fprintf(clients[i]->pipe->outbox, "%s\n", message);
+        fprintf(clients[i]->pipe->outbox, message);
         fflush(clients[i]->pipe->outbox);
     }
 }
@@ -165,6 +165,7 @@ void broadcast(int playerCount, Client **clients, char *message) {
 void main_loop(FILE *rollfile, int winscore, int playerCount, Client **clients) {
     for (int i = 0; i < playerCount; i++) {
 
+        // Starting rolls
         char *rolls = get_rolls(rollfile);
         fprintf(clients[i]->pipe->outbox, "turn %s\n", rolls);
         fflush(clients[i]->pipe->outbox);
@@ -179,15 +180,19 @@ void main_loop(FILE *rollfile, int winscore, int playerCount, Client **clients) 
 
             // 0 on successful compare
             if (!strcmp(command, "reroll")) {
-                char *rerolls = get_rerolls(rollfile, rolls, &line[strlen("reroll ")]);
-                fprintf(clients[i]->pipe->outbox, "rerolled %s\n", rerolls);
+                rolls = get_rerolls(rollfile, rolls, &line[strlen("reroll ")]);
+                fprintf(clients[i]->pipe->outbox, "rerolled %s\n", rolls);
                 fflush(clients[i]->pipe->outbox);
             } else if (!strcmp(command, "keepall")) {
+                char broadcastMsg[strlen("Player ? rolled ??????n0")];
 
-                // char command = 
+                sprintf(broadcastMsg, "Player %c rolled %s\n", clients[i]->label, rolls);
 
-                // broadcast(playerCount, clients, )
+                broadcast(playerCount, clients, broadcastMsg);
                 break;
+            } else {
+                fprintf(stderr, "%s\n", get_error_message(7));
+                exit(7);
             }
         }
     }
@@ -219,19 +224,18 @@ int main(int argc, char **argv) {
     // ---------- FORKING ---------- 
 
     for (int i = 0; i < playerCount; i++) {
-        clients[i] = new_client();
+
+        // A for (i = 0), B for (i = 1)
+        char label[2] = { (char)i + 'A', '\0' };
+        clients[i] = new_client(label[0]);
 
         pid_t pid = fork();
         clients[i]->pid = pid;
 
         if (pid == 0) {
             // ---------- CHILD ---------- 
-
             // Redirect stdin/stdout
             use_as_child(clients[i]->pipe);
-
-            // A for (i = 0), B for (i = 1)
-            char label[2] = { (char)i + 'A', '\0' };
 
             char playerCountArg[3];
             sprintf(playerCountArg, "%d", playerCount);

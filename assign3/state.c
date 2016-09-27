@@ -95,6 +95,9 @@ char *process_roll(State *self, char *rolls) {
     }
 }
 
+char *process_broadcast(State *self, char *line) {
+ 
+}
 
 char *process_stay(State *self) {
     // What size does this array have to be?

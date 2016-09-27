@@ -70,7 +70,7 @@ int main(int argc, char **argv) {
         char command[16];
         sscanf(line, "%s", command);
 
-        char *response;
+        char *response = NULL;
         // 0 on successful compare
         if (!strcmp(command, "turn")) {
             // Only pass in the dice
@@ -79,14 +79,20 @@ int main(int argc, char **argv) {
             response = process_roll(state, &line[strlen("rerolled ")]);
         } else if (!strcmp(command, "stay?")) {
             response = process_stay(state);
+        // } else if (!strcmp(command, "Player")) {
+        //     response = malloc(sizeof(char) * 2);
+        //     response = "A";
+        //     // process_broadcast(state, line);
         } else {
             fprintf(stderr, "%s\n", get_error_message(5));
             exit(5);
         }
 
-        fprintf(stdout, "%s\n", response);
-        fflush(stdout);
-        free(response);
+        if (response != NULL) {
+            fprintf(stdout, "%s\n", response);
+            fflush(stdout);
+            free(response);
+        }
     }
 
     return 0;
