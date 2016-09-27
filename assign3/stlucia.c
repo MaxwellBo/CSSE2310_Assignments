@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <stdbool.h>
+#include <string.h>
 
 #include "client.c"
 #include "utils.c"
@@ -16,6 +17,8 @@
 
 #define ROLLFILE 1
 #define WINSCORE 2
+
+#define DICE 6
 
 // PURE
 char *get_error_message(int errno) {
@@ -118,14 +121,33 @@ int compare_rolls(const void *a, const void *b) {
 
 // IMPURE
 char *get_rolls(FILE *rollfile) {
-    char *collector = malloc(sizeof(char) * 7);
-    collector[6] = '\0';
+    char *collector = malloc(sizeof(char) * DICE + 1);
+    collector[DICE] = '\0';
 
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < DICE; i++) {
         collector[i] = get_roll(rollfile);
     }
 
     // Sort the first 6 elems of the collector, leaving '\0' in place
+    qsort(collector, 6, sizeof(char), compare_rolls);
+
+    return collector;
+}
+
+char *get_rerolls(FILE *rollfile, char *rolls, char *rerolls) {
+
+    // Copy so we don't mutate the rolls
+    char *collector = malloc(sizeof(char) * DICE + 1);
+    // dst, src, size
+    strncpy(collector, rolls, DICE + 1);
+
+    // Reroll the specified dice
+    while (*rerolls != '\0') {
+        int index = *rerolls - '1';
+        collector[index] = get_roll(rollfile);
+        rerolls++;
+    }
+
     qsort(collector, 6, sizeof(char), compare_rolls);
 
     return collector;
@@ -138,10 +160,18 @@ void main_loop(FILE *rollfile, int winscore, int playerCount, Client **clients) 
         char *rolls = get_rolls(rollfile);
         fprintf(clients[i]->pipe->outbox, "turn %s\n", rolls);
         fflush(clients[i]->pipe->outbox);
-        free(rolls);
 
         char *line = read_line(clients[i]->pipe->inbox);
-        printf("%s\n", line);
+        fprintf(stderr, "From child:%s\n", line);
+
+        char command[16];
+        sscanf(line, "%s ", command);
+
+        // 0 on successful compare
+        if (!strcmp(command, "reroll")) {
+            char *rerolls = get_rerolls(rollfile, rolls, &line[strlen("reroll ")]);
+            fprintf(clients[i]->pipe->outbox, "rerolled %s\n", rerolls);
+        }
     }
 }
 
