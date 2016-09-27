@@ -170,6 +170,7 @@ void broadcastOthers(int playerCount, Client *exempt, Client **clients, char *me
 
 void process_end_of_turn(int winscore, int playerCount, Client **clients, char *rolls, Client *currentPlayer) {
 
+    // ---------- INFORM OTHER PLAYERS WHAT WAS ROLLED -----------
     char broadcastMsg[strlen("rolled p XXXXXXn0")];
 
     sprintf(broadcastMsg, "rolled %c %s\n", currentPlayer->label, rolls);
@@ -178,7 +179,7 @@ void process_end_of_turn(int winscore, int playerCount, Client **clients, char *
     fprintf(stdout, "Player %c rolled %s\n", currentPlayer->label, rolls);
     fflush(stdout);
 
-
+    // ---------- POINTS FOR THE TURN ARE REPORTED ----------
     int *tallys = tally_faces(rolls);
 
     int points = 0;
@@ -197,10 +198,14 @@ void process_end_of_turn(int winscore, int playerCount, Client **clients, char *
         points += 3 + (tallys[2] - 3);
     }
 
-    // char broadcastMsg[strlen(P)]
+    currentPlayer->faculty->score += points; 
 
+    sprintf(broadcastMsg, "points %c %d\n", currentPlayer->label, points);
+    broadcastAll(playerCount, clients, broadcastMsg);
 
-
+    fprintf(stdout, "Player %c scored %d for a total of %d\n", 
+        currentPlayer->label, points, currentPlayer->faculty->score);
+    fflush(stdout);
 }
 
 // IMPURE
