@@ -78,11 +78,15 @@ char *process_roll(State *self, char *rolls) {
     } else {
         char *response = make_string("keepall");
         self->rerolls = 0;
+
+        // Heal up
+        int *tallys = tally_faces(rolls);
+        give_Hs(get_me(self), tallys[3]);
+
+        free(tallys);
+
         return response;
     }
-}
-
-void process_points(State *self, char *line) {
 }
 
 char *process_stay(State *self) {
