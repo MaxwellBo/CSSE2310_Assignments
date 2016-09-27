@@ -167,7 +167,7 @@ void process_end_of_turn(int winscore, int playerCount, Client **clients, char *
 
     broadcast(playerCount, clients, broadcastMsg);
 
-    char *tallys = tally_faces(rolls);
+    int *tallys = tally_faces(rolls);
 
 
 }

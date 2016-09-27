@@ -57,10 +57,15 @@ int *tally_faces(char *rolls) {
     // First, tally up the numbers
     for (int i = 0; i < DICE; i++) {
         if (rolls[i] == '1' || rolls[i] == '2' || rolls[i] == '3') {
-
             // Treat '1' as a 0 for indexing
             int index = rolls[i] - '1';
             tallys[index]++;
+        } else if (rolls[i] == 'H') {
+            tallys[3]++;
+        } else if (rolls[i] == 'A') {
+            tallys[4]++;
+        } else if (rolls[i] == 'P') {
+            tallys[5]++;
         }
     }
 
