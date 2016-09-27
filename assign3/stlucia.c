@@ -170,12 +170,10 @@ void broadcastOthers(int playerCount, Client *exempt, Client **clients, char *me
 
 void process_end_of_turn(int winscore, int playerCount, Client **clients, char *rolls, Client *currentPlayer) {
 
-    char broadcastMsg[36];
+    char broadcastMsg[strlen("rolled p XXXXXXn0")];
 
-    // sprintf(broadcastMsg, "rolled %c %s\n", currentPlayer->label, rolls);
-    fprintf(broadcastMsg, "Player %c rolled %s\n", currentPlayer->label, rolls);
-    // fprintf(stderr, "%s\n", broadcastMsg);
-    // broadcastOthers(playerCount, currentPlayer, clients, broadcastMsg);
+    sprintf(broadcastMsg, "rolled %c %s\n", currentPlayer->label, rolls);
+    broadcastOthers(playerCount, currentPlayer, clients, broadcastMsg);
 
     fprintf(stdout, "Player %c rolled %s\n", currentPlayer->label, rolls);
     fflush(stdout);
