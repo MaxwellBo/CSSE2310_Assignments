@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#define DICE 6
+
 /* 
  * Reads a single line from stdin until EOF or a newline is encountered
  *
@@ -45,4 +47,22 @@ char invert_pebble(char pebble) {
     } else {
         return 'O';
     }
+}
+
+int *tally_faces(char *rolls) {
+
+    int *tallys = malloc(sizeof(int) * DICE);
+    memset(tallys, 0, DICE);
+
+    // First, tally up the numbers
+    for (int i = 0; i < DICE; i++) {
+        if (rolls[i] == '1' || rolls[i] == '2' || rolls[i] == '3') {
+
+            // Treat '1' as a 0 for indexing
+            int index = rolls[i] - '1';
+            tallys[index]++;
+        }
+    }
+
+    return tallys;
 }

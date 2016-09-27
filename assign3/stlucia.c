@@ -159,6 +159,15 @@ void broadcast(int playerCount, Client **clients, char *message) {
     }
 }
 
+void process_end_of_turn(int winscore, int playerCount, Client **clients, char *rolls, Client *currentPlayer) {
+
+    char broadcastMsg[strlen("Player ? rolled ??????n0")];
+
+    sprintf(broadcastMsg, "Player %c rolled %s\n", currentPlayer->label, rolls);
+
+    broadcast(playerCount, clients, broadcastMsg);
+}
+
 // IMPURE
 void main_loop(FILE *rollfile, int winscore, int playerCount, Client **clients) {
     for (int i = 0; i < playerCount; i++) {
@@ -182,11 +191,7 @@ void main_loop(FILE *rollfile, int winscore, int playerCount, Client **clients) 
                 fprintf(clients[i]->pipe->outbox, "rerolled %s\n", rolls);
                 fflush(clients[i]->pipe->outbox);
             } else if (!strcmp(command, "keepall")) {
-                char broadcastMsg[strlen("Player ? rolled ??????n0")];
-
-                sprintf(broadcastMsg, "Player %c rolled %s\n", clients[i]->label, rolls);
-
-                broadcast(playerCount, clients, broadcastMsg);
+                process_end_of_turn(winscore, playerCount, clients, rolls, clients[i]);
                 break;
             } else {
                 fprintf(stderr, "%s\n", get_error_message(7));
