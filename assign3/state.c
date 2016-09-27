@@ -7,6 +7,7 @@
 typedef struct State {
     Faculty **faculties;
     char me;
+    int rerolls;
 } State;
 
 State *new_state(int numberOfPlayers, char me) {
@@ -19,6 +20,7 @@ State *new_state(int numberOfPlayers, char me) {
     }
 
     self->me = me;
+    self->rerolls = 0;
 
     return self;
 }
@@ -45,7 +47,7 @@ char *build_response(bool *toReroll) {
     return response;
 }
 
-char *process_roll(State *self, char *rolls) {
+char *process_reroll(State *self, char *rolls) {
     // "they will reroll as many dice as possible as many times as possible"
     bool toReroll[6] = { true, true, true, true, true, true };
 
@@ -79,6 +81,18 @@ char *process_roll(State *self, char *rolls) {
     }
 
     return build_response(toReroll);
+}
+
+char *process_roll(State *self, char *rolls) {
+    if (self->rerolls < 2) {
+        self->rerolls++;
+        return process_reroll(self, rolls);
+    } else {
+        char *response = malloc(sizeof(char) * strlen("keepall0"));
+        strcpy(response, "keepall");
+        self->rerolls = 0;
+        return response;
+    }
 }
 
 

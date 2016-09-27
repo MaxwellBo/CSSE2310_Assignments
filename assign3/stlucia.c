@@ -161,16 +161,21 @@ void main_loop(FILE *rollfile, int winscore, int playerCount, Client **clients) 
         fprintf(clients[i]->pipe->outbox, "turn %s\n", rolls);
         fflush(clients[i]->pipe->outbox);
 
-        char *line = read_line(clients[i]->pipe->inbox);
-        fprintf(stderr, "From child:%s\n", line);
+        while (1) {
+            char *line = read_line(clients[i]->pipe->inbox);
+            fprintf(stderr, "From child:%s\n", line);
 
-        char command[16];
-        sscanf(line, "%s ", command);
+            char command[16];
+            sscanf(line, "%s ", command);
 
-        // 0 on successful compare
-        if (!strcmp(command, "reroll")) {
-            char *rerolls = get_rerolls(rollfile, rolls, &line[strlen("reroll ")]);
-            fprintf(clients[i]->pipe->outbox, "rerolled %s\n", rerolls);
+            // 0 on successful compare
+            if (!strcmp(command, "reroll")) {
+                char *rerolls = get_rerolls(rollfile, rolls, &line[strlen("reroll ")]);
+                fprintf(clients[i]->pipe->outbox, "rerolled %s\n", rerolls);
+                fflush(clients[i]->pipe->outbox);
+            } else if (!strcmp(command, "keepall")) {
+                break;
+            }
         }
     }
 }
