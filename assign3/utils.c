@@ -28,6 +28,11 @@ char *read_line(FILE *file) {
     }
 }
 
+char *make_string(char *string) {
+    char *collector = malloc(sizeof(char) * (strlen(string) + 1));
+    strcpy(collector, string);
+    return collector;
+}
 
 /* 
  * Gets the pebble of the opposite player, given a pebble of a player

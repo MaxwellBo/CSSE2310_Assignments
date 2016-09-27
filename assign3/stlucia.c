@@ -137,9 +137,7 @@ char *get_rolls(FILE *rollfile) {
 char *get_rerolls(FILE *rollfile, char *rolls, char *rerolls) {
 
     // Copy so we don't mutate the rolls
-    char *collector = malloc(sizeof(char) * DICE + 1);
-    // dst, src, size
-    strcpy(collector, rolls);
+    char *collector = make_string(rolls);
 
     // Reroll the specified dice
     while (*rerolls != '\0') {
@@ -154,9 +152,10 @@ char *get_rerolls(FILE *rollfile, char *rolls, char *rerolls) {
 }
 
 
+// Prereq, must be \n terminated
 void broadcast(int playerCount, Client **clients, char *message) {
     for (int i = 0; i < playerCount; i++) {
-        fprintf(clients[i]->pipe->outbox, message);
+        fprintf(clients[i]->pipe->outbox, "%s", message);
         fflush(clients[i]->pipe->outbox);
     }
 }
@@ -188,7 +187,7 @@ void main_loop(FILE *rollfile, int winscore, int playerCount, Client **clients) 
 
                 sprintf(broadcastMsg, "Player %c rolled %s\n", clients[i]->label, rolls);
 
-                broadcast(playerCount, clients, broadcastMsg);
+                // broadcast(playerCount, clients, broadcastMsg);
                 break;
             } else {
                 fprintf(stderr, "%s\n", get_error_message(7));

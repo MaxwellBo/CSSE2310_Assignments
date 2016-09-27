@@ -88,22 +88,18 @@ char *process_roll(State *self, char *rolls) {
         self->rerolls++;
         return process_reroll(self, rolls);
     } else {
-        char *response = malloc(sizeof(char) * strlen("keepall0"));
-        strcpy(response, "keepall");
+        char *response = make_string("keepall");
         self->rerolls = 0;
         return response;
     }
 }
 
 char *process_broadcast(State *self, char *line) {
- 
+
 }
 
 char *process_stay(State *self) {
-    // What size does this array have to be?
-    char *response = malloc(sizeof(char) * strlen("stay0"));
-
-    strcpy(response, "stay");
+    char *response = make_string("stay");
 
     return response;
 }
