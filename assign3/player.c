@@ -67,20 +67,19 @@ int main(int argc, char **argv) {
         fprintf(stderr, "From hub:%s\n", line);
 
         // Max length
-        char command[strlen("Player ? took ? damage, health is now ?0")] = { 0 };
+        char command[strlen("rerolled XXXXXX0")] = { 0 };
         sscanf(line, "%s ", command);
 
         char *response = NULL;
         // 0 on successful compare
         if (!strcmp(command, "turn")) {
-            // Only pass in the dice
             response = process_roll(state, &line[strlen("turn ")]);
         } else if (!strcmp(command, "rerolled")) {
             response = process_roll(state, &line[strlen("rerolled ")]);
+        } else if (!strcmp(command, "rolled")) {
         } else if (!strcmp(command, "stay?")) {
             response = process_stay(state);
-        } else if (!strcmp(command, "Player")) {
-            process_broadcast(state, line);
+        } else if (!strcmp(command, "points")) {
         } else {
             fprintf(stderr, "%s\n", get_error_message(5));
             exit(5);

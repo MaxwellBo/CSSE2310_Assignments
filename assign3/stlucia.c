@@ -152,20 +152,34 @@ char *get_rerolls(FILE *rollfile, char *rolls, char *rerolls) {
 
 
 // Prereq, must be \n terminated
-void broadcast(int playerCount, Client **clients, char *message) {
+void broadcastAll(int playerCount, Client **clients, char *message) {
     for (int i = 0; i < playerCount; i++) {
         fprintf(clients[i]->pipe->outbox, "%s", message);
         fflush(clients[i]->pipe->outbox);
     }
 }
 
+void broadcastOthers(int playerCount, Client *exempt, Client **clients, char *message) {
+    for (int i = 0; i < playerCount; i++) {
+        if (clients[i] != exempt) {
+            fprintf(clients[i]->pipe->outbox, "%s", message);
+            fflush(clients[i]->pipe->outbox);
+        }
+    }
+}
+
 void process_end_of_turn(int winscore, int playerCount, Client **clients, char *rolls, Client *currentPlayer) {
 
-    char broadcastMsg[strlen("Player ? rolled ??????n0")];
+    char broadcastMsg[36];
 
-    sprintf(broadcastMsg, "Player %c rolled %s\n", currentPlayer->label, rolls);
+    // sprintf(broadcastMsg, "rolled %c %s\n", currentPlayer->label, rolls);
+    fprintf(broadcastMsg, "Player %c rolled %s\n", currentPlayer->label, rolls);
+    // fprintf(stderr, "%s\n", broadcastMsg);
+    // broadcastOthers(playerCount, currentPlayer, clients, broadcastMsg);
 
-    broadcast(playerCount, clients, broadcastMsg);
+    fprintf(stdout, "Player %c rolled %s\n", currentPlayer->label, rolls);
+    fflush(stdout);
+
 
     int *tallys = tally_faces(rolls);
 
