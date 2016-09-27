@@ -11,22 +11,7 @@
 #define MY_ID 2
 
 // PURE
-char *get_error_message(int errno) {
-    switch (errno) {
-        case 1:
-            return "Usage: player number_of_players my_id";
-        case 2:
-            return "Invalid player count";
-        case 3:
-            return "Invalid player ID";
-        case 4:
-            return "Unexpectedly lost contact with StLucia";
-        case 5:
-            return "Bad message from StLucia";
-        default:
-            return "";
-    }
-}
+
 
 // IMPURE
 void validate_args(int argc, char **argv) {
@@ -44,7 +29,7 @@ void validate_args(int argc, char **argv) {
         return;
     }
 
-    fprintf(stderr, "%s\n", get_error_message(status));
+    fprintf(stderr, "%s\n", get_error_message_player(status));
     exit(status);
 }
 
@@ -83,7 +68,7 @@ int main(int argc, char **argv) {
             response = process_stay(state);
         } else if (!strcmp(command, "points")) {
         } else {
-            fprintf(stderr, "%s\n", get_error_message(5));
+            fprintf(stderr, "%s\n", get_error_message_player(5));
             exit(5);
         }
 

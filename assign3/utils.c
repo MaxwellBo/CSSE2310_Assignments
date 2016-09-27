@@ -71,3 +71,45 @@ int *tally_faces(char *rolls) {
 
     return tallys;
 }
+
+char *get_error_message_player(int errno) {
+    switch (errno) {
+        case 1:
+            return "Usage: player number_of_players my_id";
+        case 2:
+            return "Invalid player count";
+        case 3:
+            return "Invalid player ID";
+        case 4:
+            return "Unexpectedly lost contact with StLucia";
+        case 5:
+            return "Bad message from StLucia";
+        default:
+            return "";
+    }
+}
+
+char *get_error_message_stlucia(int errno) {
+    switch (errno) {
+        case 1:
+            return "Usage: stlucia rollfile winscore prog1 prog2 [prog3 [prog4]]";
+        case 2:
+            return "Invalid score";
+        case 3:
+            return "Unable to access rollfile";
+        case 4:
+            return "Error reading rolls";
+        case 5:
+            return "Unable to start subprocess";
+        case 6:
+            return "Player quit";
+        case 7:
+            return "Invalid message received from player";
+        case 8:
+            return "Invalid request by player";
+        case 9:
+            return "SIGINT caught";
+        default:
+            return "";
+    }
+}

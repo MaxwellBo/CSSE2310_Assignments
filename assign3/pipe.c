@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <unistd.h>
 
+#include "utils.c"
+
 #define READ_DESCRIPTOR 0
 #define WRITE_DESCRIPTOR 1
 
@@ -20,8 +22,11 @@ Pipe *new_pipe() {
     self->toParent = malloc(sizeof(int) * 2);
     self->toChild = malloc(sizeof(int) * 2);
 
-    pipe(self->toParent);
-    pipe(self->toChild);
+    // 0 on success
+    if (pipe(self->toParent) || pipe(self->toChild)) {
+        fprintf(stderr, "%s\n", get_error_message_stlucia(5));
+        exit(5);
+    }
 
     self->inbox = NULL;
     self->outbox = NULL;
@@ -36,6 +41,11 @@ void use_as_parent(Pipe *self) {
 
     self->inbox = fdopen(self->toParent[READ_DESCRIPTOR], "r");
     self->outbox = fdopen(self->toChild[WRITE_DESCRIPTOR], "w");
+
+    if (self->inbox == NULL || self->outbox == NULL) {
+        fprintf(stderr, "%s\n", get_error_message_stlucia(5));
+        exit(5);
+    }
 }
 
 void use_as_child(Pipe *self) {

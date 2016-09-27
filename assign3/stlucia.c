@@ -5,7 +5,6 @@
 #include <string.h>
 
 #include "client.c"
-#include "utils.c"
 
 #define READ_DESCRIPTOR 0
 #define WRITE_DESCRIPTOR 1
@@ -21,30 +20,7 @@
 #define DICE 6
 
 // PURE
-char *get_error_message(int errno) {
-    switch (errno) {
-        case 1:
-            return "Usage: stlucia rollfile winscore prog1 prog2 [prog3 [prog4]]";
-        case 2:
-            return "Invalid score";
-        case 3:
-            return "Unable to access rollfile";
-        case 4:
-            return "Error reading rolls";
-        case 5:
-            return "Unable to start subprocess";
-        case 6:
-            return "Player quit";
-        case 7:
-            return "Invalid message received from player";
-        case 8:
-            return "Invalid request by player";
-        case 9:
-            return "SIGINT caught";
-        default:
-            return "";
-    }
-}
+
 
 // IMPURE
 void validate_args(int argc, char **argv) {
@@ -58,7 +34,7 @@ void validate_args(int argc, char **argv) {
         return;
     }
 
-    fprintf(stderr, "%s\n", get_error_message(status));
+    fprintf(stderr, "%s\n", get_error_message_stlucia(status));
     exit(status);
 }
 
@@ -66,7 +42,7 @@ void validate_args(int argc, char **argv) {
 void validate_rollfile(FILE *rollfile) {
 
     if (rollfile == NULL) {
-        fprintf(stderr, "%s\n", get_error_message(3));
+        fprintf(stderr, "%s\n", get_error_message_stlucia(3));
         exit(3);
     }
 
@@ -80,7 +56,7 @@ void validate_rollfile(FILE *rollfile) {
 
         if (!((c == '1') || (c == '2') || (c == '3') 
             || (c == 'H') || (c == 'A') || (c == 'P') || (c == '\n'))) {
-            fprintf(stderr, "%s\n", get_error_message(4));
+            fprintf(stderr, "%s\n", get_error_message_stlucia(4));
             exit(4);
       }
    }
@@ -245,7 +221,7 @@ void main_loop(FILE *rollfile, int winscore, int playerCount, Client **clients) 
                 process_end_of_turn(winscore, playerCount, clients, rolls, clients[i]);
                 break;
             } else {
-                fprintf(stderr, "%s\n", get_error_message(7));
+                fprintf(stderr, "%s\n", get_error_message_stlucia(7));
                 // exit(7);
             }
         }
