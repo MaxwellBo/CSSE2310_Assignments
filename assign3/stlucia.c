@@ -179,9 +179,18 @@ void process_end_of_turn(int winscore, int playerCount, Client **clients, char *
     fprintf(stdout, "Player %c rolled %s\n", currentPlayer->label, rolls);
     fflush(stdout);
 
-    // ---------- POINTS FOR THE TURN ARE REPORTED ----------
+    // ---------- HEALING ----------
     int *tallys = tally_faces(rolls);
 
+    int oldHealth = currentPlayer->faculty->health;
+    give_Hs(currentPlayer->faculty, tallys[3]);
+    int newHealth = currentPlayer->faculty->health;
+    int delta = newHealth - oldHealth;
+
+    fprintf(stdout, "Player %c healed %d, health is now %d\n",
+        currentPlayer->label, delta, newHealth);
+
+    // ---------- POINTS FOR THE TURN ARE REPORTED ----------
     int points = 0;
     // if there are n 1s and n > 2. Gain n − 2 points
     if (tallys[0] > 2) {
