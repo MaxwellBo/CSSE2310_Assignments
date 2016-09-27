@@ -169,6 +169,25 @@ void process_end_of_turn(int winscore, int playerCount, Client **clients, char *
 
     int *tallys = tally_faces(rolls);
 
+    int points = 0;
+    // if there are n 1s and n > 2. Gain n − 2 points
+    if (tallys[0] > 2) {
+        points += tallys[0] - 2;
+    }
+
+    // if there are n 2s and n > 2. Gain 2+(n−3) points
+    if (tallys[1] > 2) {
+        points += 2 + (tallys[1] - 3);
+    }
+
+    // if there are n 3s and n > 2. Gain 3 + (n − 3) points
+    if (tallys[2] > 2) {
+        points += 3 + (tallys[2] - 3);
+    }
+
+    // char broadcastMsg[strlen(P)]
+
+
 
 }
 
