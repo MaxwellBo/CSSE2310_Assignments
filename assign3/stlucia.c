@@ -135,7 +135,6 @@ char *get_rolls(FILE *rollfile) {
 }
 
 char *get_rerolls(FILE *rollfile, char *rolls, char *rerolls) {
-
     // Copy so we don't mutate the rolls
     char *collector = make_string(rolls);
 
@@ -187,11 +186,11 @@ void main_loop(FILE *rollfile, int winscore, int playerCount, Client **clients) 
 
                 sprintf(broadcastMsg, "Player %c rolled %s\n", clients[i]->label, rolls);
 
-                // broadcast(playerCount, clients, broadcastMsg);
+                broadcast(playerCount, clients, broadcastMsg);
                 break;
             } else {
                 fprintf(stderr, "%s\n", get_error_message(7));
-                exit(7);
+                // exit(7);
             }
         }
     }

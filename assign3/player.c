@@ -67,8 +67,9 @@ int main(int argc, char **argv) {
         char *line = read_line(stdin);
         fprintf(stderr, "From hub:%s\n", line);
 
-        char command[16];
-        sscanf(line, "%s", command);
+        // Max length
+        char command[strlen("Player ? took ? damage, health is now ?0")];
+        sscanf(line, "%s ", command);
 
         char *response = NULL;
         // 0 on successful compare
@@ -79,10 +80,9 @@ int main(int argc, char **argv) {
             response = process_roll(state, &line[strlen("rerolled ")]);
         } else if (!strcmp(command, "stay?")) {
             response = process_stay(state);
-        // } else if (!strcmp(command, "Player")) {
-        //     response = malloc(sizeof(char) * 2);
-        //     response = "A";
-        //     // process_broadcast(state, line);
+        } else if (!strcmp(command, "Player")) {
+            process_broadcast(state, line);
+            response = make_string("meme");
         } else {
             fprintf(stderr, "%s\n", get_error_message(5));
             exit(5);
