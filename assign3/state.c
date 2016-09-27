@@ -3,9 +3,6 @@
 #include "faculty.c"
 
 #define DICE 6
-#define REROLL_LENGTH 14
-#define REROLL_DICE_OFFSET 7 
-#define PROCESS_LENGTH 5
 
 typedef struct State {
     Faculty **faculties;
@@ -31,11 +28,11 @@ Faculty *get_me(State *self) {
 }
 
 char *build_response(bool *toReroll) {
-    char *response = malloc(sizeof(char) * REROLL_LENGTH);
-    memset(response, '\0', REROLL_LENGTH);
+    char *response = malloc(sizeof(char) * strlen("reroll XXXXXX0"));
+    memset(response, '\0', strlen("reroll XXXXXX0"));
     strcpy(response, "reroll ");
 
-    char *start = &response[REROLL_DICE_OFFSET];
+    char *start = &response[strlen("reroll ")];
 
     for (int i = 0; i < DICE; i++) {
         if (toReroll[i]) {
@@ -86,7 +83,8 @@ char *process_roll(State *self, char *rolls) {
 
 
 char *process_stay(State *self) {
-    char *response = malloc(sizeof(char) * PROCESS_LENGTH);
+    // What size does this array have to be?
+    char *response = malloc(sizeof(char) * strlen("stay0"));
 
     strcpy(response, "stay");
 

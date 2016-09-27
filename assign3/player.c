@@ -74,9 +74,9 @@ int main(int argc, char **argv) {
         // 0 on successful compare
         if (!strcmp(command, "turn")) {
             // Only pass in the dice
-            response = process_roll(state, &line[5]);
+            response = process_roll(state, &line[strlen("turn ")]);
         } else if (!strcmp(command, "rerolled")) {
-            response = process_roll(state, &line[7]);
+            response = process_roll(state, &line[strlen("rerolled ")]);
         } else if (!strcmp(command, "stay?")) {
             response = process_stay(state);
         } else {
