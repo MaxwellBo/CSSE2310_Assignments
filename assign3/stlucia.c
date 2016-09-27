@@ -176,7 +176,7 @@ void process_end_of_turn(int winscore, int playerCount, Client **clients, char *
     sprintf(broadcastMsg, "rolled %c %s\n", currentPlayer->label, rolls);
     broadcastOthers(playerCount, currentPlayer, clients, broadcastMsg);
 
-    fprintf(stdout, "Player %c rolled %s\n", currentPlayer->label, rolls);
+    fprintf(stderr, "Player %c rolled %s\n", currentPlayer->label, rolls);
     fflush(stdout);
 
     // ---------- HEALING ----------
@@ -187,7 +187,7 @@ void process_end_of_turn(int winscore, int playerCount, Client **clients, char *
     int newHealth = currentPlayer->faculty->health;
     int delta = newHealth - oldHealth;
 
-    fprintf(stdout, "Player %c healed %d, health is now %d\n",
+    fprintf(stderr, "Player %c healed %d, health is now %d\n",
         currentPlayer->label, delta, newHealth);
 
     // ---------- POINTS FOR THE TURN ARE REPORTED ----------
@@ -212,15 +212,15 @@ void process_end_of_turn(int winscore, int playerCount, Client **clients, char *
     sprintf(broadcastMsg, "points %c %d\n", currentPlayer->label, points);
     broadcastAll(playerCount, clients, broadcastMsg);
 
-    fprintf(stdout, "Player %c scored %d for a total of %d\n", 
+    fprintf(stderr, "Player %c scored %d for a total of %d\n", 
         currentPlayer->label, points, currentPlayer->faculty->score);
     fflush(stdout);
 }
 
 // IMPURE
 void main_loop(FILE *rollfile, int winscore, int playerCount, Client **clients) {
-    for (int i = 0; i < playerCount; i++) {
 
+    for (int i = 0; i < playerCount; i++) {
         // Starting rolls
         char *rolls = get_rolls(rollfile);
         fprintf(clients[i]->pipe->outbox, "turn %s\n", rolls);
@@ -233,6 +233,8 @@ void main_loop(FILE *rollfile, int winscore, int playerCount, Client **clients) 
             // Max length
             char command[strlen("eliminated0")];
             sscanf(line, "%s ", command);
+            // For dealing with useless spec adjustments
+            sscanf(line, "!%s ", command);
 
             // 0 on successful compare
             if (!strcmp(command, "reroll")) {
@@ -258,7 +260,6 @@ void main_loop(FILE *rollfile, int winscore, int playerCount, Client **clients) 
  */
 int main(int argc, char **argv) {
     // ---------- VALIDATION ---------- 
-
     // Can terminate the program 
     validate_args(argc, argv);
 
@@ -268,13 +269,11 @@ int main(int argc, char **argv) {
     validate_rollfile(rollfile);
 
     // ---------- MODEL CREATION ---------- 
-
     int playerCount = argc - NON_PLAYER_ARGS;
 
     Client **clients = malloc(sizeof(Client *) * playerCount);
 
     // ---------- FORKING ---------- 
-
     for (int i = 0; i < playerCount; i++) {
 
         // A for (i = 0), B for (i = 1)
@@ -296,7 +295,6 @@ int main(int argc, char **argv) {
             execl(argv[NON_PLAYER_ARGS + i], "player", playerCountArg, label, NULL);
         } else {
             // ---------- PARENT ---------- 
-
             // Open file pointers to the child processes
             use_as_parent(clients[i]->pipe);
         }

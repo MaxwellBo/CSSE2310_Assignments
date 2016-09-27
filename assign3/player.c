@@ -60,11 +60,13 @@ int main(int argc, char **argv) {
     // Can terminate the program
     validate_args(argc, argv);
 
+    fprintf(stdout, "%c", '!');
+
     State *state = new_state(atoi(argv[NUMBER_OF_PLAYERS]), argv[MY_ID][0]);
 
     while(1) {
         char *line = read_line(stdin);
-        fprintf(stderr, "From hub:%s\n", line);
+        fprintf(stderr, "From StLucia:%s\n", line);
 
         // Max length
         char command[strlen("rerolled XXXXXX0")] = { 0 };
