@@ -105,6 +105,24 @@ char *process_stay(State *self) {
 
 void process_attack(State *self, char *line) {
 
+    char attacker;
+    int damage;
+    char direction[strlen("out0")];
+    direction[3] = '\0';
+
+    sscanf(line, "%c %d %s\n", &attacker, &damage, &direction[0]);
+
+    for (int i = 0; i < self->playerCount; i++) {
+        if (!strcmp(direction, "in")) {
+            if (self->faculties[i]->inStLucia) {
+                give_As(self->faculties[i], damage);
+            }
+        } else {
+            if (!self->faculties[i]->inStLucia) {
+                give_As(self->faculties[i], damage);
+            }
+        }
+    }
 }
 
 void process_claim(State *self, char *line) {
@@ -115,7 +133,7 @@ void process_claim(State *self, char *line) {
 
     char claimant;
     sscanf(line, "%c\n", &claimant);
-    
+
     // Set the correct target of the attack
     self->faculties[claimant - 'A']->inStLucia = true;
 }
