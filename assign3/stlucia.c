@@ -203,8 +203,9 @@ void attackIn(State *self, Client *attacking, int damage) {
     attack(self->stLucia, damage);
 }
 
-void score(State *self, Client *currentPlayer, int *tallys) {
-    int points = 0;
+void score_rolls(State *self, Client *currentPlayer, int *tallys, int startValue) {
+    int points = startValue;
+
     // if there are n 1s and n > 2. Gain n − 2 points
     if (tallys[0] > 2) {
         points += tallys[0] - 2;
@@ -232,6 +233,7 @@ void score(State *self, Client *currentPlayer, int *tallys) {
 
 void process_end_of_turn(State *self, Client *currentPlayer, char *rolls) {
 
+    int score = 0;
     // ---------- INFORM OTHER PLAYERS WHAT WAS ROLLED -----------
     char broadcastMsg[strlen("rolled p XXXXXXn0")];
 
@@ -246,16 +248,50 @@ void process_end_of_turn(State *self, Client *currentPlayer, char *rolls) {
     heal(currentPlayer, tallys[3]);
 
     // ---------- ATTACKS ARE PROCESSED AND DAMAGE REPORTED ----------
-    if (self->stLucia == currentPlayer) {
-        attackOut(self, currentPlayer, tallys[4]);
-    } else if (self->stLucia != NULL) {
-        attackIn(self, currentPlayer, tallys[4]);
-    } else { // ---------- NEW PLAYER CLAIMS STLUCIA ----------
 
+    // if there are n > 0 As
+    if (tallys[4] > 0) {
+        if (self->stLucia == currentPlayer) {
+            // If the player is in StLucia, do n damage to all other players.
+            attackOut(self, currentPlayer, tallys[4]);
+
+            // Whenever a player starts their turn in StLucia, they gain 2 points
+            score += 2;
+        } else if (self->stLucia != NULL) {
+            // If the player is not in StLucia, do n damage to the player in StLucia.
+            attackIn(self, currentPlayer, tallys[4]);
+            // Even if a player chooses to leave, they still take damage.
+
+            fprintf(self->stLucia->pipe->outbox, "%s\n", "stay?");
+            char *line = read_line(self->stLucia->pipe->inbox);
+
+            if (!strcmp(line, "go")) {
+                self->stLucia->faculty->inStLucia = false;
+                self->stLucia = NULL;
+            }
+
+            free(line);
+        } else {
+            // If there is no player in StLucia, claim StLucia (no damage is done in this case).
+        }
+    }
+
+    // ---------- NEW PLAYER CLAIMS STLUCIA ----------
+    if (self->stLucia == NULL) {
+        self->stLucia = currentPlayer;
+        self->stLucia->faculty->inStLucia = true;
+
+        // Whenever a player claims StLucia, they gain 1 point.
+        score += 1;
+
+        sprintf(broadcastMsg, "claim %c\n", currentPlayer->label);
+        broadcastAll(self, broadcastMsg);
+
+        fprintf(stderr, "Player %c claimed StLucia\n", currentPlayer->label);
     }
 
     // ---------- POINTS FOR THE TURN ARE REPORTED ----------
-    score(self, currentPlayer, tallys);
+    score_rolls(self, currentPlayer, tallys, score);
 }
 
 // IMPURE
@@ -269,6 +305,7 @@ void main_loop(State *self) {
 
         while (1) {
             char *line = read_line(self->clients[i]->pipe->inbox);
+            fprintf(stderr, "%s\n", "ASKING");
             fprintf(stderr, "From child:%s\n", line);
 
             // Max length
@@ -289,6 +326,8 @@ void main_loop(State *self) {
                 fprintf(stderr, "%s\n", get_error_message_stlucia(7));
                 // exit(7);
             }
+
+            free(line);
         }
 
         free(rolls);

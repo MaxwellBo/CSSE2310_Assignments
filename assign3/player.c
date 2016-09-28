@@ -157,9 +157,11 @@ int main(int argc, char **argv) {
         } else if (!strcmp(command, "rerolled")) {
             response = process_roll(state, &line[strlen("rerolled ")]);
         } else if (!strcmp(command, "rolled")) {
+        } else if (!strcmp(command, "points")) {
+        } else if (!strcmp(command, "attacks")) {
+        } else if (!strcmp(command, "claim")) {
         } else if (!strcmp(command, "stay?")) {
             response = process_stay(state);
-        } else if (!strcmp(command, "points")) {
         } else {
             fprintf(stderr, "%s\n", get_error_message_player(5));
             exit(5);
