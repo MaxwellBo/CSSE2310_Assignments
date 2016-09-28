@@ -246,6 +246,8 @@ void main_loop(State *self) {
                 // exit(7);
             }
         }
+
+        free(rolls);
     }
 }
 
