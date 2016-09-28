@@ -12,8 +12,6 @@
 #define MY_ID 2
 #define DICE 6
 
-
-
 typedef struct State {
     Faculty **faculties;
     Faculty *me;
@@ -101,10 +99,14 @@ char *process_stay(State *self) {
     } else {
         return make_string("stay");
     }
+}
 
-    char *response = make_string("stay");
+void process_attack(State *self){
 
-    return response;
+}
+
+void process_claim(State *self) {
+    
 }
 
 
@@ -162,7 +164,9 @@ int main(int argc, char **argv) {
         } else if (!strcmp(command, "rolled")) {
         } else if (!strcmp(command, "points")) {
         } else if (!strcmp(command, "attacks")) {
+            process_attack(state, &line[strlen("attacks ")])
         } else if (!strcmp(command, "claim")) {
+            process_claim(state, &line[strlen("claim ")])
         } else if (!strcmp(command, "stay?")) {
             response = process_stay(state);
         } else {
