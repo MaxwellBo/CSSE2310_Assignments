@@ -221,6 +221,14 @@ void score_rolls(State *self, Client *currentPlayer, int *tallys, int startValue
         points += 3 + (tallys[2] - 3);
     }
 
+
+    currentPlayer->tokens += tallys[5];
+
+    if (currentPlayer->tokens > 10) {
+        currentPlayer->tokens -= 10;
+        points += 1;
+    }
+
     currentPlayer->faculty->score += points; 
 
     char broadcastMsg[strlen("points c XXXXXn0")];
