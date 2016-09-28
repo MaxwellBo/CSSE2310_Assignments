@@ -224,10 +224,10 @@ void score_rolls(State *self, Client *currentPlayer, int *tallys, int startValue
 
     // if there are n > 0 Ps, then gain n tokens. 
     // During their turn, if a player has 10 tokens saved up, they lose 10 tokens and gain 1 point.
-    currentPlayer->tokens += tallys[5];
+    currentPlayer->faculty->tokens += tallys[5];
 
-    if (currentPlayer->tokens > 10) {
-        currentPlayer->tokens -= 10;
+    if (currentPlayer->faculty->tokens > 10) {
+        currentPlayer->faculty->tokens -= 10;
         points += 1;
     }
 
