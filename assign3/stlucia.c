@@ -163,6 +163,16 @@ void broadcastOthers(State *self, Client *exempt, char *message) {
 }
 
 
+void heal(Client *patient, int health) {
+    int oldHealth = patient->faculty->health;
+    give_Hs(patient->faculty, health);
+    int newHealth = patient->faculty->health;
+    int delta = newHealth - oldHealth;
+
+    fprintf(stderr, "Player %c healed %d, health is now %d\n",
+        patient->label, delta, newHealth);
+}
+
 void attack(Client *attacked, int damage) {
     int oldHealth = attacked->faculty->health;
     give_As(attacked->faculty, damage);
@@ -174,7 +184,7 @@ void attack(Client *attacked, int damage) {
 }
 
 void attackOut(State *self, Client *attacking, int damage) {
-    char broadcastMsg[strlen("attacks p v out")];
+    char broadcastMsg[strlen("attacks p v outn0")];
     sprintf(broadcastMsg, "attacks %c %d out\n", attacking->label, damage);
     broadcastAll(self, broadcastMsg);
 
@@ -186,48 +196,14 @@ void attackOut(State *self, Client *attacking, int damage) {
 }
 
 void attackIn(State *self, Client *attacking, int damage) {
-    char broadcastMsg[strlen("attacks p v in")];
+    char broadcastMsg[strlen("attacks p v inn0")];
     sprintf(broadcastMsg, "attacks %c %d in\n", attacking->label, damage);
     broadcastAll(self, broadcastMsg);
 
     attack(self->stLucia, damage);
 }
 
-void process_end_of_turn(State *self, Client *currentPlayer, char *rolls) {
-
-    // ---------- INFORM OTHER PLAYERS WHAT WAS ROLLED -----------
-    char broadcastMsg[strlen("rolled p XXXXXXn0")];
-
-    sprintf(broadcastMsg, "rolled %c %s\n", currentPlayer->label, rolls);
-    broadcastOthers(self, currentPlayer, broadcastMsg);
-
-    fprintf(stderr, "Player %c rolled %s\n", currentPlayer->label, rolls);
-    fflush(stdout);
-
-    // ---------- HEALING ----------
-    int *tallys = tally_faces(rolls);
-
-    int oldHealth = currentPlayer->faculty->health;
-    give_Hs(currentPlayer->faculty, tallys[3]);
-    int newHealth = currentPlayer->faculty->health;
-    int delta = newHealth - oldHealth;
-
-    fprintf(stderr, "Player %c healed %d, health is now %d\n",
-        currentPlayer->label, delta, newHealth);
-
-    // ---------- ATTACKS ARE PROCESSED AND DAMAGE REPORTED ----------
-    if (self->stLucia == currentPlayer) {
-        attackOut(self, currentPlayer, tallys[4]);
-    } else if (self->stLucia != NULL) {
-        attackIn(self, currentPlayer, tallys[4]);
-    } else { // ---------- NEW PLAYER CLAIMS STLUCIA ----------
-
-    }
-
-
-
-
-    // ---------- POINTS FOR THE TURN ARE REPORTED ----------
+void score(State *self, Client *currentPlayer, int *tallys) {
     int points = 0;
     // if there are n 1s and n > 2. Gain n − 2 points
     if (tallys[0] > 2) {
@@ -246,12 +222,40 @@ void process_end_of_turn(State *self, Client *currentPlayer, char *rolls) {
 
     currentPlayer->faculty->score += points; 
 
+    char broadcastMsg[strlen("points c XXXXXn0")];
     sprintf(broadcastMsg, "points %c %d\n", currentPlayer->label, points);
     broadcastAll(self, broadcastMsg);
 
     fprintf(stderr, "Player %c scored %d for a total of %d\n", 
         currentPlayer->label, points, currentPlayer->faculty->score);
-    fflush(stdout);
+}
+
+void process_end_of_turn(State *self, Client *currentPlayer, char *rolls) {
+
+    // ---------- INFORM OTHER PLAYERS WHAT WAS ROLLED -----------
+    char broadcastMsg[strlen("rolled p XXXXXXn0")];
+
+    sprintf(broadcastMsg, "rolled %c %s\n", currentPlayer->label, rolls);
+    broadcastOthers(self, currentPlayer, broadcastMsg);
+
+    fprintf(stderr, "Player %c rolled %s\n", currentPlayer->label, rolls);
+
+    // ---------- HEALING ----------
+    int *tallys = tally_faces(rolls);
+
+    heal(currentPlayer, tallys[3]);
+
+    // ---------- ATTACKS ARE PROCESSED AND DAMAGE REPORTED ----------
+    if (self->stLucia == currentPlayer) {
+        attackOut(self, currentPlayer, tallys[4]);
+    } else if (self->stLucia != NULL) {
+        attackIn(self, currentPlayer, tallys[4]);
+    } else { // ---------- NEW PLAYER CLAIMS STLUCIA ----------
+
+    }
+
+    // ---------- POINTS FOR THE TURN ARE REPORTED ----------
+    score(self, currentPlayer, tallys);
 }
 
 // IMPURE
