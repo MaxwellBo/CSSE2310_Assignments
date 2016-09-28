@@ -198,6 +198,9 @@ int main(int argc, char **argv) {
             process_claim(state, &line[strlen("claim ")]);
         } else if (!strcmp(command, "stay?")) {
             response = process_stay(state);
+        } else if (!strcmp(command, "winner") || !strcmp(command, "shutdown")) {
+            exit(0)
+
         } else {
             fprintf(stderr, "%s\n", get_error_message_player(5));
             exit(5);
