@@ -263,7 +263,9 @@ void process_end_of_turn(State *self, Client *currentPlayer, char *rolls) {
             // Even if a player chooses to leave, they still take damage.
 
             fprintf(self->stLucia->pipe->outbox, "%s\n", "stay?");
+            fflush(self->stLucia->pipe->outbox);
             char *line = read_line(self->stLucia->pipe->inbox);
+            fprintf(stderr, "From child:%s\n", line);
 
             if (!strcmp(line, "go")) {
                 self->stLucia->faculty->inStLucia = false;
@@ -305,7 +307,6 @@ void main_loop(State *self) {
 
         while (1) {
             char *line = read_line(self->clients[i]->pipe->inbox);
-            fprintf(stderr, "%s\n", "ASKING");
             fprintf(stderr, "From child:%s\n", line);
 
             // Max length
