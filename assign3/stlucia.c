@@ -19,8 +19,26 @@
 
 #define DICE 6
 
-// PURE
+typedef struct State {
+    FILE *rollfile;
+    int winscore;
+    int playerCount;
+    Client **clients;
+    Client *stLucia;
+} State;
 
+
+State *new_state(FILE *rollfile, int winscore, int playerCount) {
+    State *self = malloc(sizeof(State));
+
+    self->rollfile = rollfile;
+    self->winscore = winscore;
+    self->playerCount = playerCount;
+    self->clients = malloc(sizeof(Client *) * playerCount);
+    self->stLucia = NULL;
+
+    return self;
+}
 
 // IMPURE
 void validate_args(int argc, char **argv) {
@@ -128,29 +146,29 @@ char *get_rerolls(FILE *rollfile, char *rolls, char *rerolls) {
 
 
 // Prereq, must be \n terminated
-void broadcastAll(int playerCount, Client **clients, char *message) {
-    for (int i = 0; i < playerCount; i++) {
-        fprintf(clients[i]->pipe->outbox, "%s", message);
-        fflush(clients[i]->pipe->outbox);
+void broadcastAll(State *self, char *message) {
+    for (int i = 0; i < self->playerCount; i++) {
+        fprintf(self->clients[i]->pipe->outbox, "%s", message);
+        fflush(self->clients[i]->pipe->outbox);
     }
 }
 
-void broadcastOthers(int playerCount, Client *exempt, Client **clients, char *message) {
-    for (int i = 0; i < playerCount; i++) {
-        if (clients[i] != exempt) {
-            fprintf(clients[i]->pipe->outbox, "%s", message);
-            fflush(clients[i]->pipe->outbox);
+void broadcastOthers(State *self, Client *exempt, char *message) {
+    for (int i = 0; i < self->playerCount; i++) {
+        if (self->clients[i] != exempt) {
+            fprintf(self->clients[i]->pipe->outbox, "%s", message);
+            fflush(self->clients[i]->pipe->outbox);
         }
     }
 }
 
-void process_end_of_turn(int winscore, int playerCount, Client **clients, char *rolls, Client *currentPlayer) {
+void process_end_of_turn(State *self, Client *currentPlayer, char *rolls) {
 
     // ---------- INFORM OTHER PLAYERS WHAT WAS ROLLED -----------
     char broadcastMsg[strlen("rolled p XXXXXXn0")];
 
     sprintf(broadcastMsg, "rolled %c %s\n", currentPlayer->label, rolls);
-    broadcastOthers(playerCount, currentPlayer, clients, broadcastMsg);
+    broadcastOthers(self, currentPlayer, broadcastMsg);
 
     fprintf(stderr, "Player %c rolled %s\n", currentPlayer->label, rolls);
     fflush(stdout);
@@ -165,6 +183,9 @@ void process_end_of_turn(int winscore, int playerCount, Client **clients, char *
 
     fprintf(stderr, "Player %c healed %d, health is now %d\n",
         currentPlayer->label, delta, newHealth);
+
+    // ---------- ATTACKS ARE PROCESSED AND DAMAGE REPORTED ----------
+
 
     // ---------- POINTS FOR THE TURN ARE REPORTED ----------
     int points = 0;
@@ -186,7 +207,7 @@ void process_end_of_turn(int winscore, int playerCount, Client **clients, char *
     currentPlayer->faculty->score += points; 
 
     sprintf(broadcastMsg, "points %c %d\n", currentPlayer->label, points);
-    broadcastAll(playerCount, clients, broadcastMsg);
+    broadcastAll(self, broadcastMsg);
 
     fprintf(stderr, "Player %c scored %d for a total of %d\n", 
         currentPlayer->label, points, currentPlayer->faculty->score);
@@ -194,16 +215,16 @@ void process_end_of_turn(int winscore, int playerCount, Client **clients, char *
 }
 
 // IMPURE
-void main_loop(FILE *rollfile, int winscore, int playerCount, Client **clients) {
+void main_loop(State *self) {
 
-    for (int i = 0; i < playerCount; i++) {
+    for (int i = 0; i < self->playerCount; i++) {
         // Starting rolls
-        char *rolls = get_rolls(rollfile);
-        fprintf(clients[i]->pipe->outbox, "turn %s\n", rolls);
-        fflush(clients[i]->pipe->outbox);
+        char *rolls = get_rolls(self->rollfile);
+        fprintf(self->clients[i]->pipe->outbox, "turn %s\n", rolls);
+        fflush(self->clients[i]->pipe->outbox);
 
         while (1) {
-            char *line = read_line(clients[i]->pipe->inbox);
+            char *line = read_line(self->clients[i]->pipe->inbox);
             fprintf(stderr, "From child:%s\n", line);
 
             // Max length
@@ -214,11 +235,11 @@ void main_loop(FILE *rollfile, int winscore, int playerCount, Client **clients) 
 
             // 0 on successful compare
             if (!strcmp(command, "reroll")) {
-                rolls = get_rerolls(rollfile, rolls, &line[strlen("reroll ")]);
-                fprintf(clients[i]->pipe->outbox, "rerolled %s\n", rolls);
-                fflush(clients[i]->pipe->outbox);
+                rolls = get_rerolls(self->rollfile, rolls, &line[strlen("reroll ")]);
+                fprintf(self->clients[i]->pipe->outbox, "rerolled %s\n", rolls);
+                fflush(self->clients[i]->pipe->outbox);
             } else if (!strcmp(command, "keepall")) {
-                process_end_of_turn(winscore, playerCount, clients, rolls, clients[i]);
+                process_end_of_turn(self, self->clients[i], rolls);
                 break;
             } else {
                 fprintf(stderr, "%s\n", get_error_message_stlucia(7));
@@ -247,22 +268,22 @@ int main(int argc, char **argv) {
     // ---------- MODEL CREATION ---------- 
     int playerCount = argc - NON_PLAYER_ARGS;
 
-    Client **clients = malloc(sizeof(Client *) * playerCount);
+    State *state = new_state(rollfile, atoi(argv[WINSCORE]), playerCount);
 
     // ---------- FORKING ---------- 
     for (int i = 0; i < playerCount; i++) {
 
         // A for (i = 0), B for (i = 1)
         char label[2] = { (char)i + 'A', '\0' };
-        clients[i] = new_client(label[0]);
+        state->clients[i] = new_client(label[0]);
 
         pid_t pid = fork();
-        clients[i]->pid = pid;
+        state->clients[i]->pid = pid;
 
         if (pid == 0) {
             // ---------- CHILD ---------- 
             // Redirect stdin/stdout
-            use_as_child(clients[i]->pipe);
+            use_as_child(state->clients[i]->pipe);
 
             char playerCountArg[3];
             sprintf(playerCountArg, "%d", playerCount);
@@ -272,11 +293,11 @@ int main(int argc, char **argv) {
         } else {
             // ---------- PARENT ---------- 
             // Open file pointers to the child processes
-            use_as_parent(clients[i]->pipe);
+            use_as_parent(state->clients[i]->pipe);
         }
     }
 
     // ---------- PARENT ---------- 
-    main_loop(rollfile, atoi(argv[WINSCORE]), playerCount, clients);
+    main_loop(state);
 }
 
