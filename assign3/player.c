@@ -138,6 +138,23 @@ void process_claim(State *self, char *line) {
     self->faculties[claimant - 'A']->inStLucia = true;
 }
 
+void process_eliminated(State *self, char *line) {
+    char eliminated;
+    sscanf(line, "%c\n", &eliminated);
+
+    // Defensively elimate all players that share that label
+    for (int i = 0; i < self->playerCount; i++) {
+
+        // Do they share the same index in the array?
+        if (i == (eliminated - 'A')) {
+            self->faculties[i]->eliminated = true;
+        }
+    }
+
+    if (self->label == eliminated) {
+        exit(0);
+    }
+}
 
 
 // IMPURE
@@ -194,6 +211,8 @@ int main(int argc, char **argv) {
         } else if (!strcmp(command, "points")) {
         } else if (!strcmp(command, "attacks")) {
             process_attack(state, &line[strlen("attacks ")]);
+        } else if (!strcmp(command, "eliminated")) {
+            process_eliminated(state, &line[strlen("eliminated ")]);
         } else if (!strcmp(command, "claim")) {
             process_claim(state, &line[strlen("claim ")]);
         } else if (!strcmp(command, "stay?")) {

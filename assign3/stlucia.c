@@ -184,7 +184,7 @@ void attack(Client *attacked, int damage) {
 }
 
 void attackOut(State *self, Client *attacking, int damage) {
-    char broadcastMsg[strlen("attacks p v outn0")];
+    char broadcastMsg[strlen("attacks p v outn0")] = { 0 };
     sprintf(broadcastMsg, "attacks %c %d out\n", attacking->label, damage);
     broadcastAll(self, broadcastMsg);
 
@@ -196,7 +196,7 @@ void attackOut(State *self, Client *attacking, int damage) {
 }
 
 void attackIn(State *self, Client *attacking, int damage) {
-    char broadcastMsg[strlen("attacks p v inn0")];
+    char broadcastMsg[strlen("attacks p v inn0")] = { 0 };
     sprintf(broadcastMsg, "attacks %c %d in\n", attacking->label, damage);
     broadcastAll(self, broadcastMsg);
 
@@ -239,6 +239,15 @@ void score_rolls(State *self, Client *currentPlayer, int *tallys, int startValue
 
     fprintf(stderr, "Player %c scored %d for a total of %d\n", 
         currentPlayer->label, points, currentPlayer->faculty->score);
+}
+
+void process_eliminated(State *self) {
+    for (int i = 0; i < self->playerCount; i++) {
+        if (self->clients[i]->faculty->eliminated) {
+           char broadcastMsg[strlen("eliminated pn0")] = { 0 };
+           sprintf(broadcastMsg, "eliminated %c\n", self->clients[i]->label);
+        }
+    }     
 }
 
 void process_end_of_turn(State *self, Client *currentPlayer, char *rolls) {
@@ -304,6 +313,10 @@ void process_end_of_turn(State *self, Client *currentPlayer, char *rolls) {
 
     // ---------- POINTS FOR THE TURN ARE REPORTED ----------
     score_rolls(self, currentPlayer, tallys, score);
+
+
+    // ---------- PLAYER ELIMINATIONS ARE REPORTED ----------
+    process_eliminated(self);
 }
 
 // IMPURE

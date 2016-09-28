@@ -36,5 +36,6 @@ void give_As(Faculty *self, int number) {
 
     if (self->health < 0) {
         self->health = 0;
+        self->eliminated = true;
     }
 }
