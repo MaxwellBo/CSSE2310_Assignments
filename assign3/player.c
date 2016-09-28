@@ -16,11 +16,12 @@
 
 typedef struct State {
     Faculty **faculties;
-    char me;
+    Faculty *me;
+    char label;
     int rerolls;
 } State;
 
-State *new_state(int numberOfPlayers, char me) {
+State *new_state(int numberOfPlayers, char label) {
     State *self = malloc(sizeof(State));
 
     self->faculties = malloc(sizeof(Faculty) * numberOfPlayers);
@@ -29,15 +30,13 @@ State *new_state(int numberOfPlayers, char me) {
         self->faculties[i] = new_faculty();
     }
 
-    self->me = me;
+    self->me = self->faculties[label - 'A'];
+    self->label = label;
     self->rerolls = 0;
 
     return self;
 }
 
-Faculty *get_me(State *self) {
-    return self->faculties[self->me - 'A'];
-}
 
 char *build_response(bool *toReroll) {
     char *response = malloc(sizeof(char) * strlen("reroll XXXXXX0"));
@@ -70,7 +69,7 @@ char *process_reroll(State *self, char *rolls) {
             if (tallys[index] > 2) {
                 toReroll[i] = false;
             }
-        } else if (rolls[i] == 'H' && get_me(self)->health < 6) {
+        } else if (rolls[i] == 'H' && self->me->health < 6) {
             toReroll[i] = false;
         }
     }
@@ -90,7 +89,7 @@ char *process_roll(State *self, char *rolls) {
 
         // Heal up
         int *tallys = tally_faces(rolls);
-        give_Hs(get_me(self), tallys[3]);
+        give_Hs(self->me, tallys[3]);
 
         free(tallys);
 
