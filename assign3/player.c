@@ -84,20 +84,24 @@ char *process_roll(State *self, char *rolls) {
         self->rerolls++;
         return process_reroll(self, rolls);
     } else {
-        char *response = make_string("keepall");
         self->rerolls = 0;
 
         // Heal up
         int *tallys = tally_faces(rolls);
         give_Hs(self->me, tallys[3]);
-
         free(tallys);
 
-        return response;
+        return make_string("keepall");
     }
 }
 
 char *process_stay(State *self) {
+    if (self->me->health < 5) {
+        return make_string("go");
+    } else {
+        return make_string("stay");
+    }
+
     char *response = make_string("stay");
 
     return response;
