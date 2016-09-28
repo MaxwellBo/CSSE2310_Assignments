@@ -25,4 +25,16 @@ void give_Hs(Faculty *self, int number) {
     if (!self->inStLucia) {
         self->health += number;
     }
+
+    if (self->health > 10) {
+        self->health = 10;
+    }
+}
+
+void give_As(Faculty *self, int number) {
+    self->health -= number;
+
+    if (self->health < 0) {
+        self->health = 0;
+    }
 }

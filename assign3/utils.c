@@ -51,8 +51,7 @@ char invert_pebble(char pebble) {
 
 int *tally_faces(char *rolls) {
 
-    int *tallys = malloc(sizeof(int) * DICE);
-    memset(tallys, 0, DICE);
+    int *tallys = calloc(DICE, sizeof(int));
 
     // First, tally up the numbers
     for (int i = 0; i < DICE; i++) {

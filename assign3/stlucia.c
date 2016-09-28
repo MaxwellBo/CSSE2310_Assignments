@@ -162,6 +162,37 @@ void broadcastOthers(State *self, Client *exempt, char *message) {
     }
 }
 
+
+void attack(Client *attacked, int damage) {
+    int oldHealth = attacked->faculty->health;
+    give_As(attacked->faculty, damage);
+    int newHealth = attacked->faculty->health;
+    int delta = newHealth - oldHealth;
+
+    fprintf(stderr, "Player %c took %d damage, health is now %d\n",
+        attacked->label, -delta, newHealth);
+}
+
+void attackOut(State *self, Client *attacking, int damage) {
+    char broadcastMsg[strlen("attacks p v out")];
+    sprintf(broadcastMsg, "attacks %c %d out\n", attacking->label, damage);
+    broadcastAll(self, broadcastMsg);
+
+    for (int i = 0; i < self->playerCount; i++) {
+        if (self->clients[i] != attacking) {
+            attack(self->clients[i], damage);
+        }
+    }     
+}
+
+void attackIn(State *self, Client *attacking, int damage) {
+    char broadcastMsg[strlen("attacks p v in")];
+    sprintf(broadcastMsg, "attacks %c %d in\n", attacking->label, damage);
+    broadcastAll(self, broadcastMsg);
+
+    attack(self->stLucia, damage);
+}
+
 void process_end_of_turn(State *self, Client *currentPlayer, char *rolls) {
 
     // ---------- INFORM OTHER PLAYERS WHAT WAS ROLLED -----------
@@ -185,6 +216,15 @@ void process_end_of_turn(State *self, Client *currentPlayer, char *rolls) {
         currentPlayer->label, delta, newHealth);
 
     // ---------- ATTACKS ARE PROCESSED AND DAMAGE REPORTED ----------
+    if (self->stLucia == currentPlayer) {
+        attackOut(self, currentPlayer, tallys[4]);
+    } else if (self->stLucia != NULL) {
+        attackIn(self, currentPlayer, tallys[4]);
+    } else { // ---------- NEW PLAYER CLAIMS STLUCIA ----------
+
+    }
+
+
 
 
     // ---------- POINTS FOR THE TURN ARE REPORTED ----------

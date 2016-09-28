@@ -41,7 +41,7 @@ Faculty *get_me(State *self) {
 
 char *build_response(bool *toReroll) {
     char *response = malloc(sizeof(char) * strlen("reroll XXXXXX0"));
-    memset(response, '\0', strlen("reroll XXXXXX0"));
+    memset(response, '\0', sizeof(char) * strlen("reroll XXXXXX0"));
     strcpy(response, "reroll ");
 
     char *start = &response[strlen("reroll ")];
