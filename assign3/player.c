@@ -13,18 +13,20 @@
 #define DICE 6
 
 typedef struct State {
+    int playerCount;
     Faculty **faculties;
     Faculty *me;
     char label;
     int rerolls;
 } State;
 
-State *new_state(int numberOfPlayers, char label) {
+State *new_state(int playerCount, char label) {
     State *self = malloc(sizeof(State));
 
-    self->faculties = malloc(sizeof(Faculty) * numberOfPlayers);
+    self->playerCount = playerCount;
+    self->faculties = malloc(sizeof(Faculty) * playerCount);
 
-    for (int i = 0; i < numberOfPlayers; ++i) {
+    for (int i = 0; i < playerCount; ++i) {
         self->faculties[i] = new_faculty();
     }
 
@@ -101,12 +103,21 @@ char *process_stay(State *self) {
     }
 }
 
-void process_attack(State *self){
+void process_attack(State *self, char *line) {
 
 }
 
-void process_claim(State *self) {
+void process_claim(State *self, char *line) {
+    // Remove any occupants from StLucia
+    for (int i = 0; i < self->playerCount; i++) {
+        self->faculties[i]->inStLucia = false;
+    }
+
+    char claimant;
+    sscanf(line, "%c\n", &claimant);
     
+    // Set the correct target of the attack
+    self->faculties[claimant - 'A']->inStLucia = true;
 }
 
 
@@ -164,9 +175,9 @@ int main(int argc, char **argv) {
         } else if (!strcmp(command, "rolled")) {
         } else if (!strcmp(command, "points")) {
         } else if (!strcmp(command, "attacks")) {
-            process_attack(state, &line[strlen("attacks ")])
+            process_attack(state, &line[strlen("attacks ")]);
         } else if (!strcmp(command, "claim")) {
-            process_claim(state, &line[strlen("claim ")])
+            process_claim(state, &line[strlen("claim ")]);
         } else if (!strcmp(command, "stay?")) {
             response = process_stay(state);
         } else {
