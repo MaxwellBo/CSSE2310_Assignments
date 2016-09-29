@@ -344,39 +344,41 @@ void process_end_of_turn(State *self, Client *currentPlayer, char *rolls) {
 // IMPURE
 void main_loop(State *self) {
 
-    for (int i = 0; i < self->playerCount; i++) {
-        // Starting rolls
-        char *rolls = get_rolls(self->rollfile);
-        fprintf(self->clients[i]->pipe->outbox, "turn %s\n", rolls);
-        fflush(self->clients[i]->pipe->outbox);
+    while (1) {
+        for (int i = 0; i < self->playerCount; i++) {
+            // Starting rolls
+            char *rolls = get_rolls(self->rollfile);
+            fprintf(self->clients[i]->pipe->outbox, "turn %s\n", rolls);
+            fflush(self->clients[i]->pipe->outbox);
 
-        while (1) {
-            char *line = read_line(self->clients[i]->pipe->inbox);
-            fprintf(stderr, "From child:%s\n", line);
+            while (1) {
+                char *line = read_line(self->clients[i]->pipe->inbox);
+                fprintf(stderr, "From child:%s\n", line);
 
-            // Max length
-            char command[strlen("eliminated0")];
-            sscanf(line, "%s ", command);
-            // For dealing with useless spec adjustments
-            sscanf(line, "!%s ", command);
+                // Max length
+                char command[strlen("eliminated0")];
+                sscanf(line, "%s ", command);
+                // For dealing with useless spec adjustments
+                sscanf(line, "!%s ", command);
 
-            // 0 on successful compare
-            if (!strcmp(command, "reroll")) {
-                rolls = get_rerolls(self->rollfile, rolls, &line[strlen("reroll ")]);
-                fprintf(self->clients[i]->pipe->outbox, "rerolled %s\n", rolls);
-                fflush(self->clients[i]->pipe->outbox);
-            } else if (!strcmp(command, "keepall")) {
-                process_end_of_turn(self, self->clients[i], rolls);
-                break;
-            } else {
-                fprintf(stderr, "%s\n", get_error_message_stlucia(7));
-                // exit(7);
+                // 0 on successful compare
+                if (!strcmp(command, "reroll")) {
+                    rolls = get_rerolls(self->rollfile, rolls, &line[strlen("reroll ")]);
+                    fprintf(self->clients[i]->pipe->outbox, "rerolled %s\n", rolls);
+                    fflush(self->clients[i]->pipe->outbox);
+                } else if (!strcmp(command, "keepall")) {
+                    process_end_of_turn(self, self->clients[i], rolls);
+                    break;
+                } else {
+                    fprintf(stderr, "%s\n", get_error_message_stlucia(7));
+                    // exit(7);
+                }
+
+                free(line);
             }
 
-            free(line);
+            free(rolls);
         }
-
-        free(rolls);
     }
 }
 
