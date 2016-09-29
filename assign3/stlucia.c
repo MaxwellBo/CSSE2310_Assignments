@@ -148,14 +148,16 @@ char *get_rerolls(FILE *rollfile, char *rolls, char *rerolls) {
 // Prereq, must be \n terminated
 void broadcastAll(State *self, char *message) {
     for (int i = 0; i < self->playerCount; i++) {
-        fprintf(self->clients[i]->pipe->outbox, "%s", message);
-        fflush(self->clients[i]->pipe->outbox);
+        if (!self->clients[i]->faculty->eliminated) {
+            fprintf(self->clients[i]->pipe->outbox, "%s", message);
+            fflush(self->clients[i]->pipe->outbox);
+        }
     }
 }
 
 void broadcastOthers(State *self, Client *exempt, char *message) {
     for (int i = 0; i < self->playerCount; i++) {
-        if (self->clients[i] != exempt) {
+        if (self->clients[i] != exempt && !self->clients[i]->faculty->eliminated) {
             fprintf(self->clients[i]->pipe->outbox, "%s", message);
             fflush(self->clients[i]->pipe->outbox);
         }
