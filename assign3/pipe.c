@@ -56,5 +56,5 @@ void use_as_child(Pipe *self) {
     int devNull = open("/dev/null", O_WRONLY);
     dup2(self->toParent[WRITE_DESCRIPTOR], STDOUT_FILENO);
     dup2(self->toChild[READ_DESCRIPTOR], STDIN_FILENO);
-    dup2(devNull, STDERR_FILENO);
+    // dup2(devNull, STDERR_FILENO);
 }
