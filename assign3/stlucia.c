@@ -164,16 +164,17 @@ void broadcastOthers(State *self, Client *exempt, char *message) {
 
 
 void heal(Client *patient, int health) {
-    if (health) {
-        int oldHealth = patient->faculty->health;
-        give_Hs(patient->faculty, health);
-        int newHealth = patient->faculty->health;
-        int delta = newHealth - oldHealth;
+     int oldHealth = patient->faculty->health;
+     give_Hs(patient->faculty, health);
+     int newHealth = patient->faculty->health;
+     int delta = newHealth - oldHealth;
 
-        // Only display the message if we tried to heal
+     // Only display the message if we tried to heal
+     if (health) {
+        fprintf(stderr, "%s\n", "TRIGGERED");
         fprintf(stderr, "Player %c healed %d, health is now %d\n",
             patient->label, delta, newHealth);
-    }
+     }
 }
 
 void attack(Client *attacked, int damage) {
@@ -292,6 +293,8 @@ void process_end_of_turn(State *self, Client *currentPlayer, char *rolls) {
     // ---------- HEALING ----------
     int *tallys = tally_faces(rolls);
 
+
+    fprintf(stderr, "%d\n", tallys[3]);
     heal(currentPlayer, tallys[3]);
 
     // ---------- ATTACKS ARE PROCESSED AND DAMAGE REPORTED ----------
