@@ -37,6 +37,16 @@ State *new_state(int playerCount, char label) {
     return self;
 }
 
+Faculty *get_stLucia(State *self) {
+    for (int i = 0; i < self->playerCount; i++) {
+        if (self->faculties[i]->inStLucia) {
+            return self->faculties[i];
+        }
+    }
+
+    return NULL;
+}
+
 
 char *build_response(bool *toReroll) {
     char *response = malloc(sizeof(char) * strlen("reroll XXXXXX0"));
@@ -113,6 +123,106 @@ char *process_reroll(State *self, char *rolls) {
             if (rolls[i] == 'A') {
                 toReroll[i] = false;
             }
+        }
+    }
+
+    return build_response(toReroll);
+}
+
+char *process_stay(State *self) {
+    // This player will retreat from StLucia immediately.
+    return make_string("go");
+}
+#endif
+
+#ifdef HABS
+char *process_reroll(State *self, char *rolls) {
+    // If they have less than 5 health, then they will reroll any As they have. 
+    // Apart from that, they will not reroll.
+    bool toReroll[6] = { false, false, false, false, false, false };
+
+    for (int i = 0; i < DICE; i++) {
+
+        // If they have less than 5 health, 
+        // then they will reroll any As they have.
+        if (self->me->health < 5) {
+            if (rolls[i] == 'A') {
+                toReroll[i] = true;
+            }
+        }
+    }
+
+    return build_response(toReroll);
+}
+
+char *process_stay(State *self) {
+    int aliveCount = 0;
+
+    for (int i = 0; i < self->playerCount; i++) {
+        if (!self->faculties[i]->eliminated) {
+            aliveCount++;
+        }
+    }
+
+    // This player will not retreat unless they have less than 4 health
+    // If there is only one other player left, they will never retreat.
+    if (self->me->health < 4 && !(aliveCount < 3)) {
+        return make_string("go");
+    } else {
+        return make_string("stay");
+    }
+}
+#endif
+
+#ifdef HASS
+char *process_reroll(State *self, char *rolls) {
+    // They will reroll everything else
+    bool toReroll[6] = { true, true, true, true, true, true };
+
+
+    int *tallys = tally_faces(rolls);
+
+    for (int i = 0; i < DICE; i++) {
+        // If they are in StLucia, they will never reroll Ps
+        if (self->me->inStLucia) {
+            if (rolls[i] == 'P') {
+                toReroll[i] = false;
+            }
+        } else {
+            if (get_stLucia(self) && rolls[i] == 'A' && tallys[4] >= get_stLucia(self)->health) {
+                toReroll[i] = false;
+            }
+        }
+    }
+
+
+    free(tallys);
+    return build_response(toReroll);
+}
+
+char *process_stay(State *self) {
+    // This player will not retreat from StLucia
+    return make_string("stay");
+}
+#endif
+
+#ifdef MABS
+char *process_reroll(State *self, char *rolls) {
+    // They will reroll everything else
+    bool toReroll[6] = { true, true, true, true, true, true };
+
+    for (int i = 0; i < DICE; i++) {
+        // they will always keep ... 3s
+        if (rolls[i] == '3') {
+            toReroll[i] = false;
+        }
+
+        if (rolls[i] == 'H' && !self->me->inStLucia) {
+            toReroll[i] = false;
+        }
+
+        if (rolls[i] == 'A' && self->me->inStLucia) {
+            toReroll[i] = false;
         }
     }
 
