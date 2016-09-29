@@ -217,10 +217,10 @@ void validate_args(int argc, char **argv) {
 }
 
 void process_points(State *self, char *points) {
-    if (atoi(points) < 1) {
-        fprintf(stderr, "%s\n", get_error_message_player(5));
-        exit(5);
-    }
+    /* if (atoi(points) < 1) { */
+    /*     fprintf(stderr, "%s\n", get_error_message_player(5)); */
+    /*     exit(5); */
+    /* } */
 }
 
 /*
