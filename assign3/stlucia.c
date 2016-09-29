@@ -291,7 +291,7 @@ void process_winner(State *self) {
     }
     
 
-    if (label != NULL) {
+    if (label != '0') {
       char broadcastMsg[strlen("winner pn0")];
       memset(broadcastMsg, 0, strlen("winner pn0"));
       sprintf(broadcastMsg, "winner %c\n", label);

@@ -58,6 +58,12 @@ char *build_response(bool *toReroll) {
 
 #ifdef EAIT
 char *process_reroll(State *self, char *rolls) {
+
+    if (strlen(rolls) != 6) {
+        fprintf(stderr, "%s\n", get_error_message_player(5));
+        exit(5);
+    }
+
     // "they will reroll as many dice as possible as many times as possible"
     bool toReroll[6] = { true, true, true, true, true, true };
 
@@ -210,6 +216,12 @@ void validate_args(int argc, char **argv) {
     exit(status);
 }
 
+void process_points(State *self, char *points) {
+    if (atoi(points) < 1) {
+        fprintf(stderr, "%s\n", get_error_message_player(5));
+        exit(5);
+    }
+}
 
 /*
  * Author: 43926871
@@ -243,6 +255,7 @@ int main(int argc, char **argv) {
             response = process_roll(state, &line[strlen("rerolled ")]);
         } else if (!strcmp(command, "rolled")) {
         } else if (!strcmp(command, "points")) {
+            process_points(state, &line[strlen("points ")]);
         } else if (!strcmp(command, "attacks")) {
             process_attack(state, &line[strlen("attacks ")]);
         } else if (!strcmp(command, "eliminated")) {
