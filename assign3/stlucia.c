@@ -270,7 +270,7 @@ void process_winner(State *self) {
             sprintf(broadcastMsg, "winner %c\n", self->clients[i]->label);
             broadcastAll(self, broadcastMsg);
 
-            fprintf(stderr, "Player %c has wins\n", self->clients[i]->label);
+            fprintf(stderr, "Player %c wins\n", self->clients[i]->label);
             exit(0);
         }
     }
