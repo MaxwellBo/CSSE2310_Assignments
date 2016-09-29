@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdbool.h>
 
 #include "pipe.c"
 #include "faculty.c"
@@ -8,6 +9,7 @@ typedef struct Client {
     char label;
     Pipe *pipe;
     Faculty *faculty;
+    bool shutdown;
 } Client;
 
 Client *new_client(char label) {
@@ -16,6 +18,7 @@ Client *new_client(char label) {
     self->label = label;
     self->pipe = new_pipe();
     self->faculty = new_faculty();
+    self->shutdown = false;
 
     return self;
 }

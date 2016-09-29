@@ -148,7 +148,7 @@ char *get_rerolls(FILE *rollfile, char *rolls, char *rerolls) {
 // Prereq, must be \n terminated
 void broadcastAll(State *self, char *message) {
     for (int i = 0; i < self->playerCount; i++) {
-        if (!self->clients[i]->faculty->eliminated) {
+        if (!self->clients[i]->shutdown) {
             fprintf(self->clients[i]->pipe->outbox, "%s", message);
             fflush(self->clients[i]->pipe->outbox);
         }
@@ -157,7 +157,7 @@ void broadcastAll(State *self, char *message) {
 
 void broadcastOthers(State *self, Client *exempt, char *message) {
     for (int i = 0; i < self->playerCount; i++) {
-        if (self->clients[i] != exempt && !self->clients[i]->faculty->eliminated) {
+        if (self->clients[i] != exempt && !self->clients[i]->shutdown) {
             fprintf(self->clients[i]->pipe->outbox, "%s", message);
             fflush(self->clients[i]->pipe->outbox);
         }
@@ -258,6 +258,7 @@ void process_eliminated(State *self) {
            sprintf(broadcastMsg, "eliminated %c\n", self->clients[i]->label);
 
            broadcastAll(self, broadcastMsg);
+           self->clients[i]->shutdown = true;
         }
     }     
 }
@@ -359,7 +360,7 @@ void main_loop(State *self) {
 
     while (1) {
         for (int i = 0; i < self->playerCount; i++) {
-            if (!self->clients[i]->faculty->eliminated) {
+            if (!self->clients[i]->shutdown) {
                 // Starting rolls
                 char *rolls = get_rolls(self->rollfile);
                 fprintf(self->clients[i]->pipe->outbox, "turn %s\n", rolls);
