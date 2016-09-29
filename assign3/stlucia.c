@@ -296,14 +296,16 @@ void process_end_of_turn(State *self, Client *currentPlayer, char *rolls) {
 
     // ---------- ATTACKS ARE PROCESSED AND DAMAGE REPORTED ----------
 
+    if (self->stLucia == currentPlayer) {
+        // Whenever a player starts their turn in StLucia, they gain 2 points
+        score += 2;
+    }
+
     // if there are n > 0 As
     if (tallys[4] > 0) {
         if (self->stLucia == currentPlayer) {
             // If the player is in StLucia, do n damage to all other players.
             attackOut(self, currentPlayer, tallys[4]);
-
-            // Whenever a player starts their turn in StLucia, they gain 2 points
-            score += 2;
         } else if (self->stLucia != NULL) {
             // If the player is not in StLucia, do n damage to the player in StLucia.
             attackIn(self, currentPlayer, tallys[4]);
