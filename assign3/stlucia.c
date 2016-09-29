@@ -238,12 +238,14 @@ void score_rolls(State *self, Client *currentPlayer, int *tallys, int startValue
 
     currentPlayer->faculty->score += points; 
 
-    char broadcastMsg[strlen("points c XXXXXn0")];
-    sprintf(broadcastMsg, "points %c %d\n", currentPlayer->label, points);
-    broadcastAll(self, broadcastMsg);
+    if (points) {
+       char broadcastMsg[strlen("points c XXXXXn0")];
+       sprintf(broadcastMsg, "points %c %d\n", currentPlayer->label, points);
+       broadcastAll(self, broadcastMsg);
 
-    fprintf(stderr, "Player %c scored %d for a total of %d\n", 
-        currentPlayer->label, points, currentPlayer->faculty->score);
+       fprintf(stderr, "Player %c scored %d for a total of %d\n", 
+           currentPlayer->label, points, currentPlayer->faculty->score);
+    }
 }
 
 void process_eliminated(State *self) {
@@ -324,7 +326,7 @@ void process_end_of_turn(State *self, Client *currentPlayer, char *rolls) {
     }
 
     // ---------- NEW PLAYER CLAIMS STLUCIA ----------
-    if (self->stLucia == NULL) {
+    if (self->stLucia == NULL && tallys[4]) {
         self->stLucia = currentPlayer;
         self->stLucia->faculty->inStLucia = true;
 
