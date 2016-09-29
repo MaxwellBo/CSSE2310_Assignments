@@ -231,7 +231,8 @@ int main(int argc, char **argv) {
         fprintf(stderr, "From StLucia:%s\n", line);
 
         // Max length
-        char command[strlen("rerolled XXXXXX0")] = { 0 };
+        char command[strlen("rerolled XXXXXX0")];
+        memset(command, 0, strlen("rerolled XXXXXX0")); 
         sscanf(line, "%s ", command);
 
         char *response = NULL;
