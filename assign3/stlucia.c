@@ -171,7 +171,6 @@ void heal(Client *patient, int health) {
 
      // Only display the message if we tried to heal
      if (health) {
-        fprintf(stderr, "%s\n", "TRIGGERED");
         fprintf(stderr, "Player %c healed %d, health is now %d\n",
             patient->label, delta, newHealth);
      }
@@ -293,8 +292,6 @@ void process_end_of_turn(State *self, Client *currentPlayer, char *rolls) {
     // ---------- HEALING ----------
     int *tallys = tally_faces(rolls);
 
-
-    fprintf(stderr, "%d\n", tallys[3]);
     heal(currentPlayer, tallys[3]);
 
     // ---------- ATTACKS ARE PROCESSED AND DAMAGE REPORTED ----------
