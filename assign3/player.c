@@ -56,6 +56,7 @@ char *build_response(bool *toReroll) {
     return response;
 }
 
+#ifdef EAIT
 char *process_reroll(State *self, char *rolls) {
     // "they will reroll as many dice as possible as many times as possible"
     bool toReroll[6] = { true, true, true, true, true, true };
@@ -79,6 +80,16 @@ char *process_reroll(State *self, char *rolls) {
     return build_response(toReroll);
 }
 
+char *process_stay(State *self) {
+    if (self->me->health < 5) {
+        return make_string("go");
+    } else {
+        return make_string("stay");
+    }
+}
+#endif
+
+
 char *process_roll(State *self, char *rolls) {
     if (self->rerolls < 2) {
         self->rerolls++;
@@ -95,13 +106,6 @@ char *process_roll(State *self, char *rolls) {
     }
 }
 
-char *process_stay(State *self) {
-    if (self->me->health < 5) {
-        return make_string("go");
-    } else {
-        return make_string("stay");
-    }
-}
 
 void process_attack(State *self, char *line) {
 

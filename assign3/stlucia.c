@@ -164,13 +164,16 @@ void broadcastOthers(State *self, Client *exempt, char *message) {
 
 
 void heal(Client *patient, int health) {
-    int oldHealth = patient->faculty->health;
-    give_Hs(patient->faculty, health);
-    int newHealth = patient->faculty->health;
-    int delta = newHealth - oldHealth;
+    if (health) {
+        int oldHealth = patient->faculty->health;
+        give_Hs(patient->faculty, health);
+        int newHealth = patient->faculty->health;
+        int delta = newHealth - oldHealth;
 
-    fprintf(stderr, "Player %c healed %d, health is now %d\n",
-        patient->label, delta, newHealth);
+        // Only display the message if we tried to heal
+        fprintf(stderr, "Player %c healed %d, health is now %d\n",
+            patient->label, delta, newHealth);
+    }
 }
 
 void attack(Client *attacked, int damage) {
@@ -303,7 +306,7 @@ void process_end_of_turn(State *self, Client *currentPlayer, char *rolls) {
             fprintf(self->stLucia->pipe->outbox, "%s\n", "stay?");
             fflush(self->stLucia->pipe->outbox);
             char *line = read_line(self->stLucia->pipe->inbox);
-            fprintf(stderr, "From child:%s\n", line);
+            // fprintf(stderr, "From child:%s\n", line);
 
             if (!strcmp(line, "go")) {
                 self->stLucia->faculty->inStLucia = false;
@@ -353,7 +356,7 @@ void main_loop(State *self) {
 
             while (1) {
                 char *line = read_line(self->clients[i]->pipe->inbox);
-                fprintf(stderr, "From child:%s\n", line);
+                // fprintf(stderr, "From child:%s\n", line);
 
                 // Max length
                 char command[strlen("eliminated0")];
