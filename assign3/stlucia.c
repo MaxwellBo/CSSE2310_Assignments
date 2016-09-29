@@ -359,8 +359,15 @@ void main_loop(State *self) {
             fflush(self->clients[i]->pipe->outbox);
 
             while (1) {
-                char *line = read_line(self->clients[i]->pipe->inbox);
+                char *input = read_line(self->clients[i]->pipe->inbox);
                 // fprintf(stderr, "From child:%s\n", line);
+
+                char *line = input;
+                if (input[0] == '!') {
+                    line = (input + 1);
+                }
+
+                fprintf(stderr, "%s\n", line);
 
                 // Max length
                 char command[strlen("eliminated0")];
@@ -381,7 +388,7 @@ void main_loop(State *self) {
                     // exit(7);
                 }
 
-                free(line);
+                free(input);
             }
 
             free(rolls);
