@@ -104,7 +104,6 @@ char *process_reroll(State *self, char *rolls) {
             }
         } else {
             // they will keep any A they get and reroll everthing else.
-
             if (rolls[i] == 'A') {
                 toReroll[i] = false;
             }

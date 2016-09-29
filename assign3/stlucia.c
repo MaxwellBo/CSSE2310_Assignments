@@ -187,7 +187,8 @@ void attack(Client *attacked, int damage) {
 }
 
 void attackOut(State *self, Client *attacking, int damage) {
-    char broadcastMsg[strlen("attacks p v outn0")] = { 0 };
+    char broadcastMsg[strlen("attacks p v outn0")];
+    memset(broadcastMsg, 0, strlen("attacks p v outn0"));
     sprintf(broadcastMsg, "attacks %c %d out\n", attacking->label, damage);
     broadcastAll(self, broadcastMsg);
 
@@ -199,7 +200,8 @@ void attackOut(State *self, Client *attacking, int damage) {
 }
 
 void attackIn(State *self, Client *attacking, int damage) {
-    char broadcastMsg[strlen("attacks p v inn0")] = { 0 };
+    char broadcastMsg[strlen("attacks p v inn0")];
+    memset(broadcastMsg, 0, strlen("attacks p v inn0"));
     sprintf(broadcastMsg, "attacks %c %d in\n", attacking->label, damage);
     broadcastAll(self, broadcastMsg);
 
@@ -247,7 +249,8 @@ void score_rolls(State *self, Client *currentPlayer, int *tallys, int startValue
 void process_eliminated(State *self) {
     for (int i = 0; i < self->playerCount; i++) {
         if (self->clients[i]->faculty->eliminated) {
-           char broadcastMsg[strlen("eliminated pn0")] = { 0 };
+           char broadcastMsg[strlen("eliminated pn0")];
+            memset(broadcastMsg, 0, strlen("eliminated pn0"));
            sprintf(broadcastMsg, "eliminated %c\n", self->clients[i]->label);
 
            broadcastAll(self, broadcastMsg);
@@ -260,7 +263,8 @@ void process_winner(State *self) {
         // will end when at least one player has 15 or more points
         if (self->clients[i]->faculty->score >= self->winscore) {
 
-            char broadcastMsg[strlen("winner pn0")] = { 0 };
+            char broadcastMsg[strlen("winner pn0")];
+            memset(broadcastMsg, 0, strlen("winner pn0"));
             sprintf(broadcastMsg, "winner %c\n", self->clients[i]->label);
             broadcastAll(self, broadcastMsg);
 
