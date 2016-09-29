@@ -195,7 +195,7 @@ void attackOut(State *self, Client *attacking, int damage) {
     broadcastAll(self, broadcastMsg);
 
     for (int i = 0; i < self->playerCount; i++) {
-        if (self->clients[i] != attacking) {
+        if (self->clients[i] != attacking && !self->clients[i]->shutdown) {
             attack(self->clients[i], damage);
         }
     }     
@@ -264,20 +264,43 @@ void process_eliminated(State *self) {
 }
 
 void process_winner(State *self) {
+   char label = '0';
+
     for (int i = 0; i < self->playerCount; i++) {
         // will end when at least one player has 15 or more points
         if (self->clients[i]->faculty->score >= self->winscore) {
-
-            char broadcastMsg[strlen("winner pn0")];
-            memset(broadcastMsg, 0, strlen("winner pn0"));
-            sprintf(broadcastMsg, "winner %c\n", self->clients[i]->label);
-            broadcastAll(self, broadcastMsg);
-
-            fprintf(stderr, "Player %c wins\n", self->clients[i]->label);
-            exit(0);
+           label = self->clients[i]->label;
+           break;
         }
     }
 
+   int aliveCount = 0;
+   Client *standing;
+
+   // If one person is alive, they win
+    for (int i = 0; i < self->playerCount; i++) {
+        // will end when at least one player has 15 or more points
+        if (!self->clients[i]->faculty->eliminated) {
+           standing = self->clients[i];
+            aliveCount++;
+        }
+    }
+
+    if (aliveCount == 1) {
+       label = standing->label; 
+    }
+    
+
+    if (label != NULL) {
+      char broadcastMsg[strlen("winner pn0")];
+      memset(broadcastMsg, 0, strlen("winner pn0"));
+      sprintf(broadcastMsg, "winner %c\n", label);
+      broadcastAll(self, broadcastMsg);
+
+      fprintf(stderr, "Player %c wins\n", label);
+      exit(0);
+
+    }
 }
 
 void process_end_of_turn(State *self, Client *currentPlayer, char *rolls) {
