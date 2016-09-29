@@ -368,7 +368,7 @@ void main_loop(State *self) {
 
                 while (1) {
                     char *input = read_line(self->clients[i]->pipe->inbox);
-                    fprintf(stderr, "From child %c:%s\n", self->clients[i]->label, input);
+                    // fprintf(stderr, "From child %c:%s\n", self->clients[i]->label, input);
 
                     char *line = input;
                     if (input[0] == '!') {
