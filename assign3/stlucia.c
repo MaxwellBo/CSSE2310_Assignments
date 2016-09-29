@@ -246,8 +246,26 @@ void process_eliminated(State *self) {
         if (self->clients[i]->faculty->eliminated) {
            char broadcastMsg[strlen("eliminated pn0")] = { 0 };
            sprintf(broadcastMsg, "eliminated %c\n", self->clients[i]->label);
+
+           broadcastAll(self, broadcastMsg);
         }
     }     
+}
+
+void process_winner(State *self) {
+    for (int i = 0; i < self->playerCount; i++) {
+        // will end when at least one player has 15 or more points
+        if (self->clients[i]->faculty->score >= self->winscore) {
+
+            char broadcastMsg[strlen("winner pn0")] = { 0 };
+            sprintf(broadcastMsg, "winner %c\n", self->clients[i]->label);
+            broadcastAll(self, broadcastMsg);
+
+            fprintf(stderr, "Player %c has wins\n", self->clients[i]->label);
+            exit(0);
+        }
+    }
+
 }
 
 void process_end_of_turn(State *self, Client *currentPlayer, char *rolls) {
@@ -260,6 +278,7 @@ void process_end_of_turn(State *self, Client *currentPlayer, char *rolls) {
     broadcastOthers(self, currentPlayer, broadcastMsg);
 
     fprintf(stderr, "Player %c rolled %s\n", currentPlayer->label, rolls);
+
 
     // ---------- HEALING ----------
     int *tallys = tally_faces(rolls);
@@ -317,6 +336,9 @@ void process_end_of_turn(State *self, Client *currentPlayer, char *rolls) {
 
     // ---------- PLAYER ELIMINATIONS ARE REPORTED ----------
     process_eliminated(self);
+
+    // ---------- TEST FOR GAME OVER ----------
+    process_winner(self);
 }
 
 // IMPURE
