@@ -367,8 +367,6 @@ void main_loop(State *self) {
                     line = (input + 1);
                 }
 
-                fprintf(stderr, "%s\n", line);
-
                 // Max length
                 char command[strlen("eliminated0")];
                 sscanf(line, "%s ", command);
