@@ -66,6 +66,7 @@ char *process_reroll(State *self, char *rolls) {
     // Then set the flags
     for (int i = 0; i < DICE; i++) {
         if (rolls[i] == '1' || rolls[i] == '2' || rolls[i] == '3') {
+            // Check the tally
             int index = rolls[i] - '1';
             if (tallys[index] > 2) {
                 toReroll[i] = false;
@@ -89,6 +90,35 @@ char *process_stay(State *self) {
 }
 #endif
 
+#ifdef SCIENCE
+char *process_reroll(State *self, char *rolls) {
+    bool toReroll[6] = { true, true, true, true, true, true };
+
+    for (int i = 0; i < DICE; i++) {
+
+        // If they have less than 5 health, 
+        // they will keep any H they get and reroll everything else
+        if (self->me->health < 5) {
+            if (rolls[i] == 'H') {
+                toReroll[i] = false;
+            }
+        } else {
+            // they will keep any A they get and reroll everthing else.
+
+            if (rolls[i] == 'A') {
+                toReroll[i] = false;
+            }
+        }
+    }
+
+    return build_response(toReroll);
+}
+
+char *process_stay(State *self) {
+    // This player will retreat from StLucia immediately.
+    return make_string("go");
+}
+#endif
 
 char *process_roll(State *self, char *rolls) {
     if (self->rerolls < 2) {
