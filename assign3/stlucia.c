@@ -172,7 +172,7 @@ void heal(Client *patient, int health) {
      int delta = newHealth - oldHealth;
 
      // Only display the message if we tried to heal
-     if (health) {
+     if (health && !patient->faculty->inStLucia) {
         fprintf(stderr, "Player %c healed %d, health is now %d\n",
             patient->label, delta, newHealth);
      }
