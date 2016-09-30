@@ -420,6 +420,15 @@ void process_winner(State *self) {
     }
 }
 
+/**
+ * With a State, and a Client who's just finalized a null terminated string
+ * of rolls, resolve the end of turn.
+ *
+ * - Performs IO to stderr
+ * - Can terminate the program
+ * - Mutates State
+ * - Broadcasts to children, mutating their models
+ */
 void process_end_of_turn(State *self, Client *currentPlayer, char *rolls) {
 
     int score = 0;
@@ -497,7 +506,18 @@ void process_end_of_turn(State *self, Client *currentPlayer, char *rolls) {
     process_winner(self);
 }
 
-// IMPURE
+/**
+ * With a State perform the main game loop, essentially executing
+ * all functions contained within this file.
+ *
+ * The majority of this function deals with the back and forth between
+ * children and the rolls they want to settle on
+ *
+ * - Performs IO to stderr
+ * - Can terminate the program
+ * - Mutates State
+ * - Broadcasts to children, mutating their models
+ */
 void main_loop(State *self) {
 
     while (1) {
@@ -588,7 +608,8 @@ int main(int argc, char **argv) {
             sprintf(playerCountArg, "%d", playerCount);
             playerCountArg[2] = '\0';
 
-            execl(argv[NON_PLAYER_ARGS + i], "player", playerCountArg, label, NULL);
+            execl(argv[NON_PLAYER_ARGS + i], "player", playerCountArg, 
+                    label, NULL);
         } else {
             // ---------- PARENT ---------- 
             // Open file pointers to the child processes
