@@ -188,6 +188,14 @@ char *process_reroll(State *self, char *rolls) {
     return build_response(toReroll);
 }
 
+/**
+ * With a State, returns a response specifying whether the player
+ * will "stay" or "go" in response to a "stay?" query.
+ *
+ * - Allocates memory
+ *
+ * Returns a pointer to the newly allocated string response
+ */
 char *process_stay(State *self) {
     // This player will retreat from StLucia immediately.
     return make_string("go");
@@ -412,6 +420,12 @@ void process_claim(State *self, char *line) {
     self->faculties[claimant - 'A']->inStLucia = true;
 }
 
+/**
+ * With a State, and given an eliminated query, updates the internal model
+ * of other Faculties, and moves the required Faculty to St Lucia.
+ *
+ * - Mutates State
+ */
 void process_eliminated(State *self, char *line) {
     char eliminated;
     sscanf(line, "%c\n", &eliminated);
@@ -463,6 +477,12 @@ void validate_args(int argc, char **argv) {
     exit(status);
 }
 
+/**
+ * With a State, and given an eliminated points, updates the internal model
+ * of other Faculties, and moves the required Faculty to St Lucia.
+ *
+ * - Mutates State
+ */
 void process_points(State *self, char *points) {
     /* if (atoi(points) < 1) { */
     /*     fprintf(stderr, "%s\n", get_error_message_player(5)); */
