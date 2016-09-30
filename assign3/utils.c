@@ -94,6 +94,8 @@ int *tally_faces(char *rolls) {
  * to stderr. These are the error messages for player.c and associated
  * files.
  *
+ * - Pure
+ *
  * A pointer to a statically allocated string containing the error message.
  */
 char *get_error_message_player(int errno) {
@@ -117,6 +119,8 @@ char *get_error_message_player(int errno) {
  * Given an exit code, return the corresponding error message to be printed
  * to stderr. These are the error messages for stlucia.c and associated
  * files.
+ *
+ * - Pure
  *
  * A pointer to a statically allocated string containing the error message.
  */

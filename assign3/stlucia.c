@@ -99,6 +99,11 @@ void validate_rollfile(FILE *rollfile) {
     }
 }
 
+/**
+ * Give a FILE pointer to a valid rollfile, gets the next roll from it
+ *
+ * - Mutates the position indicator for the stream
+ */
 char get_roll(FILE *rollfile) {
     while(1) {
         char roll = fgetc(rollfile);
@@ -113,6 +118,15 @@ char get_roll(FILE *rollfile) {
     }
 }
 
+/*
+ * Used as a compare function for a sorting algorithm, such that
+ * '1' < '2' < '3' < 'H' < 'A' < 'P'
+ *
+ * - Pure
+ *
+ * Returns -1 if the first argument is less than the second, 0 if the same
+ * and 1 if the first argument is greater than the second
+ */
 int compare_rolls(const void *a, const void *b) {
 
     char charA = *((char *)a);
@@ -131,7 +145,16 @@ int compare_rolls(const void *a, const void *b) {
     }
 }
 
-// IMPURE
+/**
+ * Makes a null terminated, memory allocated string filled with rolls pulled
+ * from the specified rollfile. The rolls are ordered in ascending order
+ * of value
+ *
+ * - Allocates memory
+ * - Increments the position indicator for the stream
+ *
+ * Returns a pointer to the string
+ */
 char *get_rolls(FILE *rollfile) {
     char *collector = malloc(sizeof(char) * DICE + 1);
     collector[DICE] = '\0';
@@ -146,6 +169,16 @@ char *get_rolls(FILE *rollfile) {
     return collector;
 }
 
+/**
+ * Gets a null terminated string of rerolls (like "126"), and null 
+ * terminated string of rolls (like "123HAB"), and rerolls the rolls
+ * (1 indexed).
+ *
+ * - Allocates memory
+ * -Increments the position indicator for the strema
+ *
+ * Returns a pointer to the string
+ */
 char *get_rerolls(FILE *rollfile, char *rolls, char *rerolls) {
     // Copy so we don't mutate the rolls
     char *collector = make_string(rolls);
@@ -162,8 +195,12 @@ char *get_rerolls(FILE *rollfile, char *rolls, char *rerolls) {
     return collector;
 }
 
-
-// Prereq, must be \n terminated
+/**
+ * With a state, gets a '\n' terminated, null terminated string 
+ * to be sent to all non-shutdown children.
+ *
+ * - Broadcasts to children
+ */
 void broadcast_all(State *self, char *message) {
     for (int i = 0; i < self->playerCount; i++) {
         if (!self->clients[i]->shutdown) {
@@ -173,6 +210,13 @@ void broadcast_all(State *self, char *message) {
     }
 }
 
+/**
+ * With a state, gets a '\n' terminated, null terminated string 
+ * to be sent to all non-shutdown children, with the exception of a
+ * specified Client.
+ *
+ * - Broadcasts to children
+ */
 void broadcast_others(State *self, Client *exempt, char *message) {
     for (int i = 0; i < self->playerCount; i++) {
         if (self->clients[i] != exempt && !self->clients[i]->shutdown) {
@@ -182,7 +226,12 @@ void broadcast_others(State *self, Client *exempt, char *message) {
     }
 }
 
-
+/**
+ * Gets a Client and heals it, updating its model and printing a
+ * notification to stderr.
+ *
+ * - Performs IO to stderr
+ */
 void heal(Client *patient, int health) {
     int oldHealth = patient->faculty->health;
     give_hs(patient->faculty, health);
@@ -196,6 +245,13 @@ void heal(Client *patient, int health) {
     }
 }
 
+/**
+ * Gets a Client and damages it, updating its model and printing a
+ * notification to stderr.
+ *
+ * - Performs IO to stderr
+ * - Mutates Client
+ */
 void attack(Client *attacked, int damage) {
     int oldHealth = attacked->faculty->health;
     give_as(attacked->faculty, damage);
@@ -206,6 +262,13 @@ void attack(Client *attacked, int damage) {
             attacked->label, -delta, newHealth);
 }
 
+/**
+ * With a state, and a Client who is in St Lucia, and an amount of damage,
+ * deals that amount of damage to all non-shutdown clients.
+ *
+ * - Broadcasts to children, mutating their models
+ * - Mutates States, updating its model.
+ */
 void attack_out(State *self, Client *attacking, int damage) {
     char broadcastMsg[strlen("attacks p v outn0")];
     memset(broadcastMsg, 0, strlen("attacks p v outn0"));
@@ -219,6 +282,13 @@ void attack_out(State *self, Client *attacking, int damage) {
     }     
 }
 
+/**
+ * With a State, and a Client who is not in St Lucia, and an amount of damage,
+ * deals that amount of damage to the Client in St Lucia.
+ *
+ * - Broadcasts to children, mutating their models
+ * - Mutates State, updating its model.
+ */
 void attack_in(State *self, Client *attacking, int damage) {
     char broadcastMsg[strlen("attacks p v inn0")];
     memset(broadcastMsg, 0, strlen("attacks p v inn0"));
@@ -228,6 +298,19 @@ void attack_in(State *self, Client *attacking, int damage) {
     attack(self->stLucia, damage);
 }
 
+/**
+ * With a State, and a Client who's turn it is, and a tally array, and an
+ * initial score to start from
+ *
+ * 1) Does the calculations for '1', '2' and '3's
+ * 2) Deals with the Client's new tokens
+ *
+ *
+ * - Performs IO to stderr, printing a notification of the players change
+ *   of score
+ * - Broadcasts to children, mutating their models
+ * - Mutate State, updating its model
+ */
 void score_rolls(State *self, Client *currentPlayer, int *tallys, 
         int startValue) {
     int points = startValue;
@@ -246,7 +329,6 @@ void score_rolls(State *self, Client *currentPlayer, int *tallys,
     if (tallys[2] > 2) {
         points += 3 + (tallys[2] - 3);
     }
-
 
     // if there are n > 0 Ps, then gain n tokens. 
     // During their turn, if a player has 10 tokens saved up
@@ -270,6 +352,14 @@ void score_rolls(State *self, Client *currentPlayer, int *tallys,
     }
 }
 
+/**
+ * With a State, check for models that are dead, but haven't been told to
+ * shutdown.
+ * 
+ * - Broadcasts to childen, telling them that one of their peers died,
+ *   and shutting down the one that died
+ * - Mutates the State, recording which Clients have been shutdown
+ */
 void process_eliminated(State *self) {
     for (int i = 0; i < self->playerCount; i++) {
         if (self->clients[i]->faculty->eliminated 
@@ -284,6 +374,14 @@ void process_eliminated(State *self) {
     }     
 }
 
+/**
+ * With a State, check for Clients that have won, when someone has
+ * exceeded the winscore or is the last Client standing, and ends the game.
+ *
+ * - Broadcasts to children, telling them who won, and shutting them down
+ * - Performs IO to stderr, with a notification of the end of the game'
+ * - Terminates the program 
+ */
 void process_winner(State *self) {
     char label = '0';
 
