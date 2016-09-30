@@ -232,6 +232,14 @@ char *process_reroll(State *self, char *rolls) {
     return build_response(toReroll);
 }
 
+/**
+ * With a State, returns a response specifying whether the player
+ * will "stay" or "go" in response to a "stay?" query.
+ *
+ * - Allocates memory
+ *
+ * Returns a pointer to the newly allocated string response
+ */
 char *process_stay(State *self) {
     int aliveCount = self->playerCount - self->eliminatedCount;
 
