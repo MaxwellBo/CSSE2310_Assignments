@@ -21,6 +21,17 @@ typedef struct State {
     int eliminatedCount;
 } State;
 
+/**
+ * With a player count and a label (which this player will be called),
+ * creates a list of Facultys. 
+ *
+ * These Faculties are what the player *thinks* is the gamestate, to be
+ * updated by St Lucia.
+ *
+ * - Allocates memory
+ *
+ * Returns a pointer to the newly allocated struct
+ */
 State *new_state(int playerCount, char label) {
     State *self = malloc(sizeof(State));
 
@@ -40,6 +51,13 @@ State *new_state(int playerCount, char label) {
 }
 
 
+/**
+ * Given a State, gets the Faculty currently in StLucia.
+ * 
+ * - Pure
+ *
+ * Returns a pointer to the Faculty, or NULL, if there's no one in St Lucia.
+ */
 Faculty *get_stlucia(State *self) {
     for (int i = 0; i < self->playerCount; i++) {
         if (self->faculties[i]->inStLucia) {
@@ -50,7 +68,16 @@ Faculty *get_stlucia(State *self) {
     return NULL;
 }
 
-
+/**
+ * Given an array of 6 booleans ({true, false, false, false, false, true})
+ * converts it into a null terminated string response ("reroll XXXXXX"),
+ * with numbers corresponding to true booleans in the original array
+ * ("reroll 16")
+ *
+ * - Allocates memory
+ *
+ * Returns a pointer to the newly allocated string response
+ */
 char *build_response(bool *toReroll) {
     char *response = malloc(sizeof(char) * strlen("reroll XXXXXX0"));
     memset(response, '\0', sizeof(char) * strlen("reroll XXXXXX0"));
@@ -71,6 +98,15 @@ char *build_response(bool *toReroll) {
 
 #ifdef EAIT
 
+/**
+ * With a State, takes a null-terminated string of rolls (eg "133HHA"),
+ * and returns a boolean array of size 6, 
+ * with a map from the rolls to whether they should be rerolled or not
+ *
+ * - Allocates memory
+ *
+ * Returns a pointer to the newly allocated string response
+ */
 char *process_reroll(State *self, char *rolls) {
 
     if (strlen(rolls) != 6) {
@@ -102,6 +138,14 @@ char *process_reroll(State *self, char *rolls) {
 }
 
 
+/**
+ * With a State, returns a response specifying whether the player
+ * will "stay" or "go" in response to a "stay?" query.
+ *
+ * - Allocates memory
+ *
+ * Returns a pointer to the newly allocated string response
+ */
 char *process_stay(State *self) {
     if (self->me->health < 5) {
         return make_string("go");
@@ -113,6 +157,15 @@ char *process_stay(State *self) {
 
 #ifdef SCIENCE
 
+/**
+ * With a State, takes a null-terminated string of rolls (eg "133HHA"),
+ * and returns a boolean array of size 6, 
+ * with a map from the rolls to whether they should be rerolled or not
+ *
+ * - Allocates memory
+ *
+ * Returns a pointer to the newly allocated string response
+ */
 char *process_reroll(State *self, char *rolls) {
     bool toReroll[6] = {true, true, true, true, true, true};
 
@@ -143,6 +196,15 @@ char *process_stay(State *self) {
 
 #ifdef HABS
 
+/**
+ * With a State, takes a null-terminated string of rolls (eg "133HHA"),
+ * and returns a boolean array of size 6, 
+ * with a map from the rolls to whether they should be rerolled or not
+ *
+ * - Allocates memory
+ *
+ * Returns a pointer to the newly allocated string response
+ */
 char *process_reroll(State *self, char *rolls) {
     // If they have less than 5 health, then they will reroll any As they have.
     // Apart from that, they will not reroll.
@@ -177,6 +239,15 @@ char *process_stay(State *self) {
 
 #ifdef HASS
 
+/**
+ * With a State, takes a null-terminated string of rolls (eg "133HHA"),
+ * and returns a boolean array of size 6, 
+ * with a map from the rolls to whether they should be rerolled or not
+ *
+ * - Allocates memory
+ *
+ * Returns a pointer to the newly allocated string response
+ */
 char *process_reroll(State *self, char *rolls) {
     // They will reroll everything else
     bool toReroll[6] = {true, true, true, true, true, true};
@@ -204,6 +275,14 @@ char *process_reroll(State *self, char *rolls) {
     return build_response(toReroll);
 }
 
+/**
+ * With a State, returns a response specifying whether the player
+ * will "stay" or "go" in response to a "stay?" query.
+ *
+ * - Allocates memory
+ *
+ * Returns a pointer to the newly allocated string response
+ */
 char *process_stay(State *self) {
     // This player will not retreat from StLucia
     return make_string("stay");
@@ -212,6 +291,15 @@ char *process_stay(State *self) {
 
 #ifdef MABS
 
+/**
+ * With a State, takes a null-terminated string of rolls (eg "133HHA"),
+ * and returns a boolean array of size 6, 
+ * with a map from the rolls to whether they should be rerolled or not
+ *
+ * - Allocates memory
+ *
+ * Returns a pointer to the newly allocated string response
+ */
 char *process_reroll(State *self, char *rolls) {
     // They will reroll everything else
     bool toReroll[6] = {true, true, true, true, true, true};
@@ -234,12 +322,28 @@ char *process_reroll(State *self, char *rolls) {
     return build_response(toReroll);
 }
 
+/**
+ * With a State, returns a response specifying whether the player
+ * will "stay" or "go" in response to a "stay?" query.
+ *
+ * - Allocates memory
+ *
+ * Returns a pointer to the newly allocated string response
+ */
 char *process_stay(State *self) {
     // This player will retreat from StLucia immediately.
     return make_string("go");
 }
 #endif
 
+/**
+ * With a State, and given a string of null-terminated rolls ("133HHA")
+ * determines the appropriate response to a "turn" or "rerolled" query
+ *
+ * - Allocates memory
+ *
+ * Returns a pointer to the newly allocated string response
+ */
 char *process_roll(State *self, char *rolls) {
 
     char *response = process_reroll(self, rolls);
@@ -261,6 +365,12 @@ char *process_roll(State *self, char *rolls) {
 }
 
 
+/**
+ * With a State, and given an attack query, updates the internal model
+ * of other Faculties.
+ *
+ * - Mutates State
+ */
 void process_attack(State *self, char *line) {
 
     char attacker;
@@ -283,6 +393,12 @@ void process_attack(State *self, char *line) {
     }
 }
 
+/**
+ * With a State, and given an claim query, updates the internal model
+ * of other Faculties, and moves the required Faculty to St Lucia.
+ *
+ * - Mutates State
+ */
 void process_claim(State *self, char *line) {
     // Remove any occupants from StLucia
     for (int i = 0; i < self->playerCount; i++) {
@@ -322,17 +438,22 @@ void process_eliminated(State *self, char *line) {
 }
 
 
-// IMPURE
+/**
+ * Takes the argument count and argument array, and checks if they're valid.
+ *
+ * - Terminates the program if the program if invalid arguments are provided,
+ *   and prints an appropriate error message to stderr
+ */
 void validate_args(int argc, char **argv) {
     int status;
 
     if (argc != 3) {
         status = 1;
     } else if (!(2 <= atoi(argv[NUMBER_OF_PLAYERS]) 
-                && atoi(argv[NUMBER_OF_PLAYERS]) <= 26)) {
+            && atoi(argv[NUMBER_OF_PLAYERS]) <= 26)) {
         status = 2;
     } else if (strlen(argv[MY_ID]) != 1
-                || !('A' <= argv[MY_ID][0] && argv[MY_ID][0] <= 'Z')) {
+            || !('A' <= argv[MY_ID][0] && argv[MY_ID][0] <= 'Z')) {
         status = 3;
     } else {
         return;
@@ -390,7 +511,8 @@ int main(int argc, char **argv) {
             process_claim(state, &line[strlen("claim ")]);
         } else if (!strcmp(command, "stay?")) {
             response = process_stay(state);
-        } else if (!strcmp(command, "winner") || !strcmp(command, "shutdown")) {
+        } else if (!strcmp(command, "winner") 
+                || !strcmp(command, "shutdown")) {
             exit(0);
         } else {
             fprintf(stderr, "%s\n", get_error_message_player(5));

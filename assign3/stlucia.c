@@ -547,16 +547,16 @@ void main_loop(State *self) {
                     // 0 on successful compare
                     if (!strcmp(command, "reroll")) {
                         rolls = get_rerolls(self->rollfile, rolls,
-                            &line[strlen("reroll ")]);
+                                &line[strlen("reroll ")]);
                         fprintf(self->clients[i]->pipe->outbox, 
-                            "rerolled %s\n", rolls);
+                                "rerolled %s\n", rolls);
                         fflush(self->clients[i]->pipe->outbox);
                     } else if (!strcmp(command, "keepall")) {
                         process_end_of_turn(self, self->clients[i], rolls);
                         break;
                     } else {
                         fprintf(stderr, "%s\n", get_error_message_stlucia(7));
-                        // exit(7);
+                        /* exit(7); */
                     }
 
                     free(input);

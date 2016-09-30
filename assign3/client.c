@@ -12,6 +12,14 @@ typedef struct Client {
     bool shutdown;
 } Client;
 
+/**
+ * Creates a Client, which is a wrapper around a Faculty (a game model),
+ * with things useful for talking to it (pipes, labels, and statuses).
+ *
+ * - Allocates memory
+ *
+ * Returns a pointer to the newly created struct
+ */
 Client *new_client(char label) {
     Client *self = malloc(sizeof(Client));
 
