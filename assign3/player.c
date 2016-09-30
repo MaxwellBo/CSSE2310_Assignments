@@ -39,7 +39,7 @@ State *new_state(int playerCount, char label) {
     return self;
 }
 
-Faculty *get_stLucia(State *self) {
+Faculty *get_stlucia(State *self) {
     for (int i = 0; i < self->playerCount; i++) {
         if (self->faculties[i]->inStLucia) {
             return self->faculties[i];
@@ -185,7 +185,7 @@ char *process_reroll(State *self, char *rolls) {
                 toReroll[i] = false;
             }
         } else {
-            if (get_stLucia(self) && rolls[i] == 'A' && tallys[4] >= get_stLucia(self)->health) {
+            if (get_stlucia(self) && rolls[i] == 'A' && tallys[4] >= get_stlucia(self)->health) {
                 toReroll[i] = false;
             }
         }
@@ -244,7 +244,7 @@ char *process_roll(State *self, char *rolls) {
 
         // Heal up
         int *tallys = tally_faces(rolls);
-        give_Hs(self->me, tallys[3]);
+        give_hs(self->me, tallys[3]);
         free(tallys);
 
         return make_string("keepall");
@@ -264,11 +264,11 @@ void process_attack(State *self, char *line) {
     for (int i = 0; i < self->playerCount; i++) {
         if (!strcmp(direction, "in")) {
             if (self->faculties[i]->inStLucia) {
-                give_As(self->faculties[i], damage);
+                give_as(self->faculties[i], damage);
             }
         } else {
             if (!self->faculties[i]->inStLucia) {
-                give_As(self->faculties[i], damage);
+                give_as(self->faculties[i], damage);
             }
         }
     }

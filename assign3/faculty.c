@@ -21,7 +21,7 @@ Faculty *new_faculty() {
     return self;
 }
 
-void give_Hs(Faculty *self, int number) {
+void give_hs(Faculty *self, int number) {
     if (!self->inStLucia) {
         self->health += number;
     }
@@ -31,7 +31,7 @@ void give_Hs(Faculty *self, int number) {
     }
 }
 
-void give_As(Faculty *self, int number) {
+void give_as(Faculty *self, int number) {
     self->health -= number;
 
     if (self->health <= 0) {
