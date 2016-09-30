@@ -27,7 +27,15 @@ typedef struct State {
     Client *stLucia;
 } State;
 
-
+/**
+ * Creates a new gamestate, after being supplied the number of players, the
+ * score the players will play to, and a FILE pointing to a file containing
+ * the rolls that the game should provide to the players when they roll
+ *
+ * - Allocates memory
+ *
+ * Returns a pointer to the newly allocated struct
+ */
 State *new_state(FILE *rollfile, int winscore, int playerCount) {
     State *self = malloc(sizeof(State));
 
@@ -40,7 +48,12 @@ State *new_state(FILE *rollfile, int winscore, int playerCount) {
     return self;
 }
 
-// IMPURE
+/**
+ * Takes the argument count and argument array, and checks if they're valid.
+ *
+ * - Terminates the program if the program if invalid arguments are provided,
+ *   and prints an appropriate error message to stderr
+ */
 void validate_args(int argc, char **argv) {
     int status;
 
@@ -56,7 +69,13 @@ void validate_args(int argc, char **argv) {
     exit(status);
 }
 
-// IMPURE
+/**
+ * Takes a FILE pointer and verifies whether it can be used as a rollfile,
+ * AKA, only containing valid rolls.
+ *
+ * - Terminates the program if the rollfile either doesn't exist, or has
+ *   invalid contents, and prints an appropriate error message to stderr
+ */
 void validate_rollfile(FILE *rollfile) {
 
     if (rollfile == NULL) {
@@ -80,7 +99,6 @@ void validate_rollfile(FILE *rollfile) {
     }
 }
 
-// IMPURE
 char get_roll(FILE *rollfile) {
     while(1) {
         char roll = fgetc(rollfile);
@@ -185,7 +203,7 @@ void attack(Client *attacked, int damage) {
     int delta = newHealth - oldHealth;
 
     fprintf(stderr, "Player %c took %d damage, health is now %d\n",
-                    attacked->label, -delta, newHealth);
+            attacked->label, -delta, newHealth);
 }
 
 void attack_out(State *self, Client *attacking, int damage) {
@@ -351,7 +369,8 @@ void process_end_of_turn(State *self, Client *currentPlayer, char *rolls) {
 
             free(line);
         } else {
-            // If there is no player in StLucia, claim StLucia (no damage is done in this case).
+            // If there is no player in StLucia,
+            // claim StLucia (no damage is done in this case).
         }
     }
 
@@ -393,7 +412,8 @@ void main_loop(State *self) {
 
                 while (1) {
                     char *input = read_line(self->clients[i]->pipe->inbox);
-                    // fprintf(stderr, "From child %c:%s\n", self->clients[i]->label, input);
+                    // fprintf(stderr, "From child %c:%s\n",
+                    // self->clients[i]->label, input);
 
                     char *line = input;
                     if (input[0] == '!') {
@@ -408,8 +428,10 @@ void main_loop(State *self) {
 
                     // 0 on successful compare
                     if (!strcmp(command, "reroll")) {
-                        rolls = get_rerolls(self->rollfile, rolls, &line[strlen("reroll ")]);
-                        fprintf(self->clients[i]->pipe->outbox, "rerolled %s\n", rolls);
+                        rolls = get_rerolls(self->rollfile, rolls,
+                            &line[strlen("reroll ")]);
+                        fprintf(self->clients[i]->pipe->outbox, 
+                            "rerolled %s\n", rolls);
                         fflush(self->clients[i]->pipe->outbox);
                     } else if (!strcmp(command, "keepall")) {
                         process_end_of_turn(self, self->clients[i], rolls);
