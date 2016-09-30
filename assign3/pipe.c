@@ -15,8 +15,14 @@ typedef struct Pipe {
     FILE *outbox;
 } Pipe;
 
-
-// TODO: Error checking for condition 5
+/**
+ * Creates a Pipe struct and puts two pipes inside of it.
+ *
+ * - Allocates memory
+ * - Can terminate the program when unable to create pipes
+ *
+ * Returns a pointer to the Pipe struct
+ */
 Pipe *new_pipe() {
     Pipe *self = malloc(sizeof(Pipe));
 
@@ -35,6 +41,12 @@ Pipe *new_pipe() {
     return self;
 }
 
+/**
+ * Takes a Pipe struct, and opens the necessary FILEs for a parent
+ * to talk to a child.
+ *
+ * - Can terminate the program when unable to open file descriptors
+ */
 void use_as_parent(Pipe *self) {
     // Close the ends we won't use
     close(self->toParent[WRITE_DESCRIPTOR]);
@@ -49,6 +61,11 @@ void use_as_parent(Pipe *self) {
     }
 }
 
+/**
+ * Takes a Pipe struct, and mutates the file descriptor table so that stdin
+ * and stdout are transferred into the pipe, and transfers stderr to
+ * /dev/null.
+ */
 void use_as_child(Pipe *self) {
     close(self->toParent[READ_DESCRIPTOR]);
     close(self->toChild[WRITE_DESCRIPTOR]);
