@@ -556,7 +556,7 @@ void main_loop(State *self) {
                         break;
                     } else {
                         fprintf(stderr, "%s\n", get_error_message_stlucia(7));
-                        /* exit(7); */
+                        exit(7);
                     }
 
                     free(input);
