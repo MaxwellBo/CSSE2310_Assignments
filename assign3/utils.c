@@ -30,6 +30,13 @@ char *read_line(FILE *file) {
     }
 }
 
+/*
+ * Takes a string, and makes it a memory allocated string.
+ *
+ * - Allocates memory
+ *
+ * Reutrns a pointer to the newly allocated string
+ */
 char *make_string(char *string) {
     char *collector = malloc(sizeof(char) * (strlen(string) + 1));
     strcpy(collector, string);
@@ -38,6 +45,8 @@ char *make_string(char *string) {
 
 /* 
  * Gets the pebble of the opposite player, given a pebble of a player
+ *
+ * - Pure
  * 
  * Returns the char representing the pebble 
  */
@@ -49,6 +58,15 @@ char invert_pebble(char pebble) {
     }
 }
 
+/*
+ * Takes a string of rolls and returns an array of 6 integers.
+ * Each of the integer cells corresponds to a tally of 1, 2, 3, H, A and P,
+ * in the string of rolls.
+ *
+ * - Allocates memory
+ *
+ * Returns a pointer to the start of the array
+ */
 int *tally_faces(char *rolls) {
 
     int *tallys = calloc(DICE, sizeof(int));
@@ -71,6 +89,13 @@ int *tally_faces(char *rolls) {
     return tallys;
 }
 
+/*
+ * Given an exit code, return the corresponding error message to be printed
+ * to stderr. These are the error messages for player.c and associated
+ * files.
+ *
+ * A pointer to a statically allocated string containing the error message.
+ */
 char *get_error_message_player(int errno) {
     switch (errno) {
         case 1:
@@ -88,6 +113,13 @@ char *get_error_message_player(int errno) {
     }
 }
 
+/*
+ * Given an exit code, return the corresponding error message to be printed
+ * to stderr. These are the error messages for stlucia.c and associated
+ * files.
+ *
+ * A pointer to a statically allocated string containing the error message.
+ */
 char *get_error_message_stlucia(int errno) {
     switch (errno) {
         case 1:
