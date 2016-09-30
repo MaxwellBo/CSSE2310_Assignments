@@ -123,8 +123,7 @@ char *get_error_message_player(int errno) {
 char *get_error_message_stlucia(int errno) {
     switch (errno) {
         case 1:
-            return "Usage: stlucia rollfile winscore prog1 prog2 
-                        [prog3 [prog4]]";
+            return "Usage: stlucia rollfile winscore prog1 prog2 [prog3 [prog4]]";
         case 2:
             return "Invalid score";
         case 3:
