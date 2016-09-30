@@ -287,6 +287,11 @@ void process_eliminated(State *self, char *line) {
     char eliminated;
     sscanf(line, "%c\n", &eliminated);
 
+    if ((eliminated) > ((self->playerCount - 1) + 'A')) {
+        fprintf(stderr, "%s\n", get_error_message_player(5));
+        exit(5);
+    }
+
     // Defensively elimate all players that share that label
     for (int i = 0; i < self->playerCount; i++) {
 
