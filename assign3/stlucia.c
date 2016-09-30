@@ -73,11 +73,11 @@ void validate_rollfile(FILE *rollfile) {
         }
 
         if (!((c == '1') || (c == '2') || (c == '3') 
-            || (c == 'H') || (c == 'A') || (c == 'P') || (c == '\n'))) {
+                || (c == 'H') || (c == 'A') || (c == 'P') || (c == '\n'))) {
             fprintf(stderr, "%s\n", get_error_message_stlucia(4));
             exit(4);
-      }
-   }
+        }
+    }
 }
 
 // IMPURE
@@ -166,16 +166,16 @@ void broadcast_others(State *self, Client *exempt, char *message) {
 
 
 void heal(Client *patient, int health) {
-     int oldHealth = patient->faculty->health;
-     give_hs(patient->faculty, health);
-     int newHealth = patient->faculty->health;
-     int delta = newHealth - oldHealth;
+    int oldHealth = patient->faculty->health;
+    give_hs(patient->faculty, health);
+    int newHealth = patient->faculty->health;
+    int delta = newHealth - oldHealth;
 
-     // Only display the message if we tried to heal
-     if (health && !patient->faculty->inStLucia) {
+    // Only display the message if we tried to heal
+    if (health && !patient->faculty->inStLucia) {
         fprintf(stderr, "Player %c healed %d, health is now %d\n",
             patient->label, delta, newHealth);
-     }
+    }
 }
 
 void attack(Client *attacked, int damage) {
@@ -185,7 +185,7 @@ void attack(Client *attacked, int damage) {
     int delta = newHealth - oldHealth;
 
     fprintf(stderr, "Player %c took %d damage, health is now %d\n",
-        attacked->label, -delta, newHealth);
+                attacked->label, -delta, newHealth);
 }
 
 void attack_out(State *self, Client *attacking, int damage) {
@@ -243,30 +243,31 @@ void score_rolls(State *self, Client *currentPlayer, int *tallys,
     currentPlayer->faculty->score += points; 
 
     if (points) {
-       char broadcastMsg[strlen("points c XXXXXn0")];
-       sprintf(broadcastMsg, "points %c %d\n", currentPlayer->label, points);
-       broadcast_all(self, broadcastMsg);
+        char broadcastMsg[strlen("points c XXXXXn0")];
+        sprintf(broadcastMsg, "points %c %d\n", currentPlayer->label, points);
+        broadcast_all(self, broadcastMsg);
 
-       fprintf(stderr, "Player %c scored %d for a total of %d\n", 
-           currentPlayer->label, points, currentPlayer->faculty->score);
+        fprintf(stderr, "Player %c scored %d for a total of %d\n", 
+            currentPlayer->label, points, currentPlayer->faculty->score);
     }
 }
 
 void process_eliminated(State *self) {
     for (int i = 0; i < self->playerCount; i++) {
-        if (self->clients[i]->faculty->eliminated && !self->clients[i]->shutdown) {
-           char broadcastMsg[strlen("eliminated pn0")];
+        if (self->clients[i]->faculty->eliminated 
+                && !self->clients[i]->shutdown) {
+            char broadcastMsg[strlen("eliminated pn0")];
             memset(broadcastMsg, 0, strlen("eliminated pn0"));
-           sprintf(broadcastMsg, "eliminated %c\n", self->clients[i]->label);
+            sprintf(broadcastMsg, "eliminated %c\n", self->clients[i]->label);
 
-           broadcast_all(self, broadcastMsg);
-           self->clients[i]->shutdown = true;
+            broadcast_all(self, broadcastMsg);
+            self->clients[i]->shutdown = true;
         }
     }     
 }
 
 void process_winner(State *self) {
-   char label = '0';
+    char label = '0';
 
     for (int i = 0; i < self->playerCount; i++) {
         // will end when at least one player has 15 or more points
@@ -276,10 +277,10 @@ void process_winner(State *self) {
         }
     }
 
-   int aliveCount = 0;
-   Client *standing;
+    int aliveCount = 0;
+    Client *standing;
 
-   // If one person is alive, they win
+    // If one person is alive, they win
     for (int i = 0; i < self->playerCount; i++) {
         // will end when at least one player has 15 or more points
         if (!self->clients[i]->faculty->eliminated) {
@@ -292,7 +293,6 @@ void process_winner(State *self) {
        label = standing->label; 
     }
     
-
     if (label != '0') {
       char broadcastMsg[strlen("winner pn0")];
       memset(broadcastMsg, 0, strlen("winner pn0"));
@@ -301,12 +301,11 @@ void process_winner(State *self) {
 
       fprintf(stderr, "Player %c wins\n", label);
       exit(0);
-
     }
 }
 
 void process_end_of_turn(State *self, Client *currentPlayer, char *rolls) {
-
+    
     int score = 0;
     // ---------- INFORM OTHER PLAYERS WHAT WAS ROLLED -----------
     char broadcastMsg[strlen("rolled p XXXXXXn0")];
@@ -335,7 +334,8 @@ void process_end_of_turn(State *self, Client *currentPlayer, char *rolls) {
             // If the player is in StLucia, do n damage to all other players.
             attack_out(self, currentPlayer, tallys[4]);
         } else if (self->stLucia != NULL) {
-            // If the player is not in StLucia, do n damage to the player in StLucia.
+            // If the player is not in StLucia, 
+            // do n damage to the player in StLucia.
             attack_in(self, currentPlayer, tallys[4]);
             // Even if a player chooses to leave, they still take damage.
 
@@ -453,7 +453,7 @@ int main(int argc, char **argv) {
     for (int i = 0; i < playerCount; i++) {
 
         // A for (i = 0), B for (i = 1)
-        char label[2] = { (char)i + 'A', '\0' };
+        char label[2] = {(char)i + 'A', '\0'};
         state->clients[i] = new_client(label[0]);
 
         pid_t pid = fork();

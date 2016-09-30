@@ -9,6 +9,7 @@ typedef struct Faculty {
     bool inStLucia;
 } Faculty;
 
+
 Faculty *new_faculty() {
     Faculty *self = malloc(sizeof(Faculty));
 

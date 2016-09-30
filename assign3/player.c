@@ -39,6 +39,7 @@ State *new_state(int playerCount, char label) {
     return self;
 }
 
+
 Faculty *get_stlucia(State *self) {
     for (int i = 0; i < self->playerCount; i++) {
         if (self->faculties[i]->inStLucia) {
@@ -69,6 +70,7 @@ char *build_response(bool *toReroll) {
 }
 
 #ifdef EAIT
+
 char *process_reroll(State *self, char *rolls) {
 
     if (strlen(rolls) != 6) {
@@ -77,7 +79,7 @@ char *process_reroll(State *self, char *rolls) {
     }
 
     // "they will reroll as many dice as possible as many times as possible"
-    bool toReroll[6] = { true, true, true, true, true, true };
+    bool toReroll[6] = {true, true, true, true, true, true};
 
     int *tallys = tally_faces(rolls);
 
@@ -99,6 +101,7 @@ char *process_reroll(State *self, char *rolls) {
     return build_response(toReroll);
 }
 
+
 char *process_stay(State *self) {
     if (self->me->health < 5) {
         return make_string("go");
@@ -109,6 +112,7 @@ char *process_stay(State *self) {
 #endif
 
 #ifdef SCIENCE
+
 char *process_reroll(State *self, char *rolls) {
     bool toReroll[6] = { true, true, true, true, true, true };
 
@@ -138,10 +142,11 @@ char *process_stay(State *self) {
 #endif
 
 #ifdef HABS
+
 char *process_reroll(State *self, char *rolls) {
     // If they have less than 5 health, then they will reroll any As they have. 
     // Apart from that, they will not reroll.
-    bool toReroll[6] = { false, false, false, false, false, false };
+    bool toReroll[6] = {false, false, false, false, false, false};
 
     for (int i = 0; i < DICE; i++) {
 
@@ -171,9 +176,10 @@ char *process_stay(State *self) {
 #endif
 
 #ifdef HASS
+
 char *process_reroll(State *self, char *rolls) {
     // They will reroll everything else
-    bool toReroll[6] = { true, true, true, true, true, true };
+    bool toReroll[6] = {true, true, true, true, true, true};
 
 
     int *tallys = tally_faces(rolls);
@@ -185,7 +191,8 @@ char *process_reroll(State *self, char *rolls) {
                 toReroll[i] = false;
             }
         } else {
-            if (get_stlucia(self) && rolls[i] == 'A' && tallys[4] >= get_stlucia(self)->health) {
+            if (get_stlucia(self) 
+                    && rolls[i] == 'A' && tallys[4] >= get_stlucia(self)->health) {
                 toReroll[i] = false;
             }
         }
@@ -203,9 +210,10 @@ char *process_stay(State *self) {
 #endif
 
 #ifdef MABS
+
 char *process_reroll(State *self, char *rolls) {
     // They will reroll everything else
-    bool toReroll[6] = { true, true, true, true, true, true };
+    bool toReroll[6] = {true, true, true, true, true, true};
 
     for (int i = 0; i < DICE; i++) {
         // they will always keep ... 3s
@@ -320,10 +328,10 @@ void validate_args(int argc, char **argv) {
     if (argc != 3) {
         status = 1;
     } else if (!(2 <= atoi(argv[NUMBER_OF_PLAYERS]) 
-        && atoi(argv[NUMBER_OF_PLAYERS]) <= 26)) {
+                && atoi(argv[NUMBER_OF_PLAYERS]) <= 26)) {
         status = 2;
     } else if (strlen(argv[MY_ID]) != 1
-        || !('A' <= argv[MY_ID][0] && argv[MY_ID][0] <= 'Z')) {
+                || !('A' <= argv[MY_ID][0] && argv[MY_ID][0] <= 'Z')) {
         status = 3;
     } else {
         return;
