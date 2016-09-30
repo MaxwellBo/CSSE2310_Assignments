@@ -18,6 +18,7 @@ typedef struct State {
     Faculty *me;
     char label;
     int rerolls;
+    int eliminatedCount;
 } State;
 
 State *new_state(int playerCount, char label) {
@@ -33,6 +34,7 @@ State *new_state(int playerCount, char label) {
     self->me = self->faculties[label - 'A'];
     self->label = label;
     self->rerolls = 0;
+    self->eliminatedCount = 0;
 
     return self;
 }
@@ -156,16 +158,8 @@ char *process_reroll(State *self, char *rolls) {
 }
 
 char *process_stay(State *self) {
-    int aliveCount = 0;
+    int aliveCount = self->playerCount - self->eliminatedCount;
 
-    for (int i = 0; i < self->playerCount; i++) {
-        if (!self->faculties[i]->eliminated) {
-            aliveCount++;
-            fprintf(stderr, "%c\n", i + 'A');
-        }
-    }
-
-       fprintf(stderr, "%d\n", aliveCount);
     // This player will not retreat unless they have less than 4 health
     // If there is only one other player left, they will never retreat.
     if (self->me->health < 4 && !(aliveCount < 3)) {
@@ -301,6 +295,8 @@ void process_eliminated(State *self, char *line) {
             self->faculties[i]->eliminated = true;
         }
     }
+
+    self->eliminatedCount++;
 
     if (self->label == eliminated) {
         exit(0);
