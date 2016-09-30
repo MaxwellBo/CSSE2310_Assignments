@@ -232,9 +232,13 @@ char *process_stay(State *self) {
 #endif
 
 char *process_roll(State *self, char *rolls) {
-    if (self->rerolls < 2) {
+
+    char *response = process_reroll(self, rolls);
+
+    if (self->rerolls < 2 && (strlen(response) != strlen("reroll "))) {
         self->rerolls++;
-        return process_reroll(self, rolls);
+
+        return response;
     } else {
         self->rerolls = 0;
 
