@@ -114,7 +114,7 @@ char *process_stay(State *self) {
 #ifdef SCIENCE
 
 char *process_reroll(State *self, char *rolls) {
-    bool toReroll[6] = { true, true, true, true, true, true };
+    bool toReroll[6] = {true, true, true, true, true, true};
 
     for (int i = 0; i < DICE; i++) {
 
@@ -144,7 +144,7 @@ char *process_stay(State *self) {
 #ifdef HABS
 
 char *process_reroll(State *self, char *rolls) {
-    // If they have less than 5 health, then they will reroll any As they have. 
+    // If they have less than 5 health, then they will reroll any As they have.
     // Apart from that, they will not reroll.
     bool toReroll[6] = {false, false, false, false, false, false};
 
@@ -192,7 +192,8 @@ char *process_reroll(State *self, char *rolls) {
             }
         } else {
             if (get_stlucia(self) 
-                    && rolls[i] == 'A' && tallys[4] >= get_stlucia(self)->health) {
+                    && rolls[i] == 'A' 
+                    && tallys[4] >= get_stlucia(self)->health) {
                 toReroll[i] = false;
             }
         }
