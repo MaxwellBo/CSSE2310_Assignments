@@ -161,9 +161,11 @@ char *process_stay(State *self) {
     for (int i = 0; i < self->playerCount; i++) {
         if (!self->faculties[i]->eliminated) {
             aliveCount++;
+            fprintf(stderr, "%c\n", i + 'A');
         }
     }
 
+       fprintf(stderr, "%d\n", aliveCount);
     // This player will not retreat unless they have less than 4 health
     // If there is only one other player left, they will never retreat.
     if (self->me->health < 4 && !(aliveCount < 3)) {

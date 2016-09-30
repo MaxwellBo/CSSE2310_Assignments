@@ -233,7 +233,7 @@ void score_rolls(State *self, Client *currentPlayer, int *tallys, int startValue
     // During their turn, if a player has 10 tokens saved up, they lose 10 tokens and gain 1 point.
     currentPlayer->faculty->tokens += tallys[5];
 
-    if (currentPlayer->faculty->tokens > 10) {
+    if (currentPlayer->faculty->tokens >= 10) {
         currentPlayer->faculty->tokens -= 10;
         points += 1;
     }
@@ -252,7 +252,7 @@ void score_rolls(State *self, Client *currentPlayer, int *tallys, int startValue
 
 void process_eliminated(State *self) {
     for (int i = 0; i < self->playerCount; i++) {
-        if (self->clients[i]->faculty->eliminated) {
+        if (self->clients[i]->faculty->eliminated && !self->clients[i]->shutdown) {
            char broadcastMsg[strlen("eliminated pn0")];
             memset(broadcastMsg, 0, strlen("eliminated pn0"));
            sprintf(broadcastMsg, "eliminated %c\n", self->clients[i]->label);
