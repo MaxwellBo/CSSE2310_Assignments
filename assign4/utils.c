@@ -28,6 +28,34 @@ char *read_line(FILE *file) {
     }
 }
 
+char **split_read_line(FILE *file, int *allocated) {
+
+    char **result = malloc(sizeof(char *));
+
+    char *line = read_line(file);
+
+    int position = 0;
+    int startOfWord = 0;
+    *allocated = 0;
+
+    while (1) {
+        if (line[position] == ' ' || line[position] == '\0') {
+            result[allocated] = &line[startOfWord];
+            (*allocated)++;
+
+            if (line[position] == '\0') {
+                return result;
+            }
+
+            result = realloc(result, *allocated * sizeof(char *));
+            startOfWord = position + 1;
+        }
+
+        position++;
+    }
+
+}
+
 /*
  * Takes a string, and makes it a memory allocated string.
  *

@@ -48,12 +48,6 @@ void validate_args(int argc, char **argv) {
     // if not within the valid range
     if (!((MIN_ARGS <= argc && argc <= MAX_ARGS))) {
         status = 1;
-    } else if(argc == WAIT_ARGS || argc == CHALLENGE_ARGS) {
-        if (!fopen(argv[SINISTERFILE], "r")) {
-            status = 2;
-        }
-    } else if (!fopen(argv[TEAMFILE], "r")) {
-        status = 4;
     } else if (argc == SIMULATION_ARGS && atoi(argv[CONTROLLERPORT]) < 1 ) {
         status = 6;
     } else if (argc == CHALLENGE_ARGS && atoi(argv[TARGETPORT]) < 1 ) {
@@ -80,7 +74,15 @@ int main(int argc, char **argv) {
 
     FILE *teamfile = fopen(argv[TEAMFILE], "r"); 
 
+    if (!teamfile) {
+        fprintf(stderr, "%s\n", get_error_message_2310team(4));
+        exit(4);
+    }
+
     fprintf(stderr, "%s\n", read_line(teamfile));
+
+
+    
 
     if (argc == SIMULATION_ARGS) {
 
