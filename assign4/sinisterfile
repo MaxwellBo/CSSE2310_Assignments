@@ -1,0 +1,39 @@
+# Type names
+bird
+mammal
+reptile
+australian
+.
+# Type effectiveness strings
+mammal it_worked_well ok something_went_wrong
+bird it_worked_great ok not_great
+australian bonza ok it_was_pretty_average
+reptile it_was_effective it_was_ok it_was_ineffective
+.
+# Type relations
+australian +bird +mammal +reptile -australian
+bird -reptile +mammal
+reptile -mammal +bird
+mammal +reptile -bird
+.
+# Attacks
+add_beetroot australian
+add_vegemite australian
+eat_egg mammal
+pounce mammal
+slither reptile
+poison reptile
+lose_tail reptile
+flap bird
+peck bird
+swoop bird
+scratch mammal
+.
+# Agents
+mongoose mammal pounce scratch swoop
+cobra reptile poison slither swoop
+gull bird peck swoop flap
+flying_fox mammal flap poison add_beetroot
+croc australian pounce add_beetroot add_vegemite
+.
+
