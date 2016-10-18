@@ -53,6 +53,32 @@ char *make_string(char *string) {
  */
 char *get_error_message_2310team(int errno) {
     switch (errno) {
+        case 1:
+            return "Usage: 2310team controllerport teamfile\n
+                or: 2310team wait teamfile sinisterfile\n
+                or: 2310team challenge teamfile sinisterfile targetport"
+        case 2:
+            return "Unable to access sinister file"
+        case 3:
+            return "Error reading sinister file"
+        case 4:
+            return "Unable to access team file"
+        case 5:
+            return "Error reading team file"
+        case 6:
+            return "Invalid port number"
+        case 7:
+            return "Unable to connect to controller"
+        case 8:
+            return "Unable to connect to team"
+        case 9:
+            return "Unexpected loss of controller"
+        case 10:
+            return "Unexpected loss of team"
+        case 19:
+            return "Protocol error"
+        case 20:
+            return "System error"
         default:
             return "";
     }
