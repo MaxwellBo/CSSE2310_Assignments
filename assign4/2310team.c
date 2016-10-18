@@ -81,8 +81,13 @@ int main(int argc, char **argv) {
 
     fprintf(stderr, "%s\n", read_line(teamfile));
 
+    int allocated = 0;
 
-    
+    split_read_line(teamfile, &allocated);
+
+    fprintf(stderr, "%d\n", allocated);
+
+
 
     if (argc == SIMULATION_ARGS) {
 
