@@ -83,9 +83,11 @@ int main(int argc, char **argv) {
 
     int allocated = 0;
 
-    split_read_line(teamfile, &allocated);
+    char **splits = split_read_line(teamfile, &allocated);
 
-    fprintf(stderr, "%d\n", allocated);
+    for (int i = 0; i < allocated; i++) {
+        fprintf(stderr, "%s\n", splits[i]);
+    }
 
 
 
