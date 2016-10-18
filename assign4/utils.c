@@ -48,6 +48,7 @@ char **split_read_line(FILE *file, int *allocated) {
 
     *allocated = 0;
     char *line = read_line(file);
+    int length = strlen(line);
     int head = 0;
     int pointer = 0;
 
@@ -62,14 +63,17 @@ char **split_read_line(FILE *file, int *allocated) {
 
     pointer = 0;
 
-    while (line[pointer] <= strlen(line)) {
+    while (pointer <= length) {
         if (line[pointer] == '\0') {
             result[*allocated] = make_string(&line[head]);
-            head = pointer + 1;
             (*allocated)++;
 
             result = realloc(result, sizeof(char *) * ((*allocated) + 1));
+
+            head = pointer + 1;
         }
+
+        pointer++;
     }
 
     free(line);
