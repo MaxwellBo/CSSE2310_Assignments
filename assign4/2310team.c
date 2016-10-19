@@ -81,13 +81,13 @@ void read_teamfile(char *filename) {
         exit(4);
     }
 
-    fprintf(stderr, "%s\n", read_line(teamfile));
+    // fprintf(stderr, "%s\n", read_line(teamfile));
 
-    Vec *splits = split_read_line(teamfile);
+    // Vec *splits = split_read_line(teamfile);
 
-    for (int i = 0; i < splits->size; i++) {
-        fprintf(stderr, "%s\n", splits->data[i]);
-    }
+    // for (int i = 0; i < splits->size; i++) {
+    //     fprintf(stderr, "%s\n", splits->data[i]);
+    // }
 
 }
 
@@ -102,24 +102,31 @@ void read_sinisterfile(char *filename) {
 
     HashMap *dataByAnimal = new_hashmap();
 
-    // /* ---------- TYPENAME ----------*/
-    // while (1) {
-    //     char* line = read_line(sinisterfile);
+    /* ---------- TYPENAME ----------*/
+    while (1) {
+        char* line = read_line(sinisterfile);
+        fprintf(stderr, "%s\n", line);
 
-    //     if (line[0] == '#') {
+        if (line[0] == '#') {
 
-    //     } else if (line[0] == '.') {
-    //         break;
-    //     } else {
-    //         put(dataByAnimal, clone_string(line), new_type());
-    //     }
+        } else if (line[0] == '.') {
+            break;
+        } else {
+            // put(dataByAnimal, clone_string(line), new_type());
+        }
 
-    //     free(line);
-    // }
+        free(line);
+    }
 
     /* ---------- EFFECTIVENESS ----------*/
     while (1) {
         Vec *splits = split_read_line(sinisterfile);
+
+        for (int i = 0; i < splits->size; i++) {
+            fprintf(stderr, "%s ", splits->data[i]);
+        }
+
+        fprintf(stderr, "%s\n", "");
 
         char *first = (char *)splits->data[0];
 
