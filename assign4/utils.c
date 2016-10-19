@@ -64,9 +64,10 @@ void *get(HashMap *self, char *key, bool *isSuccess) {
 
         Mapping *mapping = (Mapping *)self->mappings->data[i];
 
-        if (strcmp(mapping->key, key)) {
+        if (!strcmp(mapping->key, key)) {
 
             *isSuccess = true;
+
             return mapping->value;
         }
 
@@ -74,7 +75,6 @@ void *get(HashMap *self, char *key, bool *isSuccess) {
 
     *isSuccess = false;
     return NULL;
-
 }
 
 /*---------------------------------------------------------------------------*/

@@ -90,6 +90,24 @@ int main(int argc, char **argv) {
     for (int i = 0; i < splits->size; i++) {
         fprintf(stderr, "%s\n", splits->data[i]);
     }
+    
+    /*-----------------------------------------------------------------------*/
+
+    HashMap *dataByAnimal = new_hashmap();
+
+    int value = 5;
+
+    insert(dataByAnimal, "name", &value);
+
+    bool isSuccess = false;
+
+    int retrieved = *((int *) get(dataByAnimal, "name",  &isSuccess));
+
+    fprintf(stderr, "%d\n", retrieved);
+
+
+    /*-----------------------------------------------------------------------*/
+
 
     if (argc == SIMULATION_ARGS) {
 
