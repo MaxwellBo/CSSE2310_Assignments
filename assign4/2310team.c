@@ -99,11 +99,11 @@ int main(int argc, char **argv) {
 
     insert(dataByAnimal, "name", &value);
 
-    bool isSuccess = false;
+    int *retrieved = (int *)get(dataByAnimal, "name");
 
-    int retrieved = *((int *) get(dataByAnimal, "name",  &isSuccess));
-
-    fprintf(stderr, "%d\n", retrieved);
+    if (retrieved != NULL) {
+        fprintf(stderr, "%d\n", *retrieved);
+    }
 
 
     /*-----------------------------------------------------------------------*/

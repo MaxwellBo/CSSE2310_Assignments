@@ -55,25 +55,20 @@ HashMap *new_hashmap() {
 }
 
 void insert(HashMap *self, char *key, void *value) {
+
     Mapping *mapping = new_mapping(key, value);
     append(self->mappings, mapping);
 }
 
-void *get(HashMap *self, char *key, bool *isSuccess) {
+void *get(HashMap *self, char *key) {
     for (int i = 0; i < self->mappings->size; i++) {
 
         Mapping *mapping = (Mapping *)self->mappings->data[i];
 
         if (!strcmp(mapping->key, key)) {
-
-            *isSuccess = true;
-
             return mapping->value;
         }
-
     }
-
-    *isSuccess = false;
     return NULL;
 }
 
