@@ -1,6 +1,25 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+typedef struct VecString {
+    int size;
+    char **data;
+} VecString;
+
+VecString *new_vec_string() {
+    VecString *self = malloc(sizeof(VecString));
+    self->size = 0;
+    self->data = malloc(sizeof(char *));
+
+    return self;
+}
+
+void append(VecString *self, char *x) {
+    self->data = realloc(self->data, sizeof(char *) * (self->size + 1));
+    self->data[self->size] = x;
+    self->size++;
+}
+
 /* 
  * Reads a single line from stdin until EOF or a newline is encountered
  *
@@ -43,10 +62,9 @@ char *make_string(char *string) {
 }
 
 
-char **split_read_line(FILE *file, int *allocated) {
-    char **result = malloc(sizeof(char *));
 
-    *allocated = 0;
+VecString *split_read_line(FILE *file) {
+    VecString *result = new_vec_string();
     char *line = read_line(file);
     int length = strlen(line);
     int head = 0;
@@ -65,11 +83,7 @@ char **split_read_line(FILE *file, int *allocated) {
 
     while (pointer <= length) {
         if (line[pointer] == '\0') {
-            result[*allocated] = make_string(&line[head]);
-            (*allocated)++;
-
-            result = realloc(result, sizeof(char *) * ((*allocated) + 1));
-
+            append(result, make_string(&line[head]));
             head = pointer + 1;
         }
 

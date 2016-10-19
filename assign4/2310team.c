@@ -23,6 +23,10 @@
 typedef struct State {
 } State;
 
+typedef struct Team {
+    char *name;
+} Team;
+
 /** 
  * TODO: DESCRIPTION
  *
@@ -81,15 +85,11 @@ int main(int argc, char **argv) {
 
     fprintf(stderr, "%s\n", read_line(teamfile));
 
-    int allocated = 0;
+    VecString *splits = split_read_line(teamfile);
 
-    char **splits = split_read_line(teamfile, &allocated);
-
-    for (int i = 0; i < allocated; i++) {
-        fprintf(stderr, "%s\n", splits[i]);
+    for (int i = 0; i < splits->size; i++) {
+        fprintf(stderr, "%s\n", splits->data[i]);
     }
-
-
 
     if (argc == SIMULATION_ARGS) {
 
