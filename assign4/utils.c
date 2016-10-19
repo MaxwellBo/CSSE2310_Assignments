@@ -1,8 +1,10 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
 
 /*---------------------------------------------------------------------------*/
 
+// Generic across (void *)
 typedef struct Vec {
     int size;
     void **data;
@@ -24,6 +26,7 @@ void append(Vec *self, void *x) {
 
 /*---------------------------------------------------------------------------*/
 
+// Generic across (void *)
 typedef struct Mapping {
     char *key;
     void *value;
@@ -31,12 +34,50 @@ typedef struct Mapping {
 
 Mapping *new_mapping(char *key, void *value) {
     Mapping *self = malloc(sizeof(Mapping));
+    self->key = key;
+    self->value = value;
+    return self;
 }
 
-typedef struct HashMap {
+/*---------------------------------------------------------------------------*/
 
+// Generic across (void *)
+typedef struct HashMap {
+    Vec *mappings;
 } HashMap;
 
+
+HashMap *new_hashmap() {
+    HashMap *self = malloc(sizeof(HashMap));
+    self->mappings = new_vec();
+
+    return self;
+}
+
+void insert(HashMap *self, char *key, void *value) {
+    Mapping *mapping = new_mapping(key, value);
+    append(self->mappings, mapping);
+}
+
+void *get(HashMap *self, char *key, bool *isSuccess) {
+    for (int i = 0; i < self->mappings->size; i++) {
+
+        Mapping *mapping = (Mapping *)self->mappings->data[i];
+
+        if (strcmp(mapping->key, key)) {
+
+            *isSuccess = true;
+            return mapping->value;
+        }
+
+    }
+
+    *isSuccess = false;
+    return NULL;
+
+}
+
+/*---------------------------------------------------------------------------*/
 
 /* 
  * Reads a single line from stdin until EOF or a newline is encountered
@@ -73,7 +114,7 @@ char *read_line(FILE *file) {
  *
  * Reutrns a pointer to the newly allocated string
  */
-char *own_string(char *string) {
+char *clone_string(char *string) {
     char *collector = malloc(sizeof(char) * (strlen(string) + 1));
     strcpy(collector, string);
     return collector;
@@ -101,7 +142,7 @@ Vec *split_read_line(FILE *file) {
 
     while (pointer <= length) {
         if (line[pointer] == '\0') {
-            append(strings, own_string(&line[head]));
+            append(strings, clone_string(&line[head]));
             head = pointer + 1;
         }
 
