@@ -27,9 +27,10 @@ void append(Vec *self, void *x) {
 void free_vec(Vec *self) {
     for (int i = 0; i < self->size; i++) {
        free(self->data[i]);
-       free(self->data);
-       free(self);
     }
+    
+   free(self->data);
+   free(self);
 }
 
 /*---------------------------------------------------------------------------*/
