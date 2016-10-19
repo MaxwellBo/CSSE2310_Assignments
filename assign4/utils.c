@@ -1,24 +1,42 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-typedef struct VecString {
-    int size;
-    char **data;
-} VecString;
+/*---------------------------------------------------------------------------*/
 
-VecString *new_vec_string() {
-    VecString *self = malloc(sizeof(VecString));
+typedef struct Vec {
+    int size;
+    void **data;
+} Vec;
+
+Vec *new_vec() {
+    Vec *self = malloc(sizeof(Vec));
     self->size = 0;
     self->data = malloc(sizeof(char *));
 
     return self;
 }
 
-void append(VecString *self, char *x) {
+void append(Vec *self, void *x) {
     self->data = realloc(self->data, sizeof(char *) * (self->size + 1));
     self->data[self->size] = x;
     self->size++;
 }
+
+/*---------------------------------------------------------------------------*/
+
+typedef struct Mapping {
+    char *key;
+    void *value;
+} Mapping;
+
+Mapping *new_mapping(char *key, void *value) {
+    Mapping *self = malloc(sizeof(Mapping));
+}
+
+typedef struct HashMap {
+
+} HashMap;
+
 
 /* 
  * Reads a single line from stdin until EOF or a newline is encountered
@@ -55,7 +73,7 @@ char *read_line(FILE *file) {
  *
  * Reutrns a pointer to the newly allocated string
  */
-char *make_string(char *string) {
+char *own_string(char *string) {
     char *collector = malloc(sizeof(char) * (strlen(string) + 1));
     strcpy(collector, string);
     return collector;
@@ -63,8 +81,8 @@ char *make_string(char *string) {
 
 
 
-VecString *split_read_line(FILE *file) {
-    VecString *result = new_vec_string();
+Vec *split_read_line(FILE *file) {
+    Vec *strings = new_vec();
     char *line = read_line(file);
     int length = strlen(line);
     int head = 0;
@@ -83,7 +101,7 @@ VecString *split_read_line(FILE *file) {
 
     while (pointer <= length) {
         if (line[pointer] == '\0') {
-            append(result, make_string(&line[head]));
+            append(strings, own_string(&line[head]));
             head = pointer + 1;
         }
 
@@ -91,7 +109,7 @@ VecString *split_read_line(FILE *file) {
     }
 
     free(line);
-    return result;
+    return strings;
 }
 
 

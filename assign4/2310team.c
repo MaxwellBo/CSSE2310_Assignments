@@ -85,7 +85,7 @@ int main(int argc, char **argv) {
 
     fprintf(stderr, "%s\n", read_line(teamfile));
 
-    VecString *splits = split_read_line(teamfile);
+    Vec *splits = split_read_line(teamfile);
 
     for (int i = 0; i < splits->size; i++) {
         fprintf(stderr, "%s\n", splits->data[i]);
