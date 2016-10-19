@@ -116,7 +116,6 @@ char *clone_string(char *string) {
 }
 
 
-
 Vec *split_read_line(FILE *file) {
     Vec *strings = new_vec();
     char *line = read_line(file);

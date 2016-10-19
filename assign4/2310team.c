@@ -20,12 +20,17 @@
 #define MAX_ARGS 5
 
 
-typedef struct State {
-} State;
 
 typedef struct Team {
     char *name;
 } Team;
+
+
+typedef struct Type {
+    Vec *effectiveness;
+    HashMap *relations; 
+} Type;
+
 
 /** 
  * TODO: DESCRIPTION
@@ -34,8 +39,10 @@ typedef struct Team {
  *
  * Returns a pointer to the newly allocated struct
  */
-State *new_state() {
-    State *self = malloc(sizeof(State));
+Type *new_type() {
+    Type *self = malloc(sizeof(Type));
+
+
 
     return self;
 }
@@ -67,16 +74,9 @@ void validate_args(int argc, char **argv) {
 }
 
 
-/*
- * Author: 43926871
- *
- * - Performs IO to stdout and stderr
- * - Can terminate the program
- */
-int main(int argc, char **argv) {
-    validate_args(argc, argv);
+void read_teamfile(char *filename) {
 
-    FILE *teamfile = fopen(argv[TEAMFILE], "r"); 
+    FILE *teamfile = fopen(filename, "r"); 
 
     if (!teamfile) {
         fprintf(stderr, "%s\n", get_error_message_2310team(4));
@@ -90,8 +90,17 @@ int main(int argc, char **argv) {
     for (int i = 0; i < splits->size; i++) {
         fprintf(stderr, "%s\n", splits->data[i]);
     }
-    
-    /*-----------------------------------------------------------------------*/
+
+}
+
+
+void read_sinisterfile(char *filename) {
+    FILE *sinisterfile = fopen(filename, "r"); 
+
+    if (!sinisterfile) {
+        fprintf(stderr, "%s\n", get_error_message_2310team(2));
+        exit(2);
+    }
 
     HashMap *dataByAnimal = new_hashmap();
 
@@ -104,17 +113,23 @@ int main(int argc, char **argv) {
     if (retrieved != NULL) {
         fprintf(stderr, "%d\n", *retrieved);
     }
+}
 
+/*
+ * Author: 43926871
+ *
+ * - Performs IO to stdout and stderr
+ * - Can terminate the program
+ */
+int main(int argc, char **argv) {
 
-    /*-----------------------------------------------------------------------*/
-
+    validate_args(argc, argv);
 
     if (argc == SIMULATION_ARGS) {
-
     } else if (argc == WAIT_ARGS) {
-
     } else if (argc == CHALLENGE_ARGS) {
-
+        read_teamfile(argv[TEAMFILE]);
+        read_sinisterfile(argv[SINISTERFILE]);
     }
 }
 
