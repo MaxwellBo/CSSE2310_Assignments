@@ -42,8 +42,6 @@ typedef struct Type {
 Type *new_type() {
     Type *self = malloc(sizeof(Type));
 
-
-
     return self;
 }
 
@@ -104,14 +102,38 @@ void read_sinisterfile(char *filename) {
 
     HashMap *dataByAnimal = new_hashmap();
 
-    int value = 5;
+    // /* ---------- TYPENAME ----------*/
+    // while (1) {
+    //     char* line = read_line(sinisterfile);
 
-    insert(dataByAnimal, "name", &value);
+    //     if (line[0] == '#') {
 
-    int *retrieved = (int *)get(dataByAnimal, "name");
+    //     } else if (line[0] == '.') {
+    //         break;
+    //     } else {
+    //         put(dataByAnimal, clone_string(line), new_type());
+    //     }
 
-    if (retrieved != NULL) {
-        fprintf(stderr, "%d\n", *retrieved);
+    //     free(line);
+    // }
+
+    /* ---------- EFFECTIVENESS ----------*/
+    while (1) {
+        Vec *splits = split_read_line(sinisterfile);
+
+        char *first = (char *)splits->data[0];
+
+        if (first[0] == '#') {
+            free_vec(splits);
+        } else if (first[0] == '.') {
+            free_vec(splits);
+            break;
+        } else {
+            Type *type = new_type();
+            type->effectiveness = splits;
+
+            put(dataByAnimal, clone_string(splits->data[0]), type);
+        }
     }
 }
 

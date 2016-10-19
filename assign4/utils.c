@@ -24,6 +24,14 @@ void append(Vec *self, void *x) {
     self->size++;
 }
 
+void free_vec(Vec *self) {
+    for (int i = 0; i < self->size; i++) {
+       free(self->data[i]);
+       free(self->data);
+       free(self);
+    }
+}
+
 /*---------------------------------------------------------------------------*/
 
 // Generic across (void *)
@@ -54,7 +62,7 @@ HashMap *new_hashmap() {
     return self;
 }
 
-void insert(HashMap *self, char *key, void *value) {
+void put(HashMap *self, char *key, void *value) {
 
     Mapping *mapping = new_mapping(key, value);
     append(self->mappings, mapping);
