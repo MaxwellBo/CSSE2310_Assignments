@@ -107,18 +107,18 @@ void read_sinisterfile(char *filename) {
         char* line = read_line(sinisterfile);
         fprintf(stderr, "%s\n", line);
 
-        if (line[0] == '#') {
-
-        } else if (line[0] == '.') {
+        if (line[0] == '.') {
             break;
-        } else {
-            // put(dataByAnimal, clone_string(line), new_type());
         }
 
         free(line);
     }
 
     /* ---------- EFFECTIVENESS ----------*/
+
+    // Type *type = (Type *)get(dataByAnimal, "australian");
+    // Vec *effectiveness = type->effectiveness;
+
     while (1) {
         Vec *splits = split_read_line(sinisterfile);
 
@@ -144,6 +144,10 @@ void read_sinisterfile(char *filename) {
     }
 
     /* ---------- TYPE RELATIONS ---------- */
+
+    // Type *type = (Type *)get(dataByAnimal, "australian");
+    // char *relation = get(type->relations, "bird");
+    
     while (1) {
         Vec *splits = split_read_line(sinisterfile);
 
@@ -177,6 +181,7 @@ void read_sinisterfile(char *filename) {
             }
 
             type->relations = relationByAnimal;
+
         }
     }
 }

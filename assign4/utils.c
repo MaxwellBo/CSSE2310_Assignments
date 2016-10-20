@@ -51,6 +51,7 @@ Mapping *new_mapping(char *key, void *value) {
 /*---------------------------------------------------------------------------*/
 
 // Generic across (void *)
+// Not actually a HashMap
 typedef struct HashMap {
     Vec *mappings;
 } HashMap;
