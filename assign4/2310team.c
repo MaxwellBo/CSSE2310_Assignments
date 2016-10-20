@@ -147,7 +147,7 @@ void read_sinisterfile(char *filename) {
 
     // Type *type = (Type *)get(dataByAnimal, "australian");
     // char *relation = get(type->relations, "bird");
-    
+
     while (1) {
         Vec *splits = split_read_line(sinisterfile);
 
