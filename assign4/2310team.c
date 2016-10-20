@@ -139,7 +139,30 @@ void read_sinisterfile(char *filename) {
             Type *type = new_type();
             type->effectiveness = splits;
 
-            put(dataByAnimal, clone_string(splits->data[0]), type);
+            put(dataByAnimal, clone_string(first), type);
+        }
+    }
+
+    /* ---------- TYPE RELATIONS ---------- */
+    while (1) {
+        Vec *splits = split_read_line(sinisterfile);
+
+        for (int i = 0; i < splits->size; i++) {
+            fprintf(stderr, "%s ", splits->data[i]);
+        }
+
+        fprintf(stderr, "%s\n", "");
+
+        char *first = (char *)splits->data[0];
+
+        if (first[0] == '#') {
+            free_vec(splits);
+        } else if (first[0] == '.') {
+            free_vec(splits);
+            break;
+        } else {
+            Type *type = (Type *)get(dataByAnimal, first);
+            // NO NULL CHECK HERE BE DRAGONS
         }
     }
 }

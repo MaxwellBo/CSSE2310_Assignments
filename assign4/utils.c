@@ -28,7 +28,7 @@ void free_vec(Vec *self) {
     for (int i = 0; i < self->size; i++) {
        free(self->data[i]);
     }
-    
+
    free(self->data);
    free(self);
 }
@@ -121,6 +121,13 @@ char *read_line(FILE *file) {
 char *clone_string(char *string) {
     char *collector = malloc(sizeof(char) * (strlen(string) + 1));
     strcpy(collector, string);
+    return collector;
+}
+
+char *promote_char(char x) {
+    char *collector = malloc(sizeof(char) * 2);
+    collector[0] = x;
+    collector[1] = '\0';
     return collector;
 }
 
