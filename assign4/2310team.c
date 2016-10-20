@@ -162,7 +162,21 @@ void read_sinisterfile(char *filename) {
             break;
         } else {
             Type *type = (Type *)get(dataByAnimal, first);
-            // NO NULL CHECK HERE BE DRAGONS
+            // NO NULL CHECK, HERE BE DRAGONS
+
+            HashMap *relationByAnimal = new_hashmap();
+
+            for (int i = 1; i < splits->size; i++) {
+
+                char *relationThenAnimal = (char *)splits->data[i];
+
+                char *relation = promote_char(relationThenAnimal[0]);
+                char *animal = &relationThenAnimal[1];
+
+                put(relationByAnimal, animal, relation);
+            }
+
+            type->relations = relationByAnimal;
         }
     }
 }
