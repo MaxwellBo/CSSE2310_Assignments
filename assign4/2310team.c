@@ -97,8 +97,8 @@ void read_sinisterfile(char *filename) {
         exit(2);
     }
 
-    HashMap *dataByAnimal = new_hashmap();
-    HashMap *typeByAttack = new_hashmap();
+    HashMap *typeToData = new_hashmap();
+    HashMap *attackToType = new_hashmap();
 
     /* ---------- TYPENAME ----------*/
     while (1) {
@@ -113,7 +113,7 @@ void read_sinisterfile(char *filename) {
     }
 
     /* ---------- EFFECTIVENESS ----------*/
-    // Type *type = (Type *)get(dataByAnimal, "australian");
+    // Type *type = (Type *)get(typeToData, "australian");
     // Vec *effectiveness = type->effectiveness;
     while (1) {
         Vec *splits = split_read_line(sinisterfile);
@@ -135,12 +135,12 @@ void read_sinisterfile(char *filename) {
             Type *type = new_type();
             type->effectiveness = splits;
 
-            put(dataByAnimal, clone_string(first), type);
+            put(typeToData, clone_string(first), type);
         }
     }
 
     /* ---------- TYPE RELATIONS ---------- */
-    // Type *type = (Type *)get(dataByAnimal, "australian");
+    // Type *type = (Type *)get(typeToData, "australian");
     // char *relation = get(type->relations, "bird");
     while (1) {
         Vec *splits = split_read_line(sinisterfile);
@@ -159,7 +159,7 @@ void read_sinisterfile(char *filename) {
             free_vec(splits);
             break;
         } else {
-            Type *type = (Type *)get(dataByAnimal, first);
+            Type *type = (Type *)get(typeToData, first);
             // NO NULL CHECK, HERE BE DRAGONS
 
             HashMap *relationByAnimal = new_hashmap();
@@ -171,15 +171,17 @@ void read_sinisterfile(char *filename) {
                 char *relation = promote_char(relationThenAnimal[0]);
                 char *animal = &relationThenAnimal[1];
 
-                put(relationByAnimal, animal, relation);
+                put(relationByAnimal, clone_string(animal), relation);
             }
 
             type->relations = relationByAnimal;
+
+            free_vec(splits);
         }
     }
 
     /* ---------- ATTACKS ----------*/
-    // char *type = get(typeByAttack, "add_beetroot");
+    // char *type = get(attackToType, "add_beetroot");
     while (1) {
         Vec *splits = split_read_line(sinisterfile);
 
@@ -197,7 +199,30 @@ void read_sinisterfile(char *filename) {
             free_vec(splits);
             break;
         } else {
-            put(typeByAttack, clone_string(first), clone_string(splits->data[1]));
+            put(attackToType, clone_string(first), clone_string(splits->data[1]));
+            free_vec(splits);
+        }
+    }
+
+    /* ---------- AGENTS ----------*/
+    // char *type = get(attackToType, "add_beetroot");
+    while (1) {
+        Vec *splits = split_read_line(sinisterfile);
+
+        for (int i = 0; i < splits->size; i++) {
+            fprintf(stderr, "%s ", splits->data[i]);
+        }
+
+        fprintf(stderr, "%s\n", "");
+
+        char *first = (char *)splits->data[0];
+
+        if (first[0] == '#') {
+            free_vec(splits);
+        } else if (first[0] == '.') {
+            free_vec(splits);
+            break;
+        } else { 
         }
     }
 }
