@@ -55,6 +55,12 @@ Agent *new_agent() {
     return self;
 }
 
+Team *new_team() {
+    Team *self = malloc(sizeof(Team));
+
+    return self;
+}
+
 /**
  * Takes the argument count and argument array, and checks if they're valid.
  *
@@ -81,16 +87,20 @@ void validate_args(int argc, char **argv) {
     return;
 }
 
-void read_teamfile(char *filename) {
+Team *read_teamfile(char *filename) {
 
     FILE *teamfile = fopen(filename, "r"); 
+    Team *team = new_team();
 
     if (!teamfile) {
         fprintf(stderr, "%s\n", get_error_message_2310team(4));
         exit(4);
     }
 
-    // fprintf(stderr, "%s\n", read_line(teamfile));
+    team->name = read_line(teamfile);
+
+    return team;
+
 
     // Vec *splits = split_read_line(teamfile);
 
@@ -147,6 +157,7 @@ void read_sinisterfile(char *filename) {
             type->effectiveness = splits;
 
             put(typeToDetails, clone_string(first), type);
+            free_vec(splits);
         }
     }
 
@@ -252,8 +263,9 @@ int main(int argc, char **argv) {
 
     if (argc == SIMULATION_ARGS) {
     } else if (argc == WAIT_ARGS) {
+        Team *team = read_teamfile(argv[TEAMFILE]);
     } else if (argc == CHALLENGE_ARGS) {
-        read_teamfile(argv[TEAMFILE]);
+        Team *team = read_teamfile(argv[TEAMFILE]);
         read_sinisterfile(argv[SINISTERFILE]);
     }
 }
