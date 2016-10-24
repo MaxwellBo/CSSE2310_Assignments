@@ -28,9 +28,13 @@ typedef struct Type {
     HashMap *relations; 
 } Type;
 
-// typedef struct Agent {
-//     Vec * 
-// } 
+typedef struct Agent {
+    char *name;
+    char *type;
+    char *first;
+    char *second;
+    char *third;
+} Agent;
 
 /** 
  * TODO: DESCRIPTION
@@ -41,6 +45,12 @@ typedef struct Type {
  */
 Type *new_type() {
     Type *self = malloc(sizeof(Type));
+
+    return self;
+}
+
+Agent *new_agent() {
+    Agent *self = malloc(sizeof(Agent));
 
     return self;
 }
@@ -97,8 +107,9 @@ void read_sinisterfile(char *filename) {
         exit(2);
     }
 
-    HashMap *typeToData = new_hashmap();
+    HashMap *typeToDetails = new_hashmap();
     HashMap *attackToType = new_hashmap();
+    Vec *agents = new_vec();
 
     /* ---------- TYPENAME ----------*/
     while (1) {
@@ -113,7 +124,7 @@ void read_sinisterfile(char *filename) {
     }
 
     /* ---------- EFFECTIVENESS ----------*/
-    // Type *type = (Type *)get(typeToData, "australian");
+    // Type *type = (Type *)get(typeToDetails, "australian");
     // Vec *effectiveness = type->effectiveness;
     while (1) {
         Vec *splits = split_read_line(sinisterfile);
@@ -135,12 +146,12 @@ void read_sinisterfile(char *filename) {
             Type *type = new_type();
             type->effectiveness = splits;
 
-            put(typeToData, clone_string(first), type);
+            put(typeToDetails, clone_string(first), type);
         }
     }
 
     /* ---------- TYPE RELATIONS ---------- */
-    // Type *type = (Type *)get(typeToData, "australian");
+    // Type *type = (Type *)get(typeToDetails, "australian");
     // char *relation = get(type->relations, "bird");
     while (1) {
         Vec *splits = split_read_line(sinisterfile);
@@ -159,7 +170,7 @@ void read_sinisterfile(char *filename) {
             free_vec(splits);
             break;
         } else {
-            Type *type = (Type *)get(typeToData, first);
+            Type *type = (Type *)get(typeToDetails, first);
             // NO NULL CHECK, HERE BE DRAGONS
 
             HashMap *relationByAnimal = new_hashmap();
@@ -223,6 +234,8 @@ void read_sinisterfile(char *filename) {
             free_vec(splits);
             break;
         } else { 
+            // TODO: Either hash the splits, or just dump
+            // them in a vec
         }
     }
 }
