@@ -19,8 +19,6 @@
 #define CHALLENGE_ARGS 5
 #define MAX_ARGS 5
 
-
-
 typedef struct Team {
     char *name;
 } Team;
@@ -30,7 +28,6 @@ typedef struct Type {
     Vec *effectiveness;
     HashMap *relations; 
 } Type;
-
 
 /** 
  * TODO: DESCRIPTION
@@ -71,7 +68,6 @@ void validate_args(int argc, char **argv) {
     return;
 }
 
-
 void read_teamfile(char *filename) {
 
     FILE *teamfile = fopen(filename, "r"); 
@@ -90,7 +86,6 @@ void read_teamfile(char *filename) {
     // }
 
 }
-
 
 void read_sinisterfile(char *filename) {
     FILE *sinisterfile = fopen(filename, "r"); 
