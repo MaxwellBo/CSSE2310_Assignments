@@ -179,6 +179,7 @@ void read_sinisterfile(char *filename) {
     }
 
     /* ---------- ATTACKS ----------*/
+    // char *type = get(typeByAttack, "add_beetroot");
     while (1) {
         Vec *splits = split_read_line(sinisterfile);
 
