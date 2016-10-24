@@ -23,11 +23,14 @@ typedef struct Team {
     char *name;
 } Team;
 
-
 typedef struct Type {
     Vec *effectiveness;
     HashMap *relations; 
 } Type;
+
+// typedef struct Agent {
+//     Vec * 
+// } 
 
 /** 
  * TODO: DESCRIPTION
@@ -84,7 +87,6 @@ void read_teamfile(char *filename) {
     // for (int i = 0; i < splits->size; i++) {
     //     fprintf(stderr, "%s\n", splits->data[i]);
     // }
-
 }
 
 void read_sinisterfile(char *filename) {
@@ -96,6 +98,7 @@ void read_sinisterfile(char *filename) {
     }
 
     HashMap *dataByAnimal = new_hashmap();
+    HashMap *typeByAttack = new_hashmap();
 
     /* ---------- TYPENAME ----------*/
     while (1) {
@@ -110,10 +113,8 @@ void read_sinisterfile(char *filename) {
     }
 
     /* ---------- EFFECTIVENESS ----------*/
-
     // Type *type = (Type *)get(dataByAnimal, "australian");
     // Vec *effectiveness = type->effectiveness;
-
     while (1) {
         Vec *splits = split_read_line(sinisterfile);
 
@@ -139,10 +140,8 @@ void read_sinisterfile(char *filename) {
     }
 
     /* ---------- TYPE RELATIONS ---------- */
-
     // Type *type = (Type *)get(dataByAnimal, "australian");
     // char *relation = get(type->relations, "bird");
-
     while (1) {
         Vec *splits = split_read_line(sinisterfile);
 
@@ -176,7 +175,28 @@ void read_sinisterfile(char *filename) {
             }
 
             type->relations = relationByAnimal;
+        }
+    }
 
+    /* ---------- ATTACKS ----------*/
+    while (1) {
+        Vec *splits = split_read_line(sinisterfile);
+
+        for (int i = 0; i < splits->size; i++) {
+            fprintf(stderr, "%s ", splits->data[i]);
+        }
+
+        fprintf(stderr, "%s\n", "");
+
+        char *first = (char *)splits->data[0];
+
+        if (first[0] == '#') {
+            free_vec(splits);
+        } else if (first[0] == '.') {
+            free_vec(splits);
+            break;
+        } else {
+            put(typeByAttack, clone_string(first), clone_string(splits->data[1]));
         }
     }
 }
