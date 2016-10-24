@@ -1,272 +1,148 @@
-#include <stdlib.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netdb.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 #include <stdio.h>
-#include <stdbool.h>
-#include <string.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <ctype.h>
+#include <pthread.h>
 
-#include "utils.c"
+#define MAXHOSTNAMELEN 128
 
-#define CONTROLLERPORT 1
-#define COMMAND 1
-#define TEAMFILE 2
-#define SINISTERFILE 3
-#define TARGETPORT 4
+void* client_thread(void* arg);
 
-#define MIN_ARGS 3
-#define SIMULATION_ARGS 3
+int open_listen(int port)
+{
+    int fd;
+    struct sockaddr_in serverAddr;
+    int optVal;
 
-#define WAIT_ARGS 4
-
-#define CHALLENGE_ARGS 5
-#define MAX_ARGS 5
-
-typedef struct Team {
-    char *name;
-} Team;
-
-typedef struct Type {
-    Vec *effectiveness;
-    HashMap *relations; 
-} Type;
-
-typedef struct Agent {
-    char *name;
-    char *type;
-    char *first;
-    char *second;
-    char *third;
-} Agent;
-
-/** 
- * TODO: DESCRIPTION
- *
- * - Allocates memory
- *
- * Returns a pointer to the newly allocated struct
- */
-Type *new_type() {
-    Type *self = malloc(sizeof(Type));
-
-    return self;
-}
-
-Agent *new_agent() {
-    Agent *self = malloc(sizeof(Agent));
-
-    return self;
-}
-
-Team *new_team() {
-    Team *self = malloc(sizeof(Team));
-
-    return self;
-}
-
-/**
- * Takes the argument count and argument array, and checks if they're valid.
- *
- * - Terminates the program if the program if invalid arguments are provided,
- *   and prints an appropriate error message to stderr
- */
-void validate_args(int argc, char **argv) {
-    int status = 0;
-
-    // if not within the valid range
-    if (!((MIN_ARGS <= argc && argc <= MAX_ARGS))) {
-        status = 1;
-    } else if (argc == SIMULATION_ARGS && atoi(argv[CONTROLLERPORT]) < 1 ) {
-        status = 6;
-    } else if (argc == CHALLENGE_ARGS && atoi(argv[TARGETPORT]) < 1 ) {
-        status = 6;
+    // Create socket (TCP IPv4)
+    fd = socket(AF_INET, SOCK_STREAM, 0);
+    if(fd < 0) {
+        perror("Error creating socket");
+        exit(1);
     }
 
-    if (status) {
-        fprintf(stderr, "%s\n", get_error_message_2310team(status)); 
-        exit(status); 
+    // Allow address (port number) to be reused immediately
+    optVal = 1;
+    if(setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &optVal, sizeof(int)) < 0) {
+        perror("Error setting socket option");
+        exit(1);
     }
 
-    return;
+    // Populate server address structure to indicate local address our
+    // server is going to listen on
+    serverAddr.sin_family = AF_INET;	// IP v4
+    serverAddr.sin_port = htons(port);	// port num
+    serverAddr.sin_addr.s_addr = htonl(INADDR_ANY);	// any IP address of this host
+
+    // Bind our socket to address we just created
+    if(bind(fd, (struct sockaddr*)&serverAddr, sizeof(struct sockaddr_in)) < 0) {
+        perror("Error binding socket to port");
+        exit(1);
+    }
+
+    // Indicate our willingness to accept connections. SOMAXCONN (128 default) - length
+    // of queue of connections waiting to be accepted
+    if(listen(fd, SOMAXCONN) < 0) {
+        perror("Error listening");
+        exit(1);
+    }
+
+    return fd;
 }
 
-Team *read_teamfile(char *filename) {
+void process_connections(int fdServer)
+{
+    int fd;
+    struct sockaddr_in fromAddr;
+    socklen_t fromAddrSize;
+    int error;
+    char hostname[MAXHOSTNAMELEN];
+    pthread_t threadId;
 
-    FILE *teamfile = fopen(filename, "r"); 
-    Team *team = new_team();
-
-    if (!teamfile) {
-        fprintf(stderr, "%s\n", get_error_message_2310team(4));
-        exit(4);
-    }
-
-    team->name = read_line(teamfile);
-
-    return team;
-
-
-    // Vec *splits = split_read_line(teamfile);
-
-    // for (int i = 0; i < splits->size; i++) {
-    //     fprintf(stderr, "%s\n", splits->data[i]);
-    // }
-}
-
-void read_sinisterfile(char *filename) {
-    FILE *sinisterfile = fopen(filename, "r"); 
-
-    if (!sinisterfile) {
-        fprintf(stderr, "%s\n", get_error_message_2310team(2));
-        exit(2);
-    }
-
-    HashMap *typeToDetails = new_hashmap();
-    HashMap *attackToType = new_hashmap();
-    Vec *agents = new_vec();
-
-    /* ---------- TYPENAME ----------*/
-    while (1) {
-        char* line = read_line(sinisterfile);
-        fprintf(stderr, "%s\n", line);
-
-        if (line[0] == '.') {
-            break;
+    // Repeatedly accept connections and process data (capitalise)
+    while(1) {
+        fromAddrSize = sizeof(struct sockaddr_in);
+	// Block, waiting for a new connection. (fromAddr will be populated
+	// with address of client)
+        fd = accept(fdServer, (struct sockaddr*)&fromAddr,  &fromAddrSize);
+        if(fd < 0) {
+            perror("Error accepting connection");
+            exit(1);
         }
-
-        free(line);
-    }
-
-    /* ---------- EFFECTIVENESS ----------*/
-    // Type *type = (Type *)get(typeToDetails, "australian");
-    // Vec *effectiveness = type->effectiveness;
-    while (1) {
-        Vec *splits = split_read_line(sinisterfile);
-
-        for (int i = 0; i < splits->size; i++) {
-            fprintf(stderr, "%s ", splits->data[i]);
-        }
-
-        fprintf(stderr, "%s\n", "");
-
-        char *first = (char *)splits->data[0];
-
-        if (first[0] == '#') {
-            free_vec(splits);
-        } else if (first[0] == '.') {
-            free_vec(splits);
-            break;
+     
+	// Turn our client address into a hostname and print out both the address
+	// and hostname as well as the port number
+        error = getnameinfo((struct sockaddr*)&fromAddr, fromAddrSize, hostname,
+                MAXHOSTNAMELEN, NULL, 0, 0);
+        if(error) {
+            fprintf(stderr, "Error getting hostname: %s\n", 
+                    gai_strerror(error));
         } else {
-            Type *type = new_type();
-            type->effectiveness = splits;
-
-            put(typeToDetails, clone_string(first), type);
-            free_vec(splits);
-        }
-    }
-
-    /* ---------- TYPE RELATIONS ---------- */
-    // Type *type = (Type *)get(typeToDetails, "australian");
-    // char *relation = get(type->relations, "bird");
-    while (1) {
-        Vec *splits = split_read_line(sinisterfile);
-
-        for (int i = 0; i < splits->size; i++) {
-            fprintf(stderr, "%s ", splits->data[i]);
+            printf("Accepted connection from %s (%s), port %d\n", 
+                    inet_ntoa(fromAddr.sin_addr), hostname,
+                    ntohs(fromAddr.sin_port));
         }
 
-        fprintf(stderr, "%s\n", "");
-
-        char *first = (char *)splits->data[0];
-
-        if (first[0] == '#') {
-            free_vec(splits);
-        } else if (first[0] == '.') {
-            free_vec(splits);
-            break;
-        } else {
-            Type *type = (Type *)get(typeToDetails, first);
-            // NO NULL CHECK, HERE BE DRAGONS
-
-            HashMap *relationByAnimal = new_hashmap();
-
-            for (int i = 1; i < splits->size; i++) {
-
-                char *relationThenAnimal = (char *)splits->data[i];
-
-                char *relation = promote_char(relationThenAnimal[0]);
-                char *animal = &relationThenAnimal[1];
-
-                put(relationByAnimal, clone_string(animal), relation);
-            }
-
-            type->relations = relationByAnimal;
-
-            free_vec(splits);
-        }
-    }
-
-    /* ---------- ATTACKS ----------*/
-    // char *type = get(attackToType, "add_beetroot");
-    while (1) {
-        Vec *splits = split_read_line(sinisterfile);
-
-        for (int i = 0; i < splits->size; i++) {
-            fprintf(stderr, "%s ", splits->data[i]);
-        }
-
-        fprintf(stderr, "%s\n", "");
-
-        char *first = (char *)splits->data[0];
-
-        if (first[0] == '#') {
-            free_vec(splits);
-        } else if (first[0] == '.') {
-            free_vec(splits);
-            break;
-        } else {
-            put(attackToType, clone_string(first), clone_string(splits->data[1]));
-            free_vec(splits);
-        }
-    }
-
-    /* ---------- AGENTS ----------*/
-    // char *type = get(attackToType, "add_beetroot");
-    while (1) {
-        Vec *splits = split_read_line(sinisterfile);
-
-        for (int i = 0; i < splits->size; i++) {
-            fprintf(stderr, "%s ", splits->data[i]);
-        }
-
-        fprintf(stderr, "%s\n", "");
-
-        char *first = (char *)splits->data[0];
-
-        if (first[0] == '#') {
-            free_vec(splits);
-        } else if (first[0] == '.') {
-            free_vec(splits);
-            break;
-        } else { 
-            // TODO: Either hash the splits, or just dump
-            // them in a vec
-        }
+	// Start new thread to deal with client communication
+	int* fdPtr = malloc(sizeof(int));
+	*fdPtr = fd;
+	pthread_create(&threadId, NULL, client_thread, fdPtr);
+	pthread_detach(threadId);
     }
 }
 
-/*
- * Author: 43926871
- *
- * - Performs IO to stdout and stderr
- * - Can terminate the program
- */
-int main(int argc, char **argv) {
+void* client_thread(void* arg) {
+    char buffer[1024];
+    ssize_t numBytesRead;
 
-    validate_args(argc, argv);
+    // Obtain connected file descriptor from argument passed in
+    int fd = *(int *)arg;
+    free(arg);
 
-    if (argc == SIMULATION_ARGS) {
-    } else if (argc == WAIT_ARGS) {
-        Team *team = read_teamfile(argv[TEAMFILE]);
-    } else if (argc == CHALLENGE_ARGS) {
-        Team *team = read_teamfile(argv[TEAMFILE]);
-        read_sinisterfile(argv[SINISTERFILE]);
+    // Repeatedly read data arriving from client - turn it to upper case - 
+    // send it back to client
+    while((numBytesRead = read(fd, buffer, 1024)) > 0) {
+    	// capitalise(buffer, numBytesRead);
+    	write(fd, buffer, numBytesRead);
     }
+    // EOF - client disconnected
+
+    if(numBytesRead < 0) {
+    	perror("Error reading from socket");
+    	exit(1);
+    }
+    // Print a message to server's stdout
+    printf("Done\n");
+    fflush(stdout);
+    close(fd);
+
+    // Could have pthread_exit(NULL);
+    return NULL;
 }
 
+int main(int argc, char* argv[])
+{
+    int portnum;
+    int fdServer;
+
+    if(argc != 2) {
+        fprintf(stderr, "Usage: %s port-num\n", argv[0]);
+        exit(1);
+    }
+
+    portnum = atoi(argv[1]);
+    if(portnum < 1024 || portnum > 65535) {
+        fprintf(stderr,  "Invalid port number: %s\n", argv[1]);
+        exit(1);
+    }
+
+    fdServer = open_listen(portnum);
+
+    process_connections(fdServer);
+    return 0;
+}
