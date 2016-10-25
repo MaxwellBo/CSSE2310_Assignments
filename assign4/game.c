@@ -9,14 +9,19 @@ char *response(char *query) {
 	char command[128];
     sscanf(query, "%s ", command);
 
-    char response[128];
+    char *response = malloc(sizeof(char) * 128);
 
 	if (!strcmp(command, "fightmeirl")) {
 		char teamname [128];
 		sscanf(query, "fightmeirl %s", teamname);
-		fprintf(stderr, "%s\n", teamname);
+		fprintf(stderr, "Extracted teamname: %s\n", teamname);
+
+		sprintf(response, "haveatyou TEAMNAME");
+		return response;
 	}
 
-	return "";
+	strcpy(response, "INVALID");
+
+	return response;
 
 }
