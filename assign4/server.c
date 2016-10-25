@@ -9,6 +9,8 @@
 #include <ctype.h>
 #include <pthread.h>
 
+#include "game.c"
+
 #define MAXHOSTNAMELEN 128
 
 void* client_thread(void* arg);
@@ -107,7 +109,8 @@ void* client_thread(void* arg) {
     // Repeatedly read data arriving from client - turn it to upper case - 
     // send it back to client
     while((numBytesRead = read(fd, buffer, 1024)) > 0) {
-        // capitalise(buffer, numBytesRead);
+        response(buffer);
+
         write(fd, buffer, numBytesRead);
     }
     // EOF - client disconnected
