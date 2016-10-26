@@ -20,7 +20,8 @@ char *response(char *query) {
 		return response;
 	}
 
-	strcpy(response, "WORDS");
+	// 19: TODO: Move this into a seperate util folder
+	strcpy(response, "Protocol error");
 
 	return response;
 
