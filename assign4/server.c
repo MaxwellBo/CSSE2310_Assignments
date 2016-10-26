@@ -99,21 +99,18 @@ void process_connections(int fdServer)
 }
 
 void* client_thread(void* arg) {
-
-    Game *game = new_game();
-
-    char buffer[1024];
-    ssize_t numBytesRead;
-
     // Obtain connected file descriptor from argument passed in
     int fd = *(int *)arg;
     free(arg);
 
-    // Repeatedly read data arriving from client - turn it to upper case - 
-    // send it back to client
+    Game *game = new_game();
+    char buffer[1024];
+    ssize_t numBytesRead;
+
     while((numBytesRead = read(fd, buffer, 1024)) > 0) {
+        fprintf(stderr, "RECIEVED: %s", buffer);
         char *response = process_message(game, buffer);
-        fprintf(stderr, "%s", response);
+        fprintf(stderr, "RESPONDED: %s", response);
         write(fd, response, strlen(response) + 1);
     }
     // EOF - client disconnected

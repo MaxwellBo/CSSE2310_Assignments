@@ -40,34 +40,32 @@ int connect_to(struct in_addr* ipAddress, int port) {
     return fd;
 }
 
-void send_HTTP_request(int fd, char* file, char* host) {
-    char* requestString;
+void process_connection(int fd) {
+    Game *game = new_game();
+    
+    char greeting[128];
+    sprintf(greeting, "fightmeirl %s\n", game->team->name);
+    write(fd, greeting, strlen(greeting) + 1);
 
-    requestString = (char*)malloc(strlen(file) + strlen(host) + 26);
+    char buffer[1024];
+    ssize_t numBytesRead;
 
-    sprintf(requestString, "GET %s HTTP/1.0\r\nHost: %s\r\n\r\n", file, host);
+    while((numBytesRead = read(fd, buffer, 1024)) > 0) {
+        char *response = process_message(game, buffer);
+        fprintf(stderr, "%s", response);
+        write(fd, response, strlen(response) + 1);
+    }
+    // EOF - client disconnected
 
-    if(write(fd, requestString, strlen(requestString)) < 1) {
-        perror("Write error");
+    if(numBytesRead < 0) {
+        // perror("Error reading from socket");
         exit(1);
     }
+    // Print a message to server's stdout
+    printf("Done\n");
+    fflush(stdout);
+    close(fd);
 }
 
-void get_and_output_HTTP_response(int fd) {
-    char buffer[1024];
-    int numBytesRead;
-    int eof = 0;
 
-    while(!eof) {
-        numBytesRead = read(fd, buffer, 1024);
-        if(numBytesRead < 0) {
-            perror("Read error\n");
-            exit(1);
-        } else if(numBytesRead == 0) {
-            eof = 1;
-        } else {
-            fwrite(buffer, sizeof(char), numBytesRead, stdout);
-        }
-    }
-}
 

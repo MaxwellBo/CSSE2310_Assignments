@@ -66,18 +66,15 @@ void start_wait(int argc, char **argv) {
 }
 
 void start_challenge(int argc, char **argv) {
-    int fd;
-    struct in_addr* ipAddress;
-    char* hostname;
+    team = read_teamfile(argv[TEAMFILE]);
+    sinister = read_sinisterfile(argv[SINISTERFILE]);
 
-    hostname = "127.0.0.1";
+    char *hostname = "127.0.0.1";
 
-    ipAddress = name_to_IP_addr(hostname);
+    struct in_addr* ipAddress = name_to_IP_addr(hostname);
 
-    fd = connect_to(ipAddress, atoi(argv[TARGETPORT]));
-    send_HTTP_request(fd, "/", hostname);
-    get_and_output_HTTP_response(fd);
-    close(fd);
+    int fd = connect_to(ipAddress, atoi(argv[TARGETPORT]));
+    process_connection(fd);
 }
 
 /*
