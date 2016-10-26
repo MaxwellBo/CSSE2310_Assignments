@@ -16,11 +16,11 @@ char *response(char *query) {
 		sscanf(query, "fightmeirl %s", teamname);
 		fprintf(stderr, "Extracted teamname: %s\n", teamname);
 
-		sprintf(response, "haveatyou TEAMNAME");
+		sprintf(response, "haveatyou %s\n", "TEAMNAME");
 		return response;
 	}
 
-	strcpy(response, "INVALID");
+	strcpy(response, "WORDS");
 
 	return response;
 
