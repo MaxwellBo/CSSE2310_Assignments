@@ -99,6 +99,9 @@ void process_connections(int fdServer)
 }
 
 void* client_thread(void* arg) {
+
+    Game *game = new_game();
+
     char buffer[1024];
     ssize_t numBytesRead;
 
@@ -109,7 +112,7 @@ void* client_thread(void* arg) {
     // Repeatedly read data arriving from client - turn it to upper case - 
     // send it back to client
     while((numBytesRead = read(fd, buffer, 1024)) > 0) {
-        char *response = process_message(buffer);
+        char *response = process_message(game, buffer);
         fprintf(stderr, "%s", response);
         write(fd, response, strlen(response) + 1);
     }
