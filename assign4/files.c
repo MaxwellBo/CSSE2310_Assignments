@@ -80,7 +80,7 @@ Sinister *read_sinisterfile(char *filename) {
     /* ---------- TYPENAME ----------*/
     while (1) {
         char* line = read_line(sinisterfile);
-        fprintf(stderr, "%s\n", line);
+        // fprintf(stderr, "%s\n", line);
 
         if (line[0] == '.') {
             break;
@@ -95,11 +95,11 @@ Sinister *read_sinisterfile(char *filename) {
     while (1) {
         Vec *splits = split_read_line(sinisterfile);
 
-        for (int i = 0; i < splits->size; i++) {
-            fprintf(stderr, "%s ", splits->data[i]);
-        }
+        // for (int i = 0; i < splits->size; i++) {
+        //     fprintf(stderr, "%s ", splits->data[i]);
+        // }
 
-        fprintf(stderr, "%s\n", "");
+        // fprintf(stderr, "%s\n", "");
 
         char *first = (char *)splits->data[0];
 
@@ -123,11 +123,11 @@ Sinister *read_sinisterfile(char *filename) {
     while (1) {
         Vec *splits = split_read_line(sinisterfile);
 
-        for (int i = 0; i < splits->size; i++) {
-            fprintf(stderr, "%s ", splits->data[i]);
-        }
+        // for (int i = 0; i < splits->size; i++) {
+        //     fprintf(stderr, "%s ", splits->data[i]);
+        // }
 
-        fprintf(stderr, "%s\n", "");
+        // fprintf(stderr, "%s\n", "");
 
         char *first = (char *)splits->data[0];
 
@@ -163,11 +163,11 @@ Sinister *read_sinisterfile(char *filename) {
     while (1) {
         Vec *splits = split_read_line(sinisterfile);
 
-        for (int i = 0; i < splits->size; i++) {
-            fprintf(stderr, "%s ", splits->data[i]);
-        }
+        // for (int i = 0; i < splits->size; i++) {
+        //     fprintf(stderr, "%s ", splits->data[i]);
+        // }
 
-        fprintf(stderr, "%s\n", "");
+        // fprintf(stderr, "%s\n", "");
 
         char *first = (char *)splits->data[0];
 
@@ -187,11 +187,11 @@ Sinister *read_sinisterfile(char *filename) {
     while (1) {
         Vec *splits = split_read_line(sinisterfile);
 
-        for (int i = 0; i < splits->size; i++) {
-            fprintf(stderr, "%s ", splits->data[i]);
-        }
+        // for (int i = 0; i < splits->size; i++) {
+        //     fprintf(stderr, "%s ", splits->data[i]);
+        // }
 
-        fprintf(stderr, "%s\n", "");
+        // fprintf(stderr, "%s\n", "");
 
         char *first = (char *)splits->data[0];
 
