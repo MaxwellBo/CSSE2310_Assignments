@@ -210,7 +210,7 @@ Sinister *read_sinisterfile(char *filename) {
     Sinister *sinister = new_sinister();
 
     sinister->typeToDetails = typeToDetails;
-    sinister->attackToType;
+    sinister->attackToType = attackToType;
 
     return sinister;
 }

@@ -5,7 +5,6 @@
 
 #include "utils.c"
 #include "server.c"
-#include "files.c"
 
 #define CONTROLLERPORT 1
 #define COMMAND 1
@@ -21,6 +20,8 @@
 #define CHALLENGE_ARGS 5
 #define MAX_ARGS 5
 
+Team *team;
+Sinister *sinister;
 
 /**
  * Takes the argument count and argument array, and checks if they're valid.
@@ -49,8 +50,8 @@ void validate_args(int argc, char **argv) {
 }
 
 void start_wait(int argc, char **argv) {
-    Team *team = read_teamfile(argv[TEAMFILE]);
-    Sinister *sinister = read_sinisterfile(argv[SINISTERFILE]);
+    team = read_teamfile(argv[TEAMFILE]);
+    sinister = read_sinisterfile(argv[SINISTERFILE]);
 
     int port = 2000;
 

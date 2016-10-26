@@ -3,6 +3,12 @@
 #include <stdbool.h>
 #include <string.h>
 
+#include "files.c"
+
+// Get globals
+Team *team;
+Sinister *sinister;
+
 char *process_message(char *query) {
 
 	// TODO: Make this number not magic
@@ -19,7 +25,7 @@ char *process_message(char *query) {
 		sprintf(response, "haveatyou %s\n", "TEAMNAME");
 		return response;
 	}
-
+	
 	// 19: TODO: Move this into a seperate util folder
 	perror(get_error_message_2310team(19));
 	exit(19);
