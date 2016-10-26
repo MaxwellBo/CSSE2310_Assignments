@@ -13,6 +13,18 @@ Team *new_team() {
     return self;
 }
 
+typedef struct Sinister {
+    HashMap *typeToDetails;
+    HashMap *attackToType;
+    Vec *agents;
+} Sinister;
+
+Sinister *new_sinister() {
+    Sinister *self = malloc(sizeof(Sinister));
+
+    return self;
+}
+
 typedef struct Type {
     Vec *effectiveness;
     HashMap *relations; 
@@ -32,14 +44,11 @@ typedef struct Agent {
     char *third;
 } Agent;
 
-
 Agent *new_agent() {
     Agent *self = malloc(sizeof(Agent));
 
     return self;
 }
-
-
 
 Team *read_teamfile(char *filename) {
 
@@ -56,7 +65,7 @@ Team *read_teamfile(char *filename) {
     return team;
 }
 
-void read_sinisterfile(char *filename) {
+Sinister *read_sinisterfile(char *filename) {
     FILE *sinisterfile = fopen(filename, "r"); 
 
     if (!sinisterfile) {
@@ -196,4 +205,12 @@ void read_sinisterfile(char *filename) {
             // them in a vec
         }
     }
+
+    /* ---------- CLEANUP ----------*/
+    Sinister *sinister = new_sinister();
+
+    sinister->typeToDetails = typeToDetails;
+    sinister->attackToType;
+
+    return sinister;
 }
