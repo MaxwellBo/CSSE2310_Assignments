@@ -48,6 +48,20 @@ void validate_args(int argc, char **argv) {
     return;
 }
 
+void start_wait(int argc, char **argv) {
+    Team *team = read_teamfile(argv[TEAMFILE]);
+    Sinister *sinister = read_sinisterfile(argv[SINISTERFILE]);
+
+    int port = 2000;
+
+    fprintf(stdout, "%d\n", port);
+    fflush(stdout);
+
+    int fdServer = open_listen(port);
+    process_connections(fdServer);
+
+}
+
 /*
  * Author: 43926871
  *
@@ -59,21 +73,14 @@ int main(int argc, char **argv) {
 
     if (argc == SIMULATION_ARGS) {
     } else if (argc == WAIT_ARGS) {
-        Team *team = read_teamfile(argv[TEAMFILE]);
-        read_sinisterfile(argv[SINISTERFILE]);
+        start_wait(argc, argv);
     } else if (argc == CHALLENGE_ARGS) {
         // Team *team = read_teamfile(argv[TEAMFILE]);
         // read_sinisterfile(argv[SINISTERFILE]);
     }
 
     // TODO: ephemeral port
-    int port = 2000;
-
-    fprintf(stdout, "%d\n", port);
-    fflush(stdout);
-
-    int fdServer = open_listen(port);
-    process_connections(fdServer);
 
     return 0;
 }
+
