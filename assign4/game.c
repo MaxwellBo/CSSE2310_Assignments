@@ -21,7 +21,8 @@ char *response(char *query) {
 	}
 
 	// 19: TODO: Move this into a seperate util folder
-	strcpy(response, "Protocol error");
+	perror(get_error_message_2310team(19));
+	exit(19);
 
 	return response;
 
