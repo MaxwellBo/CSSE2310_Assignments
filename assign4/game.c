@@ -8,9 +8,11 @@
 // Get globals
 Team *team;
 Sinister *sinister;
-// Vec *narrative = new_vec();
 
 char *process_message(char *query) {
+
+	Vec *narrative = new_vec();
+	// TODO: Move this into a non-idiotic location
 
 	// TODO: Make this number not magic
 	char command[128];
@@ -25,14 +27,25 @@ char *process_message(char *query) {
 		char narrative_line[128];
 		sprintf(narrative_line, "%s has a difference of opinion", teamname);
 
-		// TODO: Renable later on
-		// append(narrative, clone_string(narrative_line));
+		append(narrative, clone_string(narrative_line));
 
-		sprintf(response, "haveatyou %s\n", "TEAMNAME");
+		sprintf(response, "haveatyou %s\n", team->name);
 
+		return response;
+	} else if (!strcmp(command, "haveatyou")) {
+		char teamname[128];
+		sscanf(query, "haveatyou %s", teamname);
+
+		char narrative_line[128];
+		sprintf(narrative_line, "%s has a difference of opinion", teamname);
+
+		append(narrative, clone_string(narrative_line));
+
+		sprintf(response, "picking first agent %s\n", "pikachu");
 
 		return response;
 	}
+
 
 	for (int i = 0; i < narrative->size; i++) {
 		fprintf(stderr, "%s\n", narrative->data[i]);
