@@ -4,7 +4,9 @@
 #include <string.h>
 
 #include "utils.c"
+
 #include "server.c"
+#include "client.c"
 
 #define CONTROLLERPORT 1
 #define COMMAND 1
@@ -63,6 +65,26 @@ void start_wait(int argc, char **argv) {
 
 }
 
+void start_challenge(int argc, char **argv) {
+    int fd;
+    struct in_addr* ipAddress;
+    char* hostname;
+
+    hostname = "127.0.0.1";
+
+    ipAddress = name_to_IP_addr(hostname);
+
+    if(!ipAddress) {
+        fprintf(stderr, "%s is not a valid hostname\n", hostname);
+        exit(1);
+    }
+
+    fd = connect_to(ipAddress, atoi(argv[TARGETPORT]));
+    send_HTTP_request(fd, "/", hostname);
+    get_and_output_HTTP_response(fd);
+    close(fd);
+}
+
 /*
  * Author: 43926871
  *
@@ -76,8 +98,7 @@ int main(int argc, char **argv) {
     } else if (argc == WAIT_ARGS) {
         start_wait(argc, argv);
     } else if (argc == CHALLENGE_ARGS) {
-        // Team *team = read_teamfile(argv[TEAMFILE]);
-        // read_sinisterfile(argv[SINISTERFILE]);
+        start_challenge(argc, argv);
     }
 
     // TODO: ephemeral port
