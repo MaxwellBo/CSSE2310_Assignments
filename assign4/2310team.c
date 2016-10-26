@@ -74,11 +74,6 @@ void start_challenge(int argc, char **argv) {
 
     ipAddress = name_to_IP_addr(hostname);
 
-    if(!ipAddress) {
-        fprintf(stderr, "%s is not a valid hostname\n", hostname);
-        exit(1);
-    }
-
     fd = connect_to(ipAddress, atoi(argv[TARGETPORT]));
     send_HTTP_request(fd, "/", hostname);
     get_and_output_HTTP_response(fd);
