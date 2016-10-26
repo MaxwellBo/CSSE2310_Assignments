@@ -3,7 +3,7 @@
 #include <stdbool.h>
 #include <string.h>
 
-char *response(char *query) {
+char *process_message(char *query) {
 
 	// TODO: Make this number not magic
 	char command[128];

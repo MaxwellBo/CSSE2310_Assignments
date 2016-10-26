@@ -109,9 +109,9 @@ void* client_thread(void* arg) {
     // Repeatedly read data arriving from client - turn it to upper case - 
     // send it back to client
     while((numBytesRead = read(fd, buffer, 1024)) > 0) {
-        char *resp = response(buffer);
-        fprintf(stderr, "%s\n", resp);
-        write(fd, resp, strlen(resp) + 1);
+        char *response = process_message(buffer);
+        fprintf(stderr, "%s\n", response);
+        write(fd, response, strlen(response) + 1);
     }
     // EOF - client disconnected
 
