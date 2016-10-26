@@ -110,7 +110,7 @@ void* client_thread(void* arg) {
     // send it back to client
     while((numBytesRead = read(fd, buffer, 1024)) > 0) {
         char *response = process_message(buffer);
-        fprintf(stderr, "%s\n", response);
+        fprintf(stderr, "%s", response);
         write(fd, response, strlen(response) + 1);
     }
     // EOF - client disconnected
