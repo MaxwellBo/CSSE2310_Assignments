@@ -133,17 +133,16 @@ char *process_message(Game *self, char *query) {
 
         // Get the type of the attack
         char *opponentAttackTypeName = get(self->sinister->attackToTypeName, attackName);
-
+        
         // Get details regarding the type of the attack
         Type *type = (Type *)get(self->sinister->typeNameToType, opponentAttackTypeName);
 
         // Find out what my agents type is
-        char *ourFightingTypeName = get(self->sinister->agentNameToAgentDetails, self->fighting->name); 
-        fprintf(stderr, "%s\n", ourFightingTypeName);
-        // Find out what its effectiveness is against my agent
-        char *effectiveness = get(type->relations, ourFightingTypeName);
+        AgentDetails *agentDetails = (AgentDetails *)get(
+            self->sinister->agentNameToAgentDetails, self->fighting->name); 
 
-        fprintf(stderr, "%s\n", effectiveness);
+        // Find out what its effectiveness is against my agent
+        char *effectiveness = get(type->relations, agentDetails->type);
 
         if (self->fighting->health <= 0) {
             choose_agent(self, response);
