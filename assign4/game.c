@@ -16,6 +16,7 @@ typedef struct Game {
     Sinister *sinister;
     Vec *narrative;
     Agent *fighting;
+    char *opponent;
 } Game;
 
 Game *new_game() {
@@ -30,6 +31,28 @@ Game *new_game() {
 }
 
 /*---------------------------------------------------------------------------*/
+
+void choose_agent(Game *self, char *response) {
+    // Respond
+
+    for (int i = 0; i < 4; i++) { 
+        Agent *agent = (Agent *)self->team->agents->data[i];
+
+        if (agent->health > 0) {
+            char narrative_line[128];
+            sprintf(narrative_line, "%s chooses %s", self->team->name, agent->name);
+            append(self->narrative, clone_string(narrative_line));
+
+            sprintf(response, "iselectyou %s\n", agent->name);
+            self->fighting = agent;
+
+            return;
+        }
+    }
+
+    // Abort when out of agents
+    exit(0);
+}
 
 char *process_message(Game *self, char *query) {
 
@@ -64,14 +87,32 @@ char *process_message(Game *self, char *query) {
         sprintf(narrative_line, "%s has a difference of opinion", teamname);
         append(self->narrative, clone_string(narrative_line));
 
-        // Respond
-        Agent *firstUp = (Agent *)self->team->agents->data[0];
-        sprintf(response, "iselectyou %s\n", firstUp->name);
-        self->fighting = firstUp;
+        // Response
+        choose_agent(self, response);
 
         return response;
-    }
+    } else if (!strcmp(command, "iselectyou")) {
 
+        // // Parse
+        // char agentname[128];
+        // sscanf(query, "iselectyou %s", agentname);
+
+        // // Log
+        // char narrative_line[128];
+        // sprintf(narrative_line, "", teamname);
+        // append(self->narrative, clone_string(narrative_line));
+
+
+        // // If we haven't chosen yet
+        // if (!self->fighting) {
+        //     choose_agent(self, response);
+        //     return response;
+        // } else {
+            
+
+        //     sprintf(response, "attack %s\n", team->name);
+        // }
+    }
 
     for (int i = 0; i < self->narrative->size; i++) {
         fprintf(stderr, "%s\n", self->narrative->data[i]);
@@ -82,5 +123,6 @@ char *process_message(Game *self, char *query) {
     exit(19);
 
     return response;
-
 }
+
+
