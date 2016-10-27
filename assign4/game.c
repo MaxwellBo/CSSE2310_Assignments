@@ -25,7 +25,7 @@ Game *new_game() {
     self->team = team;
     self->sinister = sinister;
     self->narrative = new_vec();
-    self->fighting;
+    self->fighting = NULL;
 
     return self;
 }
@@ -109,14 +109,19 @@ char *process_message(Game *self, char *query) {
             choose_agent(self, response);
             return response;
         } else {
-            // sprintf(response, "attack %s %s\n", self->fighting->name, self->fighting->moveSeq->data[1]);
+            sprintf(response, "attack %s %s\n", self->fighting->name, self->fighting->moveSeq->data[1]);
             return response;
         }
+    } else {
+        fprintf(stderr, "%s\n", "FIRST ATTACK");
     }
 
+
     for (int i = 0; i < self->narrative->size; i++) {
-        fprintf(stderr, "%s\n", self->narrative->data[i]);
+        fprintf(stdout, "%s\n", self->narrative->data[i]);
     }
+
+    fflush(stdout);
 
     // 19: TODO: Move this into a seperate util folder
     perror(get_error_message_2310team(19));

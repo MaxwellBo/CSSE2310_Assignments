@@ -42,7 +42,7 @@ int connect_to(struct in_addr* ipAddress, int port) {
 
 void process_connection(int fd) {
     Game *game = new_game();
-    
+
     char greeting[128];
     sprintf(greeting, "fightmeirl %s\n", game->team->name);
     write(fd, greeting, strlen(greeting) + 1);
@@ -52,7 +52,6 @@ void process_connection(int fd) {
 
     while((numBytesRead = read(fd, buffer, 1024)) > 0) {
         char *response = process_message(game, buffer);
-        fprintf(stderr, "%s", response);
         write(fd, response, strlen(response) + 1);
     }
     // EOF - client disconnected
