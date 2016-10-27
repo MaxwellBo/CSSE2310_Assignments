@@ -15,6 +15,7 @@ typedef struct Game {
     Team *team;
     Sinister *sinister;
     Vec *narrative;
+    Agent *fighting;
 } Game;
 
 Game *new_game() {
@@ -23,6 +24,7 @@ Game *new_game() {
     self->team = team;
     self->sinister = sinister;
     self->narrative = new_vec();
+    self->fighting;
 
     return self;
 }
@@ -38,27 +40,34 @@ char *process_message(Game *self, char *query) {
     char *response = malloc(sizeof(char) * 128);
 
     if (!strcmp(command, "fightmeirl")) {
+        // Parse
         char teamname[128];
         sscanf(query, "fightmeirl %s", teamname);
 
+        // Log
         char narrative_line[128];
         sprintf(narrative_line, "%s has a difference of opinion", teamname);
-
         append(self->narrative, clone_string(narrative_line));
 
+        // Respond
         sprintf(response, "haveatyou %s\n", team->name);
 
         return response;
     } else if (!strcmp(command, "haveatyou")) {
+
+        // Parse
         char teamname[128];
         sscanf(query, "haveatyou %s", teamname);
 
+        // Log
         char narrative_line[128];
         sprintf(narrative_line, "%s has a difference of opinion", teamname);
-
         append(self->narrative, clone_string(narrative_line));
 
-        sprintf(response, "picking first agent %s\n", "pikachu");
+        // Respond
+        Agent *firstUp = (Agent *)self->team->agents->data[0];
+        sprintf(response, "iselectyou %s\n", firstUp->name);
+        self->fighting = firstUp;
 
         return response;
     }

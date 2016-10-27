@@ -81,7 +81,7 @@ Team *read_teamfile(char *filename) {
         agent->name = clone_string(splits->data[0]);
         agent->moveSeq = splits;
 
-        // append(team->agents, agent);
+        append(team->agents, agent);
     }
 
     return team;
@@ -97,8 +97,7 @@ Sinister *read_sinisterfile(char *filename) {
 
     HashMap *typeToDetails = new_hashmap();
     HashMap *attackToType = new_hashmap();
-    Vec *agents = new_vec();
-
+    
     /* ---------- TYPENAME ----------*/
     while (1) {
         char* line = read_line(sinisterfile);
