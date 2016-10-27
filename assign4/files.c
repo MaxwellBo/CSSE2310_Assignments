@@ -50,6 +50,7 @@ typedef struct Agent {
     char *name;
     int health;
     Vec *moveSeq;
+    int moveIndex;
 } Agent;
 
 Agent *new_agent() {
