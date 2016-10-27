@@ -13,10 +13,10 @@ Sinister *sinister;
 
 typedef struct Game {
     Team *team;
+    char *opponentName;
     Sinister *sinister;
     Vec *narrative;
     Agent *fighting;
-    char *opponent;
 } Game;
 
 Game *new_game() {
@@ -81,6 +81,7 @@ char *process_message(Game *self, char *query) {
         // Parse
         char teamname[128];
         sscanf(query, "haveatyou %s", teamname);
+        self->opponentName = clone_string(teamname);
 
         // Log
         char narrative_line[128];
