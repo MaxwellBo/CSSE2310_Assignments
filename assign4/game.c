@@ -138,9 +138,10 @@ char *process_message(Game *self, char *query) {
         Type *type = (Type *)get(self->sinister->typeNameToType, opponentAttackTypeName);
 
         // Find out what my agents type is
-        
+        char *ourFightingTypeName = get(self->sinister->agentNameToAgentDetails, self->fighting->name); 
+        fprintf(stderr, "%s\n", ourFightingTypeName);
         // Find out what its effectiveness is against my agent
-        char *effectiveness = get(type->relations, self->fighting->type);
+        char *effectiveness = get(type->relations, ourFightingTypeName);
 
         fprintf(stderr, "%s\n", effectiveness);
 

@@ -22,7 +22,7 @@ Team *new_team() {
 typedef struct Sinister {
     HashMap *typeNameToType;
     HashMap *attackToTypeName;
-    Vec *agents;
+    HashMap *agentNameToAgentDetails;
 } Sinister;
 
 Sinister *new_sinister() {
@@ -55,6 +55,19 @@ typedef struct Agent {
 Agent *new_agent() {
     Agent *self = malloc(sizeof(Agent));
     self->health = 10;
+
+    return self;
+}
+
+/*---------------------------------------------------------------------------*/
+
+typedef struct AgentDetails {
+    char *type;
+    Vec *moves;
+} AgentDetails;
+
+AgentDetails *new_agent_details() {
+    AgentDetails *self = malloc(sizeof(AgentDetails));
 
     return self;
 }
@@ -97,6 +110,7 @@ Sinister *read_sinisterfile(char *filename) {
 
     HashMap *typeNameToType = new_hashmap();
     HashMap *attackToTypeName = new_hashmap();
+    HashMap *agentNameToAgentDetails = new_hashmap();
     
     /* ---------- TYPENAME ----------*/
     while (1) {
@@ -222,8 +236,11 @@ Sinister *read_sinisterfile(char *filename) {
             free_vec(splits);
             break;
         } else { 
-            // TODO: Either hash the splits, or just dump
-            // them in a vec
+            AgentDetails *agentDetails = new_agent_details();
+            agentDetails->type = clone_string(splits->data[1]);
+            agentDetails->moves = splits;
+
+            put(agentNameToAgentDetails, clone_string(first), agentDetails);
         }
     }
 
@@ -232,6 +249,7 @@ Sinister *read_sinisterfile(char *filename) {
 
     sinister->typeNameToType = typeNameToType;
     sinister->attackToTypeName = attackToTypeName;
+    sinister->agentNameToAgentDetails = agentNameToAgentDetails;
 
     return sinister;
 }
