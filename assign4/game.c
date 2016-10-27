@@ -33,8 +33,6 @@ Game *new_game() {
 /*---------------------------------------------------------------------------*/
 
 void choose_agent(Game *self, char *response) {
-    // Respond
-
     for (int i = 0; i < 4; i++) { 
         Agent *agent = (Agent *)self->team->agents->data[i];
 
@@ -52,6 +50,15 @@ void choose_agent(Game *self, char *response) {
 
     // Abort when out of agents
     exit(0);
+}
+
+void attack(Game *self, char *response) {
+    sprintf(response, "attack %s %s\n", self->fighting->name, self->fighting->moveSeq->data[1]);
+
+    // Log TODO RESULT STRING?
+    char narrativeLine[128];
+    sprintf(narrativeLine, "%s uses attack: SOMETHING", self->fighting->name);
+    append(self->narrative, clone_string(narrativeLine));
 }
 
 char *process_message(Game *self, char *query) {
@@ -94,7 +101,6 @@ char *process_message(Game *self, char *query) {
 
         return response;
     } else if (!strcmp(command, "iselectyou")) {
-
         // Parse
         char agentName[128];
         sscanf(query, "iselectyou %s", agentName);
@@ -109,11 +115,22 @@ char *process_message(Game *self, char *query) {
             choose_agent(self, response);
             return response;
         } else {
-            sprintf(response, "attack %s %s\n", self->fighting->name, self->fighting->moveSeq->data[1]);
+            attack(self, response);
             return response;
         }
-    } else {
-        fprintf(stderr, "%s\n", "FIRST ATTACK");
+    } else if (!strcmp(command, "attack")) {
+        // Parse
+        char agentName[128];
+        char attackName[128];
+        sscanf(query, "attack %s %s", agentName, attackName);
+
+        // Log
+        char narrativeLine[128];
+        sprintf(narrativeLine, "%s uses attack: SOMETHING", agentName);
+        append(self->narrative, clone_string(narrativeLine));
+
+        attack(self, response);
+        return response;
     }
 
 
