@@ -39,9 +39,9 @@ void choose_agent(Game *self, char *response) {
         Agent *agent = (Agent *)self->team->agents->data[i];
 
         if (agent->health > 0) {
-            char narrative_line[128];
-            sprintf(narrative_line, "%s chooses %s", self->team->name, agent->name);
-            append(self->narrative, clone_string(narrative_line));
+            char narrativeLine[128];
+            sprintf(narrativeLine, "%s chooses %s", self->team->name, agent->name);
+            append(self->narrative, clone_string(narrativeLine));
 
             sprintf(response, "iselectyou %s\n", agent->name);
             self->fighting = agent;
@@ -64,13 +64,14 @@ char *process_message(Game *self, char *query) {
 
     if (!strcmp(command, "fightmeirl")) {
         // Parse
-        char teamname[128];
-        sscanf(query, "fightmeirl %s", teamname);
+        char teamName[128];
+        sscanf(query, "fightmeirl %s", teamName);
+        self->opponentName = clone_string(teamName);
 
         // Log
-        char narrative_line[128];
-        sprintf(narrative_line, "%s has a difference of opinion", teamname);
-        append(self->narrative, clone_string(narrative_line));
+        char narrativeLine[128];
+        sprintf(narrativeLine, "%s has a difference of opinion", teamName);
+        append(self->narrative, clone_string(narrativeLine));
 
         // Respond
         sprintf(response, "haveatyou %s\n", team->name);
@@ -79,14 +80,14 @@ char *process_message(Game *self, char *query) {
     } else if (!strcmp(command, "haveatyou")) {
 
         // Parse
-        char teamname[128];
-        sscanf(query, "haveatyou %s", teamname);
-        self->opponentName = clone_string(teamname);
+        char teamName[128];
+        sscanf(query, "haveatyou %s", teamName);
+        self->opponentName = clone_string(teamName);
 
         // Log
-        char narrative_line[128];
-        sprintf(narrative_line, "%s has a difference of opinion", teamname);
-        append(self->narrative, clone_string(narrative_line));
+        char narrativeLine[128];
+        sprintf(narrativeLine, "%s has a difference of opinion", teamName);
+        append(self->narrative, clone_string(narrativeLine));
 
         // Response
         choose_agent(self, response);
@@ -94,25 +95,23 @@ char *process_message(Game *self, char *query) {
         return response;
     } else if (!strcmp(command, "iselectyou")) {
 
-        // // Parse
-        // char agentname[128];
-        // sscanf(query, "iselectyou %s", agentname);
+        // Parse
+        char agentName[128];
+        sscanf(query, "iselectyou %s", agentName);
 
-        // // Log
-        // char narrative_line[128];
-        // sprintf(narrative_line, "", teamname);
-        // append(self->narrative, clone_string(narrative_line));
+        // Log
+        char narrativeLine[128];
+        sprintf(narrativeLine, "%s chooses agent %s", self->opponentName, agentName);
+        append(self->narrative, clone_string(narrativeLine));
 
-
-        // // If we haven't chosen yet
-        // if (!self->fighting) {
-        //     choose_agent(self, response);
-        //     return response;
-        // } else {
-            
-
-        //     sprintf(response, "attack %s\n", team->name);
-        // }
+        // If we haven't chosen yet
+        if (!self->fighting) {
+            choose_agent(self, response);
+            return response;
+        } else {
+            // sprintf(response, "attack %s %s\n", self->fighting->name, self->fighting->moveSeq->data[1]);
+            return response;
+        }
     }
 
     for (int i = 0; i < self->narrative->size; i++) {
