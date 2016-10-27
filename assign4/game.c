@@ -129,6 +129,13 @@ char *process_message(Game *self, char *query) {
         sprintf(narrativeLine, "%s uses attack: SOMETHING", agentName);
         append(self->narrative, clone_string(narrativeLine));
 
+        self->fighting->health -= 1;
+
+        if (self->fighting->health <= 0) {
+            choose_agent(self, response);
+            return response;
+        }
+
         attack(self, response);
         return response;
     }
