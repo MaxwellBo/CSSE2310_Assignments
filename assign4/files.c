@@ -3,15 +3,21 @@
 #include <stdbool.h>
 #include <string.h>
 
+/*---------------------------------------------------------------------------*/
+
 typedef struct Team {
     char *name;
+    Vec *agents;
 } Team;
 
 Team *new_team() {
     Team *self = malloc(sizeof(Team));
+    Vec *agents = new_vec();
 
     return self;
 }
+
+/*---------------------------------------------------------------------------*/
 
 typedef struct Sinister {
     HashMap *typeToDetails;
@@ -25,6 +31,8 @@ Sinister *new_sinister() {
     return self;
 }
 
+/*---------------------------------------------------------------------------*/
+
 typedef struct Type {
     Vec *effectiveness;
     HashMap *relations; 
@@ -36,19 +44,22 @@ Type *new_type() {
     return self;
 }
 
+/*---------------------------------------------------------------------------*/
+
 typedef struct Agent {
     char *name;
-    char *type;
-    char *first;
-    char *second;
-    char *third;
+    int health;
+    Vec *moveSeq;
 } Agent;
 
 Agent *new_agent() {
     Agent *self = malloc(sizeof(Agent));
+    self->health = 10;
 
     return self;
 }
+
+/*---------------------------------------------------------------------------*/
 
 Team *read_teamfile(char *filename) {
 
@@ -61,6 +72,15 @@ Team *read_teamfile(char *filename) {
     }
 
     team->name = read_line(teamfile);
+
+    // Get the next 4 lines
+    for (int i = 0; i < 4; i++) {
+        Vec *splits = split_read_line(teamfile);
+
+        Agent *agent = new_agent();
+        agent->name = clone_string(splits->data[0]);
+        agent->moveSeq = splits;
+    }
 
     return team;
 }
