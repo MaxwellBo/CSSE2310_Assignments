@@ -132,12 +132,13 @@ char *process_message(Game *self, char *query) {
         self->fighting->health -= 1;
 
         // Get the type of the attack
-        char *opponentAttackType = get(self->sinister->attackToType, attackName);
+        char *opponentAttackTypeName = get(self->sinister->attackToTypeName, attackName);
 
         // Get details regarding the type of the attack
-        Type *details = (Type *)get(self->sinister->typeToDetails, type);
+        Type *type = (Type *)get(self->sinister->typeNameToType, opponentAttackTypeName);
 
-        // Find out what my agenets type is
+        // Find out what my agents type is
+        
         // Find out what its effectiveness is against my agent
         char *effectiveness = get(type->relations, self->fighting->type);
 
