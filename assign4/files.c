@@ -12,7 +12,7 @@ typedef struct Team {
 
 Team *new_team() {
     Team *self = malloc(sizeof(Team));
-    Vec *agents = new_vec();
+    self->agents = new_vec();
 
     return self;
 }
@@ -80,6 +80,8 @@ Team *read_teamfile(char *filename) {
         Agent *agent = new_agent();
         agent->name = clone_string(splits->data[0]);
         agent->moveSeq = splits;
+
+        // append(team->agents, agent);
     }
 
     return team;
