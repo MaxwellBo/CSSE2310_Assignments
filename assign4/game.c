@@ -13,11 +13,12 @@ Sinister *sinister;
 
 typedef struct Game {
     Team *team;
-    char *opponentName;
+    char *theirName;
     Sinister *sinister;
     Vec *narrative;
     Agent *mine;
-    AgentDetails *theirs;
+    char *theirAgentName;
+    AgentDetails *theirAgentDetails;
 } Game;
 
 Game *new_game() {
@@ -27,7 +28,7 @@ Game *new_game() {
     self->sinister = sinister;
     self->narrative = new_vec();
     self->mine = NULL;
-    self->theirs = NULL;
+    self->theirAgentDetails = NULL;
 
     return self;
 }
@@ -59,17 +60,14 @@ void attack(Game *self, char *response) {
     char *move = get_move(self->mine);
     sprintf(response, "attack %s %s\n", self->mine->name, move);
 
-    fprintf(stderr, "%s\n", move);
-
     // Get the type of the attack
     char *myAttackTypeName = get(self->sinister->attackToTypeName, move);
 
     // Get details regarding the type of the attack
-    fprintf(stderr, "%s\n", myAttackTypeName);
     Type *type = (Type *)get(self->sinister->typeNameToType, myAttackTypeName);
 
     // Find out what its effectiveness is against their agent
-    char *effectiveness = get(type->relations, self->theirs->type);
+    char *effectiveness = get(type->relations, self->theirAgentDetails->type);
 
     int damageValue = 0;
 
@@ -112,7 +110,7 @@ char *process_message(Game *self, char *query) {
         // Parse
         char teamName[128];
         sscanf(query, "fightmeirl %s", teamName);
-        self->opponentName = clone_string(teamName);
+        self->theirName = clone_string(teamName);
 
         // Log
         char narrativeLine[128];
@@ -127,7 +125,7 @@ char *process_message(Game *self, char *query) {
         // Parse
         char teamName[128];
         sscanf(query, "haveatyou %s", teamName);
-        self->opponentName = clone_string(teamName);
+        self->theirName = clone_string(teamName);
 
         // Log
         char narrativeLine[128];
@@ -143,12 +141,24 @@ char *process_message(Game *self, char *query) {
         char agentName[128];
         sscanf(query, "iselectyou %s", agentName);
 
+        // Did something die?
+        if (self->theirAgentDetails) {
+            // Edit the last message so that it says that something died
+            char narrativeLine[128];
+            sprintf(narrativeLine, " - %s was elimated", self->theirAgentName);
+
+            int lastIndex = self->narrative->size - 1;
+            self->narrative->data[lastIndex] = concat(self->narrative->data[lastIndex], narrativeLine),
+            fprintf(stderr, "LAST: %s\n", self->narrative->data[lastIndex]);
+        }
+
         // Log
         char narrativeLine[128];
-        sprintf(narrativeLine, "%s chooses %s", self->opponentName, agentName);
+        sprintf(narrativeLine, "%s chooses %s", self->theirName, agentName);
         append(self->narrative, clone_string(narrativeLine));
 
-        self->theirs = (AgentDetails *)get(self->sinister->agentNameToAgentDetails, agentName);
+        self->theirAgentName = agentName;
+        self->theirAgentDetails = (AgentDetails *)get(self->sinister->agentNameToAgentDetails, agentName);
 
         // If we haven't chosen yet
         if (!self->mine) {

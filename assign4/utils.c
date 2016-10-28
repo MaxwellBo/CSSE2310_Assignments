@@ -207,6 +207,18 @@ char *get_error_message_2310team(int errno) {
     }
 }
 
+char *concat(const char *a, const char *b) {
+    const size_t lenA = strlen(a);
+    const size_t lenB = strlen(b);
+
+    char *collector = malloc(lenA + lenB + 1);
+
+    memcpy(collector, a, lenA);
+    memcpy(collector + lenA, b, lenB + 1);
+
+    return collector;
+}
+
 /*
  * Given an exit code, return the corresponding error message to be printed
  * to stderr. These are the error messages for 2310controller.c and associated
