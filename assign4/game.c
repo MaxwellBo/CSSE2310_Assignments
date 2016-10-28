@@ -35,6 +35,20 @@ Game *new_game() {
 
 /*---------------------------------------------------------------------------*/
 
+void add_elimination_narrative_line(Game *self, char *eliminated) {
+    char narrativeLine[128];
+    sprintf(narrativeLine, "Team %s was eliminated.", eliminated);
+    append(self->narrative, clone_string(narrativeLine));
+}
+
+void print_narrative(Game *self) {
+    for (int i = 0; i < self->narrative->size; i++) {
+        fprintf(stdout, "%s\n", self->narrative->data[i]);
+    }
+
+    fflush(stdout);
+}
+
 void choose_agent(Game *self, char *response) {
     for (int i = 0; i < 4; i++) { 
         Agent *agent = (Agent *)self->team->agents->data[i];
@@ -51,9 +65,8 @@ void choose_agent(Game *self, char *response) {
         }
     }
 
-    // char narrativeLine[128];
-    // sprintf(narrativeLine, "%s chooses %s", self->team->name, agent->name);
-    // append(self->narrative, clone_string(narrativeLine));
+    add_elimination_narrative_line(self, self->team->name);
+     
     // Abort when out of agents
     print_narrative(self);
     exit(0);
@@ -95,13 +108,6 @@ void attack(Game *self, char *response) {
     cycle_move(self->mine);
 }
 
-void print_narrative(Game *self) {
-    for (int i = 0; i < self->narrative->size; i++) {
-        fprintf(stdout, "%s\n", self->narrative->data[i]);
-    }
-
-    fflush(stdout);
-}
 
 char *process_message(Game *self, char *query) {
     // TODO: Make this number not magic
@@ -149,7 +155,7 @@ char *process_message(Game *self, char *query) {
         if (self->theirAgentDetails) {
             // Edit the last message so that it says that something died
             char narrativeLine[128];
-            sprintf(narrativeLine, " - %s was eliminated", self->theirAgentName);
+            sprintf(narrativeLine, " - %s was eliminated.", self->theirAgentName);
 
             int lastIndex = self->narrative->size - 1;
             self->narrative->data[lastIndex] = concat(self->narrative->data[lastIndex], narrativeLine);

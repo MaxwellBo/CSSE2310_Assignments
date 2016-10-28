@@ -60,6 +60,8 @@ void process_connection(int fd) {
         // perror("Error reading from socket");
         exit(1);
     }
+
+    add_elimination_narrative_line(game, game->theirName);
     // Print a message to server's stdout, on disconnect
     print_narrative(game); 
 
