@@ -53,12 +53,14 @@ void choose_agent(Game *self, char *response) {
 }
 
 void attack(Game *self, char *response) {
-    sprintf(response, "attack %s %s\n", self->fighting->name, self->fighting->moveSeq->data[1]);
+    sprintf(response, "attack %s %s\n", self->fighting->name, get_move(self->fighting));
 
     // Log TODO RESULT STRING?
     char narrativeLine[128];
     sprintf(narrativeLine, "%s uses attack: SOMETHING", self->fighting->name);
     append(self->narrative, clone_string(narrativeLine));
+
+    cycle_move(self->fighting);
 }
 
 char *process_message(Game *self, char *query) {
@@ -129,9 +131,10 @@ char *process_message(Game *self, char *query) {
         sprintf(narrativeLine, "%s uses attack: SOMETHING", agentName);
         append(self->narrative, clone_string(narrativeLine));
 
-
         // Get the type of the attack
         char *opponentAttackTypeName = get(self->sinister->attackToTypeName, attackName);
+
+        fprintf(stderr, "%s\n", opponentAttackTypeName);
 
         // Get details regarding the type of the attack
         Type *type = (Type *)get(self->sinister->typeNameToType, opponentAttackTypeName);
@@ -143,17 +146,17 @@ char *process_message(Game *self, char *query) {
         // Find out what its effectiveness is against my agent
         char *effectiveness = get(type->relations, agentDetails->type);
 
-        int damage = 0;
-        
+        int damageValue = 0;
+
         if (effectiveness == NULL) {
-            damage = 2;
+            damageValue = 2;
         } else if (!strcmp(effectiveness, "+")) {
-            damage = 3;
+            damageValue = 3;
         } else {
-            damage = 1;
+            damageValue = 1;
         }
 
-        self->fighting->health -= damage;
+        damage(self->fighting, damageValue);
 
         if (self->fighting->health <= 0) {
             choose_agent(self, response);

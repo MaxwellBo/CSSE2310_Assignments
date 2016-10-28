@@ -56,8 +56,25 @@ typedef struct Agent {
 Agent *new_agent() {
     Agent *self = malloc(sizeof(Agent));
     self->health = 10;
+    self->moveIndex = 1;
 
     return self;
+}
+
+void cycle_move(Agent *self) {
+    (self->moveIndex)++;
+
+    if (self->moveIndex == self->moveSeq->size) {
+        self->moveIndex = 1;
+    }
+}
+
+char *get_move(Agent *self) {
+    return self->moveSeq->data[self->moveIndex];
+}
+
+void damage(Agent *self, int damage) {
+    self->health -= damage;
 }
 
 /*---------------------------------------------------------------------------*/
