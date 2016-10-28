@@ -119,9 +119,8 @@ void* client_thread(void* arg) {
         perror("Error reading from socket");
         exit(1);
     }
-    // Print a message to server's stdout
-    printf("Done\n");
-    fflush(stdout);
+    // Print a message to server's stdout, on client disconnect
+    print_narrative(game); 
     close(fd);
 
     // Could have pthread_exit(NULL);

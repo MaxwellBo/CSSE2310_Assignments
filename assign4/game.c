@@ -63,6 +63,14 @@ void attack(Game *self, char *response) {
     cycle_move(self->fighting);
 }
 
+void print_narrative(Game *self) {
+    for (int i = 0; i < self->narrative->size; i++) {
+        fprintf(stdout, "%s\n", self->narrative->data[i]);
+    }
+
+    fflush(stdout);
+}
+
 char *process_message(Game *self, char *query) {
 
     // TODO: Make this number not magic
@@ -126,15 +134,9 @@ char *process_message(Game *self, char *query) {
         char attackName[128];
         sscanf(query, "attack %s %s", agentName, attackName);
 
-        // Log
-        char narrativeLine[128];
-        sprintf(narrativeLine, "%s uses attack: SOMETHING", agentName);
-        append(self->narrative, clone_string(narrativeLine));
-
         // Get the type of the attack
         char *opponentAttackTypeName = get(self->sinister->attackToTypeName, attackName);
-
-        fprintf(stderr, "%s\n", opponentAttackTypeName);
+        fprintf(stderr, "OPPONENT ATTACK TYPE: %s\n", opponentAttackTypeName);
 
         // Get details regarding the type of the attack
         Type *type = (Type *)get(self->sinister->typeNameToType, opponentAttackTypeName);
@@ -158,6 +160,16 @@ char *process_message(Game *self, char *query) {
 
         damage(self->fighting, damageValue);
 
+        // From sinisterfile: mammal it_worked_well ok something_went_wrong
+        int index = 1 + (3 - damageValue);
+        char *effectivenessString = type->effectiveness->data[index];
+
+
+        // Log
+        char narrativeLine[128];
+        sprintf(narrativeLine, "%s uses attack: %s", agentName, effectivenessString);
+        append(self->narrative, clone_string(narrativeLine));
+
         if (self->fighting->health <= 0) {
             choose_agent(self, response);
             return response;
@@ -167,18 +179,12 @@ char *process_message(Game *self, char *query) {
         return response;
     }
 
-
-    for (int i = 0; i < self->narrative->size; i++) {
-        fprintf(stdout, "%s\n", self->narrative->data[i]);
-    }
-
-    fflush(stdout);
-
     // 19: TODO: Move this into a seperate util folder
     perror(get_error_message_2310team(19));
     exit(19);
 
     return response;
 }
+
 
 

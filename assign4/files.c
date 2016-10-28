@@ -166,7 +166,6 @@ Sinister *read_sinisterfile(char *filename) {
             type->effectiveness = splits;
 
             put(typeNameToType, clone_string(first), type);
-            free_vec(splits);
         }
     }
 
@@ -235,8 +234,8 @@ Sinister *read_sinisterfile(char *filename) {
         }
     }
 
+
     /* ---------- AGENTS ----------*/
-    // char *type = get(attackToTypeName, "add_beetroot");
     while (1) {
         Vec *splits = split_read_line(sinisterfile);
 

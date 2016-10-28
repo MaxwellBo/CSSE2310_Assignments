@@ -60,9 +60,9 @@ void process_connection(int fd) {
         // perror("Error reading from socket");
         exit(1);
     }
-    // Print a message to server's stdout
-    printf("Done\n");
-    fflush(stdout);
+    // Print a message to server's stdout, on disconnect
+    print_narrative(game); 
+
     close(fd);
 }
 
