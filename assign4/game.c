@@ -43,7 +43,7 @@ void add_elimination_narrative_line(Game *self, char *eliminated) {
 
 void print_narrative(Game *self) {
     for (int i = 0; i < self->narrative->size; i++) {
-        fprintf(stdout, "%s\n", self->narrative->data[i]);
+        fprintf(stdout, "%s\n", (char *)self->narrative->data[i]);
     }
 
     fflush(stdout);

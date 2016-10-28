@@ -37,9 +37,11 @@ void validate_args(int argc, char **argv) {
     // if not within the valid range
     if (!((MIN_ARGS <= argc && argc <= MAX_ARGS))) {
         status = 1;
-    } else if (argc == SIMULATION_ARGS && atoi(argv[CONTROLLERPORT]) < 1 ) {
+    } else if (argc == SIMULATION_ARGS && !(0 < atoi(argv[CONTROLLERPORT]) 
+                && atoi(argv[CONTROLLERPORT]) <= 65535)) {
         status = 6;
-    } else if (argc == CHALLENGE_ARGS && atoi(argv[TARGETPORT]) < 1 ) {
+    } else if (argc == CHALLENGE_ARGS && !(0 < atoi(argv[TARGETPORT]) 
+                && atoi(argv[TARGETPORT]) <= 65535)) {
         status = 6;
     }
 
