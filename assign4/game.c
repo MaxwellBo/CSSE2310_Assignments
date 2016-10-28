@@ -17,7 +17,7 @@ typedef struct Game {
     Sinister *sinister;
     Vec *narrative;
     Agent *mine;
-    Agent *theirs;
+    AgentDetails *theirs;
 } Game;
 
 Game *new_game() {
@@ -55,11 +55,39 @@ void choose_agent(Game *self, char *response) {
 }
 
 void attack(Game *self, char *response) {
-    sprintf(response, "attack %s %s\n", self->mine->name, get_move(self->mine));
 
-    // Log TODO RESULT STRING?
+    char *move = get_move(self->mine);
+    sprintf(response, "attack %s %s\n", self->mine->name, move);
+
+    fprintf(stderr, "%s\n", move);
+
+    // Get the type of the attack
+    char *myAttackTypeName = get(self->sinister->attackToTypeName, move);
+
+    // Get details regarding the type of the attack
+    fprintf(stderr, "%s\n", myAttackTypeName);
+    Type *type = (Type *)get(self->sinister->typeNameToType, myAttackTypeName);
+
+    // Find out what its effectiveness is against their agent
+    char *effectiveness = get(type->relations, self->theirs->type);
+
+    int damageValue = 0;
+
+    if (effectiveness == NULL) {
+        damageValue = 2;
+    } else if (!strcmp(effectiveness, "+")) {
+        damageValue = 3;
+    } else {
+        damageValue = 1;
+    }
+
+    // From sinisterfile: mammal it_worked_well ok something_went_wrong
+    int index = 1 + (3 - damageValue);
+    char *effectivenessString = type->effectiveness->data[index];
+
+    // Log
     char narrativeLine[128];
-    sprintf(narrativeLine, "%s uses attack: SOMETHING", self->mine->name);
+    sprintf(narrativeLine, "%s uses attack: %s", self->mine->name, effectivenessString);
     append(self->narrative, clone_string(narrativeLine));
 
     cycle_move(self->mine);
@@ -74,7 +102,6 @@ void print_narrative(Game *self) {
 }
 
 char *process_message(Game *self, char *query) {
-
     // TODO: Make this number not magic
     char command[128];
     sscanf(query, "%s ", command);
@@ -97,7 +124,6 @@ char *process_message(Game *self, char *query) {
 
         return response;
     } else if (!strcmp(command, "haveatyou")) {
-
         // Parse
         char teamName[128];
         sscanf(query, "haveatyou %s", teamName);
@@ -119,8 +145,10 @@ char *process_message(Game *self, char *query) {
 
         // Log
         char narrativeLine[128];
-        sprintf(narrativeLine, "%s chooses agent %s", self->opponentName, agentName);
+        sprintf(narrativeLine, "%s chooses %s", self->opponentName, agentName);
         append(self->narrative, clone_string(narrativeLine));
+
+        self->theirs = (AgentDetails *)get(self->sinister->agentNameToAgentDetails, agentName);
 
         // If we haven't chosen yet
         if (!self->mine) {
@@ -130,6 +158,7 @@ char *process_message(Game *self, char *query) {
             attack(self, response);
             return response;
         }
+
     } else if (!strcmp(command, "attack")) {
         // Parse
         char agentName[128];
@@ -137,10 +166,10 @@ char *process_message(Game *self, char *query) {
         sscanf(query, "attack %s %s", agentName, attackName);
 
         // Get the type of the attack
-        char *opponentAttackTypeName = get(self->sinister->attackToTypeName, attackName);
+        char *theirAttackTypeName = get(self->sinister->attackToTypeName, attackName);
 
         // Get details regarding the type of the attack
-        Type *type = (Type *)get(self->sinister->typeNameToType, opponentAttackTypeName);
+        Type *type = (Type *)get(self->sinister->typeNameToType, theirAttackTypeName);
 
         // Find out what my agents type is
         AgentDetails *agentDetails = (AgentDetails *)get(

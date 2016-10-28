@@ -70,6 +70,9 @@ void cycle_move(Agent *self) {
 }
 
 char *get_move(Agent *self) {
+
+    fprintf(stderr, "%d\n", self->moveIndex);
+
     return self->moveSeq->data[self->moveIndex];
 }
 
