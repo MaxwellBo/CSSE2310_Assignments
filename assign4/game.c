@@ -51,7 +51,11 @@ void choose_agent(Game *self, char *response) {
         }
     }
 
+    // char narrativeLine[128];
+    // sprintf(narrativeLine, "%s chooses %s", self->team->name, agent->name);
+    // append(self->narrative, clone_string(narrativeLine));
     // Abort when out of agents
+    print_narrative(self);
     exit(0);
 }
 
@@ -145,11 +149,10 @@ char *process_message(Game *self, char *query) {
         if (self->theirAgentDetails) {
             // Edit the last message so that it says that something died
             char narrativeLine[128];
-            sprintf(narrativeLine, " - %s was elimated", self->theirAgentName);
+            sprintf(narrativeLine, " - %s was eliminated", self->theirAgentName);
 
             int lastIndex = self->narrative->size - 1;
-            self->narrative->data[lastIndex] = concat(self->narrative->data[lastIndex], narrativeLine),
-            fprintf(stderr, "LAST: %s\n", self->narrative->data[lastIndex]);
+            self->narrative->data[lastIndex] = concat(self->narrative->data[lastIndex], narrativeLine);
         }
 
         // Log
@@ -204,15 +207,23 @@ char *process_message(Game *self, char *query) {
         int index = 1 + (3 - damageValue);
         char *effectivenessString = type->effectiveness->data[index];
 
-        // Log
+
         char narrativeLine[128];
-        sprintf(narrativeLine, "%s uses attack: %s", agentName, effectivenessString);
-        append(self->narrative, clone_string(narrativeLine));
 
         if (self->mine->health <= 0) {
             choose_agent(self, response);
+
+            sprintf(narrativeLine, "%s uses attack: %s - %s was eliminated", 
+                agentName, effectivenessString, self->mine->name);
+
+            append(self->narrative, clone_string(narrativeLine));
+
             return response;
         }
+
+        // Log
+        sprintf(narrativeLine, "%s uses attack: %s", agentName, effectivenessString);
+        append(self->narrative, clone_string(narrativeLine));
 
         attack(self, response);
         return response;
