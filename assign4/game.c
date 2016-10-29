@@ -109,7 +109,7 @@ void attack(Game *self, char *response) {
 
     // Log
     char narrativeLine[128];
-    sprintf(narrativeLine, "%s uses attack: %s", self->mine->name, effectivenessString);
+    sprintf(narrativeLine, "%s uses %s: %s", self->mine->name, move, effectivenessString);
     append(self->narrative, clone_string(narrativeLine));
 
     cycle_move(self->mine);
@@ -227,8 +227,8 @@ char *process_message(Game *self, char *query) {
         if (self->mine->health <= 0) {
             choose_agent(self, response);
 
-            sprintf(narrativeLine, "%s uses attack: %s - %s was eliminated", 
-                agentName, effectivenessString, self->mine->name);
+            sprintf(narrativeLine, "%s uses %s: %s - %s was eliminated", 
+                agentName, attackName, effectivenessString, self->mine->name);
 
             append(self->narrative, clone_string(narrativeLine));
 
@@ -236,7 +236,7 @@ char *process_message(Game *self, char *query) {
         }
 
         // Log
-        sprintf(narrativeLine, "%s uses attack: %s", agentName, effectivenessString);
+        sprintf(narrativeLine, "%s uses %s: %s", agentName, attackName, effectivenessString);
         append(self->narrative, clone_string(narrativeLine));
 
         attack(self, response);
