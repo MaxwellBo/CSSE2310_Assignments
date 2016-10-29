@@ -43,6 +43,13 @@ void add_elimination_narrative_line(Game *self, char *eliminated) {
 
 void print_narrative(Game *self) {
     for (int i = 0; i < self->narrative->size; i++) {
+        
+        for (int j = 0; j < strlen(self->narrative->data[i]); j++) {
+            if (((char *)self->narrative->data[i])[j] == '_') {
+                ((char *)self->narrative->data[i])[j] = ' ';
+            }
+        }
+        
         fprintf(stdout, "%s\n", (char *)self->narrative->data[i]);
     }
 
@@ -112,6 +119,7 @@ void attack(Game *self, char *response) {
 char *process_message(Game *self, char *query) {
     // TODO: Make this number not magic
     char command[128];
+    fprintf(stderr, "%s\n", command);
     sscanf(query, "%s ", command);
 
     char *response = malloc(sizeof(char) * 128);
