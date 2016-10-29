@@ -118,9 +118,11 @@ void attack(Game *self, char *response) {
 
 char *process_message(Game *self, char *query) {
     // TODO: Make this number not magic
+    
     char command[128];
-    fprintf(stderr, "%s\n", command);
-    sscanf(query, "%s ", command);
+    fprintf(stderr, "QUERY: %s CLOSE QUERY", query);
+    sscanf(query, "%s", command);
+    fprintf(stderr, "COMMAND: %s\n", command);
 
     char *response = malloc(sizeof(char) * 128);
 
