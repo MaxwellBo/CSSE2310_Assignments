@@ -108,9 +108,9 @@ void* client_thread(void* arg) {
     ssize_t numBytesRead;
 
     while((numBytesRead = read(fd, buffer, 1024)) > 0) {
-        fprintf(stderr, "RECIEVED: %s", buffer);
+        /* fprintf(stderr, "RECIEVED: %s", buffer); */
         char *response = process_message(game, buffer);
-        fprintf(stderr, "RESPONDED: %s", response);
+        /* fprintf(stderr, "RESPONDED: %s", response); */
         write(fd, response, strlen(response) + 1);
     }
     // EOF - client disconnected

@@ -43,7 +43,14 @@ void add_elimination_narrative_line(Game *self, char *eliminated) {
 
 void print_narrative(Game *self) {
     for (int i = 0; i < self->narrative->size; i++) {
-        fprintf(stdout, "%s\n", self->narrative->data[i]);
+        
+        for (int j = 0; j < strlen(self->narrative->data[i]); j++) {
+            if (((char *)self->narrative->data[i])[j] == '_') {
+                ((char *)self->narrative->data[i])[j] = ' ';
+            }
+        }
+        
+        fprintf(stdout, "%s\n", (char *)self->narrative->data[i]);
     }
 
     fflush(stdout);
@@ -102,7 +109,7 @@ void attack(Game *self, char *response) {
 
     // Log
     char narrativeLine[128];
-    sprintf(narrativeLine, "%s uses attack: %s", self->mine->name, effectivenessString);
+    sprintf(narrativeLine, "%s uses %s: %s", self->mine->name, move, effectivenessString);
     append(self->narrative, clone_string(narrativeLine));
 
     cycle_move(self->mine);
@@ -111,8 +118,11 @@ void attack(Game *self, char *response) {
 
 char *process_message(Game *self, char *query) {
     // TODO: Make this number not magic
+    
     char command[128];
-    sscanf(query, "%s ", command);
+    fprintf(stderr, "QUERY: %s CLOSE QUERY", query);
+    sscanf(query, "%s", command);
+    fprintf(stderr, "COMMAND: %s\n", command);
 
     char *response = malloc(sizeof(char) * 128);
 
@@ -219,8 +229,8 @@ char *process_message(Game *self, char *query) {
         if (self->mine->health <= 0) {
             choose_agent(self, response);
 
-            sprintf(narrativeLine, "%s uses attack: %s - %s was eliminated", 
-                agentName, effectivenessString, self->mine->name);
+            sprintf(narrativeLine, "%s uses %s: %s - %s was eliminated", 
+                agentName, attackName, effectivenessString, self->mine->name);
 
             append(self->narrative, clone_string(narrativeLine));
 
@@ -228,7 +238,7 @@ char *process_message(Game *self, char *query) {
         }
 
         // Log
-        sprintf(narrativeLine, "%s uses attack: %s", agentName, effectivenessString);
+        sprintf(narrativeLine, "%s uses %s: %s", agentName, attackName, effectivenessString);
         append(self->narrative, clone_string(narrativeLine));
 
         attack(self, response);
